@@ -166,6 +166,11 @@
             // display diagnostic-mode notice
             if ( defined( '_FPA_DIAG' ) ) {
                 ini_set('display_errors','On');
+/*
+                    // Try and set PHP's error reporting to maximum useful level
+                    if ( $currentERRRPT < 'E_ALL' ) {
+                        ini_set('error_reporting', version_compare(PHP_VERSION,5,'>=') && version_compare(PHP_VERSION,6,'<') ?E_ALL^E_STRICT:E_ALL);
+ */
                 error_reporting( -1 );
                 ini_set('error_log', $fpa['diagLOG'] );
 
@@ -208,8 +213,11 @@
     /** SET THE JOOMLA! PARENT FLAG AND CONSTANTS ********************************************/
     define ( '_VALID_MOS', 1 ); // for J!1.0
     define ( '_JEXEC', 1 );     // for J!1.5, J!1.6, J!1.7
-    define ( 'JPATH_BASE', dirname( __FILE__ ) );
-
+///    define ( 'JPATH_BASE', dirname( __FILE__ ) );
+  // Define Various ROOT directories
+  define ( 'FPA_ROOT', dirname( __FILE__ ) );   // JTS2 ROOT
+//  define ( 'FPA_DIR', substr(FPA_ROOT, 1)=='/'?'':basename(FPA_ROOT) );   // JTS2 ROOT Directory Name
+//  define ( 'SITE_ROOT', trim(FPA_ROOT, FPA_DIR) );  // Main Site ROOT
 
     /** DEFINE LANGUAGE STRINGS **************************************************************/
     define ( '_RES', 'Forum Post Assistant' );
@@ -362,30 +370,84 @@
 
 
     /** is Joomla! installed/configured? *****************************************************/
-    if ( file_exists( 'configuration.php' ) ) {
-    // find the configuration.php file (all versions)
+
+    // !TODO add finding configuration outside of "/"
+    // determine exactly where the REAL configuration file is, it might not be the one in the "/" folder
+    if ( $instance['cmsRELEASE'] == '1.0' ) {
+
+        if ( file_exists( 'configuration.php' ) ) {
+//          $configContent = file_get_contents( 'configuration.php' );
+
+//              if ( preg_match( '#require.*[\"|\'](.*)[\"|\']#', $configContent ) ) {
+//                  preg_match ( '#require.*[\"|\'](.*)[\"|\']#', $configContent, $findConfig );
+
+//                  $instance['configPATH'] =  dirname( __FILE__ ) . $findConfig[1];
+//              } else {
+//                  $instance['configPATH'] =  dirname( __FILE__ ) .'/'. $findConfig[1];
+//              }
+
+//                  $instance['configMOVED'] = _FPA_Y;
+//              } else {
+//                  $instance['configMOVED'] = _FPA_N;
+                    $instance['configPATH'] = 'configuration.php';
+//              }
+
+            }
+
+    } elseif ( $instance['cmsRELEASE'] == '1.5' ) {
+        $instance['configPATH'] = 'configuration.php';
+    } elseif ( $instance['cmsRELEASE'] >= '1.6' ) {
+
+        // look for a 'defines' override file in the "/" folder.
+        if ( file_exists( 'defines.php' ) ) {
+            $instance['configPATH'] = 'configuration.php';
+        } elseif ( file_exists( 'includes/defines.php' ) ) {
+            $instance['configPATH'] = 'configuration.php';
+        } else {
+            $instance['configDEFINE'] = _FPA_NF;
+            $instance['configPATH'] = 'configuration.php';
+        }
+
+    } else {
+            $instance['configPATH'] = 'configuration.php';
+            $instance['configMOVED'] = _FPA_N;
+    }
+
+
+
+
+
+    if ( file_exists( $instance['configPATH'] ) ) {
+    // find the configuration file (all versions)
         $instance['instanceCONFIGURED'] = _FPA_Y;
 
         // determine it's ownership and mode
-        if ( is_writable( 'configuration.php' ) ) {
+        if ( is_writable( $instance['configPATH'] ) ) {
+//        if ( is_writable( 'configuration.php' ) ) {
 		  $instance['configWRITABLE']	= _FPA_Y;
         } else {
 		  $instance['configWRITABLE']	= _FPA_N;
         }
 
-        $instance['configMODE'] = substr( sprintf('%o', fileperms( 'configuration.php' ) ),-3, 3 );
+        $instance['configMODE'] = substr( sprintf('%o', fileperms( $instance['configPATH'] ) ),-3, 3 );
+//        $instance['configMODE'] = substr( sprintf('%o', fileperms( 'configuration.php' ) ),-3, 3 );
 
         if ( $system['sysSHORTOS'] != 'WIN' ) { // gets the UiD and converts to 'name' on non Windows systems
-            $instance['configOWNER'] = posix_getpwuid(fileowner('configuration.php'));
-            $instance['configGROUP'] = posix_getgrgid(filegroup('configuration.php'));
+            $instance['configOWNER'] = posix_getpwuid( fileowner( $instance['configPATH'] ) );
+            $instance['configGROUP'] = posix_getgrgid( filegroup( $instance['configPATH'] ) );
+//            $instance['configOWNER'] = posix_getpwuid(fileowner('configuration.php'));
+//            $instance['configGROUP'] = posix_getgrgid(filegroup('configuration.php'));
         } else { // only get the UiD for Windows, not 'name'
-            $instance['configOWNER']['name'] = fileowner( 'configuration.php' );
-            $instance['configGROUP']['name'] = filegroup( 'configuration.php' );
+            $instance['configOWNER']['name'] = fileowner( $instance['configPATH'] );
+            $instance['configGROUP']['name'] = filegroup( $instance['configPATH'] );
+//            $instance['configOWNER']['name'] = fileowner( 'configuration.php' );
+//            $instance['configGROUP']['name'] = filegroup( 'configuration.php' );
         }
 
 
         /** if present, is the configuration file valid? *****************************************/
-        $cmsCContent = file_get_contents( 'configuration.php' );
+        // !TODO path to configuration.php will become a variable from finding the REAL configuration, above
+        $cmsCContent = file_get_contents( $instance['configPATH'] );
 
             if ( preg_match ( '#(\$mosConfig_)#', $cmsCContent ) ) {
                 $instance['configVALIDFOR'] = '1.0';
