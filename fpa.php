@@ -12,7 +12,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    //define ( '_FPA_DEV', 1 );   // developer-mode
+    define ( '_FPA_DEV', 1 );   // developer-mode
     //define ( '_FPA_DIAG', 1 );  // diagnostic-mode
     $protected = '0';
 
@@ -600,8 +600,8 @@
     //!TESTME for WIN IIS7?
     //$system['sysSERVIP'] =  $_SERVER['LOCAL_ADDR'];
 	if ( $system['sysSHORTOS'] != 'WIN' ) {
-// !FIXME $_ENV USER doesn't work on lightspeed server? maybe tie it down to apache only
-	    $system['sysEXECUSER'] = $_ENV["USER"]; // user that executed this script
+    // !BUGID #1 $_ENV USER doesn't work on lightspeed server? maybe tie it down to apache only
+	    $system['sysEXECUSER'] = $_ENV['USER']; // user that executed this script
         $system['sysDOCROOT'] = $_SERVER['DOCUMENT_ROOT'];
 	} else {
         $localpath = getenv( 'SCRIPT_NAME' );
@@ -625,13 +625,13 @@
         if ( version_compare( PHP_VERSION, '5.2.1', '>=' ) ) {
             $system['sysSYSTMPDIR'] = sys_get_temp_dir();
 
-
             // is the system /tmp writable to this user?
             if ( is_writable( sys_get_temp_dir() ) ) {
 	   	      $system['sysTMPDIRWRITABLE'] = _FPA_Y;
             } else {
 		      $system['sysTMPDIRWRITABLE'] = _FPA_N;
             }
+
         }
 ?>
 
@@ -649,7 +649,7 @@
 
     /** general system related settings? *****************************************************/
     // find the current php.ini file
-    if (version_compare(PHP_VERSION, '5.2.4', '>=')) {
+    if ( version_compare( PHP_VERSION, '5.2.4', '>=' ) ) {
         $phpenv['phpINIFILE'] = php_ini_loaded_file();
     } else {
         $phpenv['phpINIFILE'] = _FPA_U;
@@ -663,28 +663,32 @@
         $phpenv['phpINIOTHER'] = _FPA_U;
     }
 
+    $phpenv['phpREGGLOBAL'] = ini_get( 'register_globals' );
+    $phpenv['phpMAGICQUOTES'] = ini_get( 'magic_quotes_gpc' );
+    $phpenv['phpSAFEMODE'] = ini_get( 'safe_mode' );
+    $phpenv['phpOPENBASE'] = ini_get( 'open_basedir' );
+    $phpenv['phpMAGICQUOTES'] = ini_get( 'magic_quotes_gpc' );
     $phpenv['phpSESSIONPATH'] = session_save_path();
 
+    // if open_basedir is in effect, don't bother doing session_save.path test, will error if path not in open_basedir
+    if ( isset( $phpenv['phpOPENBASE'] ) ) {
         // is the session_save.path writable to this user?
         if ( is_writable( session_save_path() ) ) {
             $phpenv['phpSESSIONPATHWRITABLE'] = _FPA_Y;
         } else {
             $phpenv['phpSESSIONPATHWRITABLE'] = _FPA_N;
         }
-
-    $phpenv['phpREGGLOBAL'] = ini_get('register_globals');
-    $phpenv['phpMAGICQUOTES'] = ini_get('magic_quotes_gpc');
-    $phpenv['phpSAFEMODE'] = ini_get('safe_mode');
-    $phpenv['phpMAGICQUOTES'] = ini_get('magic_quotes_gpc');
-    $phpenv['phpOPENBASE'] = ini_get('open_basedir');
+    } else {
+        $phpenv['phpSESSIONPATHWRITABLE'] = _FPA_U;
+    }
 
     // input and upload related settings
-    $phpenv['phpUPLOADS'] = ini_get('file_uploads');
-    $phpenv['phpMAXUPSIZE'] = ini_get('upload_max_filesize');
-    $phpenv['phpMAXPOSTSIZE'] = ini_get('post_max_size');
-    $phpenv['phpMAXIMPUTTIME'] = ini_get('max_input_time');
-    $phpenv['phpMAXEXECTIME'] = ini_get('max_execution_time');
-    $phpenv['phpMEMLIMIT'] = ini_get('memory_limit');
+    $phpenv['phpUPLOADS'] = ini_get( 'file_uploads' );
+    $phpenv['phpMAXUPSIZE'] = ini_get( 'upload_max_filesize' );
+    $phpenv['phpMAXPOSTSIZE'] = ini_get( 'post_max_size' );
+    $phpenv['phpMAXIMPUTTIME'] = ini_get( 'max_input_time' );
+    $phpenv['phpMAXEXECTIME'] = ini_get( 'max_execution_time' );
+    $phpenv['phpMEMLIMIT'] = ini_get( 'memory_limit' );
 
 
     /** API and ownership related settings ***************************************************/
@@ -897,7 +901,13 @@
 
             }
 **/
-// !TODO DB MySQLI not supported by PHP4
+        // !TODO DB MySQLI not supported by PHP4
+        if ( version_compare( PHP_VERSION, '5.0.0', '>=' ) ) {
+            $database['dbPHPSUPPORTSMYSQLI'] = _FPA_Y;
+        } else {
+            $database['dbPHPSUPPORTSMYSQLI'] = _FPA_N;
+        }
+
 // !TODO MYSQL COLLATION
 /**
              $rs = $conn->query( "SHOW VARIABLES LIKE 'collation_database'" );
@@ -947,7 +957,7 @@
                 $database['dbERROR'] = mysql_errno() .':'. mysql_error();
             } // end mysql if $dBconn is good
 
-        } elseif ( $instance['configDBTYPE'] == 'mysqli' ) { // mysqli
+        } elseif ( $instance['configDBTYPE'] == 'mysqli' AND $database['dbPHPSUPPORTSMYSQLI'] == _FPA_Y ) { // mysqli
 
             $dBconn = @new mysqli( $instance['configDBHOST'], $instance['configDBUSER'], $instance['configDBPASS'], $instance['configDBNAME'] );
             $database['dbERROR'] = mysqli_connect_errno( $dBconn ) .':'. mysqli_connect_error( $dBconn );
@@ -990,7 +1000,7 @@
         } // end of dataBase connection routines
 
 
-            if ( $dBconn AND $database['dbERROR'] == '0:' ) {
+            if ( isset( $dBconn ) AND $database['dbERROR'] == '0:' ) {
                 $database['dbERROR'] = _FPA_N;
             } elseif ( $database['dbLOCAL'] == _FPA_N AND substr($database['dbERROR'], 0, 4) == '2005' ) { // 2005 = can't access host
                 // if this is a remote host, it might be firewalled or disabled from external or non-internal network access
@@ -1610,8 +1620,8 @@
         echo '<div class="mini-content-box-small">';
         echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Enabled:<div style="float:right;font-size:9px;">'. $instance['configSEF'] .'</div></div>';
         echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Suffix:<div style="float:right;font-size:9px;">'. $instance['configSEFSUFFIX'] .'</div></div>';
-//!FIXME HTWC
-            if ( $system['sysSERVSOFTWARE'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITE-HTA-WCFG'] != '1' ) {
+
+            if ( $system['sysSERVSOFTWARE'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITEHTWC'] != '1' ) {
                 $sefColor = 'ff0000';
             } else {
                 $sefColor = '404040';
@@ -1929,8 +1939,8 @@
         echo '</div>';
     }
 
-        echo '<div class="dev-mode-information" style="text-align:center;">';
-        echo '<a href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a>';
+        echo '<div class="dev-mode-information dev-mode-title" style="text-align:center;color:#4D8000!important;">';
+        echo '<a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a>';
         echo '</div>';
 ?>
 
