@@ -57,8 +57,8 @@
     $folders[] = 'images/';
     $folders[] = 'components/';
     $folders[] = 'modules/';
-    $folders[] = 'plugins/';
-    $folders[] = 'mambots/';
+    $folders[] = 'plugins/';                       // J!1.5 and above | either / or
+    $folders[] = 'mambots/';                       // J!1.0 only
     $folders[] = 'language/';
     $folders[] = 'templates/';
     $folders[] = 'cache/';
@@ -68,6 +68,7 @@
     $folders[] = 'administrator/modules/';
     $folders[] = 'administrator/language/';
     $folders[] = 'administrator/templates/';
+    $folders[] = 'sites/';                         // nooku only
     $folders[] = 'test/';
 
 
@@ -304,6 +305,10 @@
     // J1.5 libraries/joomla/version.php & xmlrpc folder
         $instance['cmsVFILE'] = 'libraries/joomla/version.php';
 
+    } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'libraries/koowa/koowa.php' ) ) {
+    // J1.5 & Nooku Server libraries/joomla/version.php & koowa folder
+        $instance['cmsVFILE'] = 'libraries/joomla/version.php';
+
     } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'joomla.xml' ) ) {
     // J1.6 libraries/joomla/version.php & joomla.xml files
         $instance['cmsVFILE'] = 'libraries/joomla/version.php';
@@ -322,6 +327,11 @@
     if ( file_exists( 'libraries/joomla/platform.php' ) ) {
     // J1.7 libraries/joomla/platform.php
         $instance['platformVFILE'] = 'libraries/joomla/platform.php';
+
+    } elseif ( file_exists( 'libraries/koowa/koowa.php' ) ) {
+    // J1.5 Nooku Server libraries/koowa/koowa.php
+        $instance['platformVFILE'] = 'libraries/koowa/koowa.php';
+
     } else {
         $instance['platformVFILE'] = _FPA_N;
     }
@@ -353,6 +363,19 @@
         $platformVContent = file_get_contents( $instance['platformVFILE'] );
 
         // find the basic platform information
+        if ( $instance['platformVFILE'] == 'libraries/koowa/koowa.php' ) {
+        // Nooku platform based
+
+            preg_match ( '#VERSION.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELEASE );
+            preg_match ( '#VERSION.*=\s[\'|\"].*-(.*)-.*[\'|\"];#', $platformVContent, $platformDEVSTATUS );
+
+                $instance['platformPRODUCT'] = 'Nooku';
+                $instance['platformRELEASE'] = $platformRELEASE[1];
+                $instance['platformDEVSTATUS'] = $platformDEVSTATUS[1];
+
+        } else {
+        // default to the Joomla! platform, as it is most common at the momemt
+
         preg_match ( '#PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformPRODUCT );
         preg_match ( '#RELEASE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELEASE );
         preg_match ( '#MAINTENANCE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformDEVLEVEL );
@@ -366,6 +389,7 @@
             $instance['platformDEVSTATUS'] = $platformDEVSTATUS[1];
             $instance['platformCODENAME'] = $platformCODENAME[1];
             $instance['platformRELDATE'] = $platformRELDATE[1];
+        }
     }
 
 
@@ -886,6 +910,7 @@
         }
 
 
+        // !CLEANME this needs to be done a little smarter
         // here we take the folders array and unset folders that aren't relevant to a specific release
         function filter_folders( $folders, $instance ) {
         GLOBAL $folders;
@@ -894,12 +919,18 @@
 
             if ( $instance['cmsRELEASE'] != '1.0' ) { // ignore the folders for J!1.0
                 unset ( $folders[4] );
+
             } elseif ( $instance['cmsRELEASE'] == '1.0' ) { // ignore folders for J1.5 and above
-                unset ( $folders[12] );
                 unset ( $folders[3] );
                 unset ( $folders[8] );
                 unset ( $folders[9] );
                 unset ( $folders[12] );
+
+            }
+
+            if ( $instance['platformPRODUCT'] != 'Nooku' ) { // ignore the Nooku sites folder if not Nooku
+                unset ( $folders[14] );
+
             }
 
         }
@@ -1403,6 +1434,16 @@
                 color: #008000;
             }
 
+            .ok-hilite {
+                background-color: #CAFFD8;
+                color: #008000;
+                border: 1px solid #4D8000;
+                /** CSS3 **/
+                border-radius: 5px;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+            }
+
             .warn {
                 background-color: #FFE4B5;
                 color: #800000;
@@ -1464,10 +1505,11 @@
         echo '<div class="mini-content-title">CMS Found</div>';
 
             if ( $instance['instanceFOUND'] == _FPA_Y ) {
+                echo $instance['cmsPRODUCT'] .'<br />';
                 echo '<strong>'. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'</strong><br />';
 
                 if ( strtolower( $instance['cmsDEVSTATUS'] ) == 'stable' ) {
-                    $statusClass = 'ok';
+                    $statusClass = 'ok-hilite';
                 } elseif ( strtolower( substr( $instance['cmsDEVSTATUS'],0, 4 ) ) == 'alph' OR strtolower( substr( $instance['cmsDEVSTATUS'],0, 4 ) ) == 'beta' ) {
                     $statusClass = 'alert';
                 } elseif ( strtolower( substr( $instance['cmsDEVSTATUS'],0, 2 ) ) == 'rc' ) {
@@ -1494,10 +1536,14 @@
             echo '<div class="mini-content-title">Platform</div>';
 
         if ( $instance['platformVFILE'] != _FPA_N ) {
+            echo ''. $instance['platformPRODUCT'] .'<br />';
             echo '<strong>'. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'</strong><br />';
 
+//                if ( $instance['platformPRODUCT'] == 'Nooku' ) {
+//                    if ( preg_match( '#PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformPRODUCT
+
                 if ( strtolower( $instance['platformDEVSTATUS'] ) == 'stable' ) {
-                    $statusClass = 'ok';
+                    $statusClass = 'ok-hilite';
                 } elseif ( strtolower( substr( $instance['platformDEVSTATUS'],0, 4 ) ) == 'alph' OR strtolower( substr( $instance['platformDEVSTATUS'],0, 4 ) ) == 'beta' ) {
                     $statusClass = 'alert';
                 } elseif ( strtolower( substr( $instance['platformDEVSTATUS'],0, 2 ) ) == 'rc' ) {
@@ -1769,6 +1815,439 @@
 
 
 
+        /*
+        echo '<br style="clear:both;" />';
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="font-size:9px;width:95%;border-bottom: 1px dotted #c0c0c0;font-weight:bold;">dataBase Host:<div style="float:right;font-size:9px;font-weight:normal;">';
+
+            if ( $protected == '0' ) {
+
+                if ( $instance['configDBHOST'] ) {
+                    echo $instance['configDBHOST'];
+                } else {
+                    echo '<span class="alert">&nbsp;'. _FPA_DNE .'&nbsp;</span>';
+                }
+
+            } else {
+                echo '<span class="warn-text">[**&nbsp;'. _FPA_HIDDEN .'&nbsp;**]</span>';
+            }
+        echo '</div></div>';
+        */
+
+        echo '</div>';
+
+
+
+            } else { // an instance wasn't found in the initial checks, so no folders to check
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">Config Version</div>';
+            echo '<div class="warn" style="width:50px;margin: 0px auto;">'. _FPA_U .'</div>';
+        echo '</div>';
+        echo '</div>';
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">Config Valid</div>';
+            if ( $instance['configSIZEVALID'] == _FPA_N ) {
+                echo '<div class="warn" style="width:99%;margin: 0px auto;">could be empty</div>';
+            }
+        echo '</div>';
+        echo '</div>';
+
+
+                echo '<div class="row-content-container nothing-to-display" style="">';
+                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">';
+                echo 'configuration not found or appears not to be valid<br />no '. $instance['ARRNAME'] .' checks performed';
+                echo '</div>';
+                echo '</div>';
+            }
+
+        echo '</div>';
+        echo '</div>';
+        // end content right block
+
+    //echo '<div style="clear:both;"></div>';
+
+//    showDev( $instance );
+//    showDev( $system );
+
+    echo '</div>'; // end half-section container
+?>
+
+
+
+
+
+
+
+
+<?php
+    // build a full-width div to hold two 'half-width' section, side-by-side
+    echo '<div class="half-section-container" style="">'; // start half-section container
+
+        /** display the instance information *************************************************/
+        echo '<div class="half-section-information-left">'; // start left content block
+
+        echo '<div class="section-title" style="text-align:center;">'. $instance['ARRNAME'] .' Discovery</div>';
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+        // this is the column heading area, if any
+
+
+
+       echo '<br style="clear:both;" />';
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="font-size:9px;width:95%;border-bottom: 1px dotted #c0c0c0;font-weight:bold;">dataBase Host:<div style="float:right;font-size:9px;font-weight:normal;">';
+
+            if ( $protected == '0' ) {
+
+                if ( $instance['configDBHOST'] ) {
+                    echo $instance['configDBHOST'];
+                } else {
+                    echo '<span class="alert">&nbsp;'. _FPA_DNE .'&nbsp;</span>';
+                }
+
+            } else {
+                echo '<span class="warn-text">[**&nbsp;'. _FPA_HIDDEN .'&nbsp;**]</span>';
+            }
+        echo '</div></div>';
+        echo '</div>';
+
+
+
+        /** mini-content, shown in all cases *************************************************/
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">CMS Found</div>';
+
+            if ( $instance['instanceFOUND'] == _FPA_Y ) {
+                echo '<strong>'. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'</strong><br />';
+
+                if ( strtolower( $instance['cmsDEVSTATUS'] ) == 'stable' ) {
+                    $statusClass = 'ok';
+                } elseif ( strtolower( substr( $instance['cmsDEVSTATUS'],0, 4 ) ) == 'alph' OR strtolower( substr( $instance['cmsDEVSTATUS'],0, 4 ) ) == 'beta' ) {
+                    $statusClass = 'alert';
+                } elseif ( strtolower( substr( $instance['cmsDEVSTATUS'],0, 2 ) ) == 'rc' ) {
+                    $statusClass = 'warn';
+                }
+
+                echo '<div class="'. $statusClass .'" style="width:50px;margin: 0px auto;margin-top:1px;">'. $instance['cmsDEVSTATUS'] .'</div>';
+                //echo $instance['cmsCODENAME'];
+
+            } else {
+                echo '<div class="warn" style="width:50px;margin: 0px auto;">'. $instance['instanceFOUND'] .'</div>';
+            }
+
+        echo '</div>';
+        echo '</div>';
+
+
+
+
+        // caters for the platform separation
+
+            echo '<div class="mini-content-container">';
+            echo '<div class="mini-content-box">';
+            echo '<div class="mini-content-title">Platform</div>';
+
+        if ( $instance['platformVFILE'] != _FPA_N ) {
+            echo '<strong>'. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'</strong><br />';
+
+                if ( strtolower( $instance['platformDEVSTATUS'] ) == 'stable' ) {
+                    $statusClass = 'ok';
+                } elseif ( strtolower( substr( $instance['platformDEVSTATUS'],0, 4 ) ) == 'alph' OR strtolower( substr( $instance['platformDEVSTATUS'],0, 4 ) ) == 'beta' ) {
+                    $statusClass = 'alert';
+                } elseif ( strtolower( substr( $instance['platformDEVSTATUS'],0, 2 ) ) == 'rc' ) {
+                    $statusClass = 'warn';
+                }
+                    echo '<div class="'. $statusClass .'" style="width:50px;margin: 0px auto;">'. $instance['platformDEVSTATUS'] .'</div>';
+                    //echo $instance['platformCODENAME'];
+
+        } elseif ( $instance['platformVFILE'] == _FPA_N AND $instance['cmsVFILE'] == _FPA_N) {
+            echo '<div class="warn" style="width:50px;margin: 0px auto;">'. _FPA_N .'</div>';
+        } else {
+            echo _FPA_NA;
+        }
+            echo '</div>';
+            echo '</div>';
+
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">Config Exists</div>';
+
+            if ( $instance['instanceCONFIGURED'] == _FPA_N ) {
+                $configuredClass = 'warn';
+            } else {
+                $configuredClass = 'ok';
+            }
+
+        echo '<div class="'. $configuredClass .'" style="width:50px;margin: 0px auto;">'. $instance['instanceCONFIGURED'] .'</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">Config Version</div>';
+        echo $instance['configVALIDFOR'];
+
+            if ( $instance['instanceCFGVERMATCH'] == _FPA_Y ) {
+                echo '<div class="ok" style="width:99%;margin: 0px auto;">matches cms</div>';
+            } else {
+                echo '<div class="warn" style="width:99%;margin: 0px auto;">cms mis-match</div>';
+            }
+
+        echo '</div>';
+        echo '</div>';
+
+
+        /** mini-content, only shown if instance found and configured ************************/
+        if ( $instance['instanceCONFIGURED'] != _FPA_N AND $instance['instanceFOUND'] != _FPA_N ) {
+
+            // force new line of mini-content-boxes
+            echo '<div style="clear:both;"></div>';
+
+
+
+            echo '<div class="mini-content-container">';
+            echo '<div class="mini-content-box">';
+            echo '<div class="mini-content-title">Config Valid</div>';
+
+                if ( $instance['configSANE'] == _FPA_Y AND @$instance['configSIZEVALID'] != _FPA_N ) {
+                    $saneClass = 'ok';
+                    $configVALID = _FPA_Y;
+                } else {
+                    $saneClass = 'warn';
+                    $configVALID = _FPA_N;
+                }
+
+            echo '<div class="'. $saneClass .'" style="width:50px;margin: 0px auto;">'. $configVALID .'</div>';
+            echo '</div>';
+            echo '</div>';
+
+
+
+            echo '<div class="mini-content-container">';
+            echo '<div class="mini-content-box">';
+            echo '<div class="mini-content-title">Config Mode</div>';
+
+                // looking for --7 or -7- or -77 (default folder permissions are usually 755)
+                if ( substr( $instance['configMODE'],0 ,1 ) == '7' OR substr( $instance['configMODE'],1 ,1 ) == '7' OR substr( $instance['configMODE'],2 ,1 ) == '7' ) {
+                    $modeClass = 'alert';
+                } elseif ( $instance['configMODE'] <= '644' ) {
+                    $modeClass = 'ok';
+                } elseif ( substr( $instance['configMODE'],1 ,1 ) >= '5' OR substr( $instance['configMODE'],2 ,1 ) >= '5' ) {
+                    $modeClass = 'warn';
+                } elseif ( $instance['configMODE'] == _FPA_N ) {
+                    $modeClass = 'warn-text';
+                } else {
+                    $modeClass = 'normal';
+                }
+
+            echo '<div class="'. $modeClass .'" style="width:50px;margin: 0px auto;">'. $instance['configMODE'] .'</div>';
+
+                // is the file writable?
+                if ( ( $instance['configWRITABLE'] == _FPA_Y ) AND ( substr( $instance['configMODE'],0 ,1 ) == '7' OR substr( $instance['configMODE'],1 ,1 ) == '7' OR substr( $instance['configMODE'],2 ,1 ) == '7' ) ) {
+                    $writeClass = 'alert';
+                    $canWrite = 'Writable';
+                } elseif ( ( $instance['configWRITABLE'] == _FPA_Y ) AND ( substr( $instance['configMODE'],0 ,1 ) <= '6' ) ) {
+                    $writeClass = 'ok';
+                    $canWrite = 'Writable';
+                } elseif ( ( $instance['configWRITABLE'] != _FPA_Y ) ) {
+                    $writeClass = 'warn';
+                    $canWrite = 'Read Only';
+                }
+
+            echo '<div class="'. $writeClass .'" style="width:50px;margin: 0px auto;margin-top:1px;">'. $canWrite .'</div>';
+            echo '</div>';
+            echo '</div>';
+
+
+
+            echo '<div class="mini-content-container">';
+            echo '<div class="mini-content-box">';
+            echo '<div class="mini-content-title">Config Owner</div>';
+            echo $instance['configOWNER']['name'];
+            echo '</div>';
+            echo '</div>';
+
+
+
+            echo '<div class="mini-content-container">';
+            echo '<div class="mini-content-box">';
+            echo '<div class="mini-content-title">Config Group</div>';
+            echo $instance['configGROUP']['name'];
+            echo '</div>';
+            echo '</div>';
+
+        } // end if no instance or configuration found dont display
+
+        echo '</div>';
+
+
+
+        // only do mode/permissions checks if an instance was found in the intial checks
+        if ( $instance['instanceFOUND'] != _FPA_Y ) {
+            // this is the content area
+            echo '<div class="row-content-container nothing-to-display" style="">';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">';
+            echo 'Instance not found, no '. $instance['ARRNAME'] .' tests performed';
+
+                if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
+                    echo '<br />but there is a configuration.php file.';
+                }
+
+            echo '</div>';
+            echo '</div>';
+        }
+
+
+
+       echo '<br style="clear:both;" />';
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="font-size:9px;width:95%;border-bottom: 1px dotted #c0c0c0;font-weight:bold;">dataBase Host:<div style="float:right;font-size:9px;font-weight:normal;">';
+
+            if ( $protected == '0' ) {
+
+                if ( $instance['configDBHOST'] ) {
+                    echo $instance['configDBHOST'];
+                } else {
+                    echo '<span class="alert">&nbsp;'. _FPA_DNE .'&nbsp;</span>';
+                }
+
+            } else {
+                echo '<span class="warn-text">[**&nbsp;'. _FPA_HIDDEN .'&nbsp;**]</span>';
+            }
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '</div>';
+        // end content left block
+
+
+
+
+
+        /** display the system information *************************************************/
+        echo '<div class="half-section-information-right">'; // start right content block
+
+        echo '<div class="section-title" style="text-align:center;">'. $instance['ARRNAME'] .' Configuration</div>';
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+        // this is the column heading area, if any
+
+//        echo '</div>';
+
+            // only do mode/permissions checks if an instance was found in the intial checks
+            if ( $instance['instanceCONFIGURED'] == _FPA_Y AND $instance['configVALIDFOR'] != _FPA_U ) {
+            // this is the content area
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">Site Offline</div>';
+        echo $instance['configOFFLINE'];
+        echo '</div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">SEF URL\'s</div>';
+        echo '<div class="mini-content-box-small">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Enabled:<div style="float:right;font-size:9px;">'. $instance['configSEF'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Suffix:<div style="float:right;font-size:9px;">'. $instance['configSEFSUFFIX'] .'</div></div>';
+
+            if ( $system['sysSERVSOFTWARE'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITEHTWC'] != '1' ) {
+                $sefColor = 'ff0000';
+            } else {
+                $sefColor = '404040';
+            }
+
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;color:#'. $sefColor .';">ReWrite:<div style="float:right;color:#'. $sefColor .';font-size:9px;">'. $instance['configSEFRWRITE'] .'</div></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Compression</div>';
+        echo '<div class="mini-content-box-small">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">GZip:<div style="float:right;font-size:9px;">'. $instance['configGZIP'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Cache:<div style="float:right;font-size:9px;">'. $instance['configCACHING'] .'</div></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Debugging</div>';
+        echo '<div class="mini-content-box-small">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Error Rep:<div style="float:right;font-size:9px;">'. $instance['configERRORREP'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Site Debug:<div style="float:right;font-size:9px;">'. $instance['configSITEDEBUG'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Lang Debug:<div style="float:right;font-size:9px;">'. $instance['configLANGDEBUG'] .'</div></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">dataBase</div>';
+        echo '<div class="mini-content-box-small">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Type:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Colation:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">DB Credentials</div>';
+            if ( $instance['configDBCREDOK'] == _FPA_Y ) {
+                echo '<div class="ok" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />complete</div>';
+            } else {
+                echo '<div class="warn" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />in-complete</div>';
+            }
+        echo '</div>';
+        echo '</div>';
+
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Security</div>';
+        echo '<div class="mini-content-box-small">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">SSL Enabled:<div style="float:right;font-size:9px;">'. $instance['configSSL'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Def\' Access:<div style="float:right;font-size:9px;">'. $instance['configACCESS'] .'</div></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+
+
+
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Features</div>';
+        echo '<div class="mini-content-box-small">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">FTP Enabled:<div style="float:right;font-size:9px;">'. $instance['configFTP'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Unicode Slug:<div style="float:right;font-size:9px;">'. $instance['configUNICODE'] .'</div></div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+
+
 
         echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
@@ -1824,7 +2303,19 @@
     showDev( $system );
 
     echo '</div>'; // end half-section container
-?>
+
+    echo '<div style="clear:both;"></div>';
+    ?>
+
+
+
+
+
+
+
+
+
+
 
 
 
