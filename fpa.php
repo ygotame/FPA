@@ -255,6 +255,9 @@
     define ( '_FPA_F', 'Found' );
     define ( '_FPA_NF', 'Not Found' );
     define ( '_FPA_NC', 'Not Configured' );
+    define ( '_FPA_YCON', 'Connected' );
+    define ( '_FPA_NCON', 'Not Connected' );
+    define ( '_FPA_NOA', 'Not Attempted' );
     define ( '_FPA_NER', 'No Errors Reported' );
     define ( '_FPA_ER', 'Error(s) Reported' );
     define ( '_FPA_NA', 'N/A' );
@@ -266,6 +269,8 @@
     define ( '_FPA_OWNER', 'Owner' );
     define ( '_FPA_GROUP', 'Group' );
     define ( '_FPA_VER', 'Version' );
+    define ( '_FPA_LOCAL', 'Local' );
+    define ( '_FPA_REMOTE', 'Remote' );
     // instance test strings
     // system test strings
     // php test strings
@@ -1894,6 +1899,9 @@
 //    showDev( $system );
 
     echo '</div>'; // end half-section container
+
+
+    showDev( $instance );
 ?>
 
 
@@ -1910,7 +1918,7 @@
         /** display the instance information *************************************************/
         echo '<div class="half-section-information-left">'; // start left content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $instance['ARRNAME'] .' :: Database</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
         // this is the column heading area, if any
 
@@ -1918,7 +1926,7 @@
 
 //        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;">dataBase Host:<div style="float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Hostname:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $protected == '0' ) {
 
@@ -1942,16 +1950,37 @@
 
 //        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;">dataBase Connection:<div style="float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+
+            if ( $database['dbLOCAL'] == _FPA_Y ) {
+                echo '<span class="normal">'.  _FPA_LOCAL .' Connection To </span>';
+            } elseif ( $database['dbLOCAL'] == _FPA_N ) {
+                echo '<span class="normal">'. _FPA_REMOTE .' Connection To </span>';
+            } else {
+                echo '<span class="warn-text">'. _FPA_U .' Connection Type</span>';
+            }
+
+            echo $instance['configDBTYPE'] .'&nbsp;';
+
+        echo '</div></div>';
+        echo '</div>';
+
+
+
+
+
+//        echo '<br style="clear:both;" />';
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connect To '. $instance['configDBTYPE'] .' :<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $database['dbDOCHECKS'] == _FPA_N ) {
-                echo '<span class="warn-text">&nbsp;'. _FPA_NC .'&nbsp;</span>';
+                echo '<span class="warn-text">&nbsp;'. _FPA_NOA .', '. _FPA_NC .'&nbsp;</span>';
 
             } elseif ( $database['dbERROR'] == _FPA_N ) {
-                echo '<span class="ok">&nbsp;'. _FPA_NER .'&nbsp;</span>';
+                echo '<span class="ok">&nbsp;'. _FPA_Y .', '. _FPA_YCON .'&nbsp;</span>';
 
             } elseif ( $database['dbERROR'] != _FPA_N ) {
-                echo '<span class="alert-text">&nbsp;'. _FPA_ER .'&nbsp;</span>';
+                echo '<span class="alert-text">&nbsp;'. _FPA_N .', '. _FPA_ER .'&nbsp;</span>';
 //                echo '<div class="warn-text">'. $database['dbERROR'] .'</div>';
 
             }
@@ -1964,7 +1993,7 @@
         if ( $database['dbERROR'] AND $database['dbERROR'] != _FPA_N ) {
 
             echo '<div class="mini-content-box-small" style="">';
-            echo '<div class="alert-text" style="border-bottom: 1px solid #ccebeb;font-size:9px;width:99%;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;">Connection Error:<div style="float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+            echo '<div class="alert-text" style="border-bottom: 1px solid #ccebeb;font-size:9px;width:99%;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Error:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
             echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;">'. $database['dbERROR'] .'</div>';
 
@@ -1979,7 +2008,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;">dataBase Collation:<div style="float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Collation:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
             if ( $database['dbCOLLATION'] ) {
                 echo '<div class="normal">&nbsp;'. $database['dbCOLLATION'] .'&nbsp;</div>';
@@ -2001,7 +2030,7 @@
 
 //        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="font-size:9px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;">dataBase Host:<div style="float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+        echo '<div style="font-size:9px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">dataBase Host:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
 
             if ( $protected == '0' ) {
 
@@ -2204,7 +2233,7 @@
 
     echo '<div style="clear:both;"></div>';
 
-    showDev( $instance );
+    showDev( $database );
     showDev( $system );
 
     echo '</div>'; // end half-section container
