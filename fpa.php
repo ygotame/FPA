@@ -246,6 +246,9 @@
     define ( '_FPA_ACTION', 'Actions Taken To Resolve' );
 
     /** common screen and post output strings ************************************************/
+    define ( '_FPA_BY', 'by' );
+    define ( '_FPA_FOR', 'for' );
+    define ( '_FPA_IS', 'is' );
     define ( '_FPA_Y', 'Yes' );
     define ( '_FPA_N', 'No' );
     define ( '_FPA_M', 'Maybe' );
@@ -257,6 +260,9 @@
     define ( '_FPA_NC', 'Not Configured' );
     define ( '_FPA_YCON', 'Connected' );
     define ( '_FPA_NCON', 'Not Connected' );
+    define ( '_FPA_SUP', 'support' );
+    define ( '_FPA_YSUP', 'supported' );
+    define ( '_FPA_NSUP', 'not supported' );
     define ( '_FPA_NOA', 'Not Attempted' );
     define ( '_FPA_NER', 'No Errors Reported' );
     define ( '_FPA_ER', 'Error(s) Reported' );
@@ -271,6 +277,7 @@
     define ( '_FPA_VER', 'Version' );
     define ( '_FPA_LOCAL', 'Local' );
     define ( '_FPA_REMOTE', 'Remote' );
+
     // instance test strings
     // system test strings
     // php test strings
@@ -681,7 +688,7 @@
      *****************************************************************************************/
 
     /** what server and os is the host? ******************************************************/
-    $system['sysPHPVERSION'] = phpversion();
+    $phpenv['phpVERSION'] = phpversion();
     $system['sysPLATFORM'] = php_uname('v');
     $system['sysPLATNAME'] = php_uname('n');
     $system['sysPLATTECH'] = php_uname('m');
@@ -741,7 +748,21 @@
      ** gets a little messy in places.
      *****************************************************************************************/
 
-    /** general system related settings? *****************************************************/
+    /** general php related settings? *****************************************************/
+
+    // !TODO DB MySQLI not supported by PHP4
+    if ( version_compare( PHP_VERSION, '5.0', '>=' ) ) {
+        $phpenv['phpSUPPORTSMYSQLI'] = _FPA_Y;
+
+    } elseif ( version_compare( PHP_VERSION, '4.4.9', '<=' ) ) {
+        $phpenv['phpSUPPORTSMYSQLI'] = _FPA_N;
+
+    } else {
+        $phpenv['phpSUPPORTSMYSQLI'] = _FPA_U;
+
+    }
+
+
     // find the current php.ini file
     if ( version_compare( PHP_VERSION, '5.2.4', '>=' ) ) {
         $phpenv['phpINIFILE'] = php_ini_loaded_file();
@@ -1002,12 +1023,6 @@
 
             }
 **/
-        // !TODO DB MySQLI not supported by PHP4
-        if ( version_compare( PHP_VERSION, '5.0.0', '>=' ) ) {
-            $database['dbPHPSUPPORTSMYSQLI'] = _FPA_Y;
-        } else {
-            $database['dbPHPSUPPORTSMYSQLI'] = _FPA_N;
-        }
 
 // !TODO MYSQL COLLATION
 /**
@@ -1058,7 +1073,7 @@
                 $database['dbERROR'] = mysql_errno() .':'. mysql_error();
             } // end mysql if $dBconn is good
 
-        } elseif ( $instance['configDBTYPE'] == 'mysqli' AND $database['dbPHPSUPPORTSMYSQLI'] == _FPA_Y ) { // mysqli
+        } elseif ( $instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_Y ) { // mysqli
 
             $dBconn = @new mysqli( $instance['configDBHOST'], $instance['configDBUSER'], $instance['configDBPASS'], $instance['configDBNAME'] );
             $database['dbERROR'] = mysqli_connect_errno( $dBconn ) .':'. mysqli_connect_error( $dBconn );
@@ -1218,6 +1233,7 @@
                 width:750px;
                 background-color:#E0FFFF;
                 border:1px solid #42AEC2;
+                min-height: 188px;
                 /** CSS3 **/
                 box-shadow: 3px 3px 3px #C0C0C0;
                 -moz-box-shadow: 3px 3px 3px #C0C0C0;
@@ -1244,6 +1260,7 @@
 
             .half-section-information-left {
                 float:left;
+                min-height: 188px;
 /*
                 margin: 0px auto;
 */
@@ -1264,6 +1281,7 @@
 
             .half-section-information-right {
                 float:right;
+                min-height: 188px;
 /*
                 margin: 0px auto;
 */
@@ -1967,6 +1985,25 @@
 
 
 
+//        echo '<br style="clear:both;" />';
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">PHP Support :<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+
+            if ( $instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_N ) {
+                echo '<span class="alert-text">'. $instance['configDBTYPE'] .' '. _FPA_IS .' '. _FPA_NSUP .' '. _FPA_BY .' PHP '. $phpenv['phpVERSION'] .'&nbsp;</span>';
+
+            } elseif ( ( $instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_Y ) OR $instance['configDBTYPE'] == 'mysql' ) {
+                echo '<span class="ok">'. $instance['configDBTYPE'] .' '. _FPA_IS .' '. _FPA_YSUP .' '. _FPA_BY .' PHP '. $phpenv['phpVERSION'] .'&nbsp;</span>';
+            } else {
+                echo '<span class="warn-text">PHP '. $phpenv['phpVERSION'] .' '. _FPA_SUP .' '. _FPA_FOR .' '. $instance['configDBTYPE'] .' '. _FPA_IS .' '. _FPA_U .'&nbsp;</span>';
+            }
+
+        echo '</div></div>';
+        echo '</div>';
+
+
+
+
 
 
 //        echo '<br style="clear:both;" />';
@@ -2003,6 +2040,26 @@
 
         }
 
+
+
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Collation:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+
+            if ( $database['dbCOLLATION'] ) {
+                echo '<div class="normal">&nbsp;'. $database['dbCOLLATION'] .'&nbsp;</div>';
+
+            } elseif ( $database['dbERROR'] != _FPA_N ) {
+                echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
+
+            } else {
+                echo '<span class="warn-text">&nbsp;'. _FPA_NC .'&nbsp;</span>';
+
+            }
+
+        echo '</div></div>';
+        echo '</div>';
 
 
 
@@ -2070,7 +2127,7 @@
         /** display the system information *************************************************/
         echo '<div class="half-section-information-right">'; // start right content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $instance['ARRNAME'] .' Configuration</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $phpenv['ARRNAME'] .' :: Configuration</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
         // this is the column heading area, if any
 
@@ -2136,7 +2193,7 @@
         echo '<div class="mini-content-title" style="margin-bottom:0px!important;">dataBase</div>';
         echo '<div class="mini-content-box-small">';
         echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Type:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">'. $database['dbHOSTSERV'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">d'. $database['dbHOSTSERV'] .'</div></div>';
         //echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Colation:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
         echo '</div>';
         echo '</div>';
@@ -2234,7 +2291,8 @@
     echo '<div style="clear:both;"></div>';
 
     showDev( $database );
-    showDev( $system );
+    showDev( $phpenv );
+
 
     echo '</div>'; // end half-section container
 
@@ -2255,11 +2313,14 @@
 
 
 <?php
-    showDev( $phpenv );
-    showDev( $phpextensions );
+
+
 	if ( function_exists( 'apache_get_version' ) ) { // don't show if not Apache
         showDev( $apachemodules );
     }
+
+    showDev( $phpextensions );
+
 ?>
 
 
@@ -2389,7 +2450,7 @@
 
 
 
-        showDev( $database );
+    showDev( $system );
 ?>
 
 
