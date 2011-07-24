@@ -14,8 +14,12 @@
     /** SET THE FPA DEFAULTS *****************************************************************/
     define ( '_FPA_DEV', 1 );   // developer-mode
     //define ( '_FPA_DIAG', 1 );  // diagnostic-mode
-    $protected = '1';
 
+    // these are for testing only and are selected by the user on the FPA page in normal use
+    // 0 = hide,  1= display (default is 'hide')
+    $showProtected  = '1';  // hides/displays sensitive output
+    $showTables     = '1';  // hides/displays the database table statistics
+    $showElevated   = '1';  // hides/displays a list of directories with elevated permissions
 
 
     /** TIMER-POPS ***************************************************************************/
@@ -229,9 +233,7 @@
     define ( '_RES_FPALINK', 'https://github.com/ForumPostAssistant/FPA/archives/masterPublic' ); // where to get the latest 'Final release'
     define ( '_RES_FPALATEST', 'Get the latest release of the ' );
     define ( '_FPA_LEGEND', 'Legend' );
-    define ( '_FPA_GOOD', 'OK/GOOD' );
-    define ( '_FPA_WARNINGS', 'WARNINGS' );
-    define ( '_FPA_ALERTS', 'ALERTS' );
+
 
     /** php options and messages *************************************************************/
     define ( '_PHP_DISERR', 'Display PHP Errors Enabled' );
@@ -252,9 +254,13 @@
     define ( '_FPA_ACTION', 'Actions Taken To Resolve' );
 
     /** common screen and post output strings ************************************************/
+    define ( '_FPA_GOOD', 'OK/GOOD' );
+    define ( '_FPA_WARNINGS', 'WARNINGS' );
+    define ( '_FPA_ALERTS', 'ALERTS' );
     define ( '_FPA_BY', 'by' );
     define ( '_FPA_FOR', 'for' );
     define ( '_FPA_IS', 'is' );
+    define ( '_FPA_LAST', 'Last' );
     define ( '_FPA_DEF', 'default' );
     define ( '_FPA_Y', 'Yes' );
     define ( '_FPA_N', 'No' );
@@ -275,6 +281,16 @@
     define ( '_FPA_ER', 'Error(s) Reported' );
     define ( '_FPA_NA', 'N/A' );
     define ( '_FPA_HIDDEN', 'protected' );
+    define ( '_FPA_TNAM', 'Name' );
+    define ( '_FPA_TSIZ', 'Size' );
+    define ( '_FPA_TENG', 'Engine' );
+    define ( '_FPA_TCRE', 'Created' );
+    define ( '_FPA_TUPD', 'Updated' );
+    define ( '_FPA_TCKD', 'Checked' );
+    define ( '_FPA_TCOL', 'Collation' );
+    define ( '_FPA_TFRA', 'Fragment Size' );
+    define ( '_FPA_TREC', 'Rcds' );  // Number of table records
+    define ( '_FPA_TAVL', 'Avg. Length' );
     define ( '_FPA_MODE', 'Mode' );
     define ( '_FPA_WRITABLE', 'Writable' );
     define ( '_FPA_FOLDER', 'Folder' );
@@ -683,7 +699,10 @@
 ?>
 
 
-
+<?php
+// TESTING ONLY HUUUUUUGE DB
+//$instance['configDBNAME'] = 'njs_bandsite';
+?>
 
 
 <?php
@@ -1081,22 +1100,27 @@
                     $rowCount = 0;
                     while ( $row = mysql_fetch_array( $tblResult ) ) {
                         $rowCount++;
+
+                        $tables[$row['Name']]['TABLE'] = $row['Name'];
+
                         $table_size = ( $row[ 'Data_length' ] + $row[ 'Index_length' ] ) / 1024;
                         $tables[$row['Name']]['SIZE'] = sprintf( '%.2f', $table_size );
-
                         $database['dbSIZE'] += sprintf( '%.2f', $table_size );
-
                         $tables[$row['Name']]['SIZE'] = $tables[$row['Name']]['SIZE'] .' KiB';
-                        $tables[$row['Name']]['ENGINE'] = $row['Engine'];
-                        $tables[$row['Name']]['VERSION'] = $row['Version'];
-                        $tables[$row['Name']]['CREATED'] = $row['Create_time'];
-                        $tables[$row['Name']]['UPDATED'] = $row['Update_time'];
-                        $tables[$row['Name']]['CHECKED'] = $row['Check_time'];
-                        $tables[$row['Name']]['COLLATION'] = $row['Collation'];
-                        $tables[$row['Name']]['FRAGSIZE'] = sprintf( '%.2f', ( $row['Data_free'] /1024 ) ) .' KiB';
-                        $tables[$row['Name']]['MAXGROW'] = sprintf( '%.1f', ( $row['Max_data_length'] /1073741824 ) ) .' GiB';
-                        $tables[$row['Name']]['RECORDS'] = $row['Rows'];
-                        $tables[$row['Name']]['AVGLEN'] = sprintf( '%.2f', ( $row['Avg_row_length'] /1024 ) ) .' KiB';
+
+
+                        if ( $showTables == '1' ) {
+                            $tables[$row['Name']]['ENGINE'] = $row['Engine'];
+                            $tables[$row['Name']]['VERSION'] = $row['Version'];
+                            $tables[$row['Name']]['CREATED'] = $row['Create_time'];
+                            $tables[$row['Name']]['UPDATED'] = $row['Update_time'];
+                            $tables[$row['Name']]['CHECKED'] = $row['Check_time'];
+                            $tables[$row['Name']]['COLLATION'] = $row['Collation'];
+                            $tables[$row['Name']]['FRAGSIZE'] = sprintf( '%.2f', ( $row['Data_free'] /1024 ) ) .' KiB';
+                            $tables[$row['Name']]['MAXGROW'] = sprintf( '%.1f', ( $row['Max_data_length'] /1073741824 ) ) .' GiB';
+                            $tables[$row['Name']]['RECORDS'] = $row['Rows'];
+                            $tables[$row['Name']]['AVGLEN'] = sprintf( '%.2f', ( $row['Avg_row_length'] /1024 ) ) .' KiB';
+                        }
 
                     }
 
@@ -1151,22 +1175,27 @@
                     $rowCount = 0;
                     while ( $row = mysqli_fetch_array( $tblResult ) ) {
                         $rowCount++;
+
+                        $tables[$row['Name']]['TABLE'] = $row['Name'];
+
                         $table_size = ($row[ 'Data_length' ] + $row[ 'Index_length' ]) / 1024;
                         $tables[$row['Name']]['SIZE'] = sprintf( '%.2f', $table_size );
-
                         $database['dbSIZE'] += sprintf( '%.2f', $table_size );
-
                         $tables[$row['Name']]['SIZE'] = $tables[$row['Name']]['SIZE'] .' KiB';
-                        $tables[$row['Name']]['ENGINE'] = $row['Engine'];
-                        $tables[$row['Name']]['VERSION'] = $row['Version'];
-                        $tables[$row['Name']]['CREATED'] = $row['Create_time'];
-                        $tables[$row['Name']]['UPDATED'] = $row['Update_time'];
-                        $tables[$row['Name']]['CHECKED'] = $row['Check_time'];
-                        $tables[$row['Name']]['COLLATION'] = $row['Collation'];
-                        $tables[$row['Name']]['FRAGSIZE'] = sprintf( '%.2f', ( $row['Data_free'] /1024 ) ) .' KiB';
-                        $tables[$row['Name']]['MAXGROW'] = sprintf( '%.1f', ( $row['Max_data_length'] /1073741824 ) ) .' GiB';
-                        $tables[$row['Name']]['RECORDS'] = $row['Rows'];
-                        $tables[$row['Name']]['AVGLEN'] = sprintf( '%.2f', ( $row['Avg_row_length'] /1024 ) ) .' KiB';
+
+
+                        if ( $showTables == '1' ) {
+                            $tables[$row['Name']]['ENGINE'] = $row['Engine'];
+                            $tables[$row['Name']]['VERSION'] = $row['Version'];
+                            $tables[$row['Name']]['CREATED'] = $row['Create_time'];
+                            $tables[$row['Name']]['UPDATED'] = $row['Update_time'];
+                            $tables[$row['Name']]['CHECKED'] = $row['Check_time'];
+                            $tables[$row['Name']]['COLLATION'] = $row['Collation'];
+                            $tables[$row['Name']]['FRAGSIZE'] = sprintf( '%.2f', ( $row['Data_free'] /1024 ) ) .' KiB';
+                            $tables[$row['Name']]['MAXGROW'] = sprintf( '%.1f', ( $row['Max_data_length'] /1073741824 ) ) .' GiB';
+                            $tables[$row['Name']]['RECORDS'] = $row['Rows'];
+                            $tables[$row['Name']]['AVGLEN'] = sprintf( '%.2f', ( $row['Avg_row_length'] /1024 ) ) .' KiB';
+                        }
 
                     }
 
@@ -1590,7 +1619,9 @@
             }
 
             .protected {
-                color: #42AEC2;
+                color: #f60;
+                background-color: #FFFFCC;
+                line-height:9px;
             }
         </style>
 
@@ -1609,10 +1640,11 @@
 <?php
     // LEGENDS
     echo '<div class="half-section-container" style="text-align:left;clear:all;">';
-    echo '<span class="normal" style="width:60px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</span>';
-    echo '<span class="ok-hilite" style="text-align:center;width:60px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</span>';
-    echo '<span class="warn" style="text-align:center;width:60px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</span>';
-    echo '<span class="alert" style="text-align:center;width:60px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</span>';
+    echo '<span class="normal" style="width:30px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</span>';
+    echo '<span class="ok-hilite" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</span>';
+    echo '<span class="warn" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</span>';
+    echo '<span class="alert" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</span>';
+    echo '<span class="protected" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
     echo '</div>';
     echo '<div style="clear:both;"></div>';
 ?>
@@ -2064,7 +2096,7 @@
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Hostname:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 //        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Hostname:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
 
-            if ( $protected == '0' ) {
+            if ( $showProtected == '1' ) {
 
                 if ( $instance['configDBHOST'] ) {
                     echo '<div class="normal">&nbsp;'. $instance['configDBHOST'] .'&nbsp;</div>';
@@ -2075,7 +2107,7 @@
                 }
 
             } else {
-                echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]&nbsp;</span>';
+                echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
 
             }
 
@@ -2269,10 +2301,11 @@ while($row = mysql_fetch_array($result)) {
 }
 ***/
 
+
         /** display the system information *************************************************/
         echo '<div class="half-section-information-right">'; // start right content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: Statistics</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: Performance</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
         // this is the column heading area, if any
 
@@ -2283,97 +2316,104 @@ while($row = mysql_fetch_array($result)) {
             // this is the content area
 
 
-//        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">UpTime:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' '. _FPA_VER .':<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-
         $pieces = explode(": ", $database['dbHOSTSTATS'][0] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $pieces[1] .' seconds&nbsp;</span>';
-
         echo '</div></div>';
         echo '</div>';
 
 
-
-//        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Threads:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
         $pieces = explode(": ", $database['dbHOSTSTATS'][1] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        $pieces = explode(": ", $database['dbHOSTSTATS'][2] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        $pieces = explode(": ", $database['dbHOSTSTATS'][3] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        $pieces = explode(": ", $database['dbHOSTSTATS'][4] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        $pieces = explode(": ", $database['dbHOSTSTATS'][5] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+
+        $pieces = explode(": ", $database['dbHOSTSTATS'][6] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+
+        $pieces = explode(": ", $database['dbHOSTSTATS'][7] );
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Size:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+
+        if ( $database['dbSIZE'] ) {
+            echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
+        } else {
+            echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
+        }
 
         echo '</div></div>';
         echo '</div>';
+
+
 
 
 //        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Questions:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Number of Tables:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
 
-        echo '<span class="normal">'. $database['dbHOSTSTATS'][2] .'&nbsp;</span>';
-
-        echo '</div></div>';
-        echo '</div>';
-
-
-//        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Slow Queries:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-
-        echo '<span class="normal">'. $database['dbHOSTSTATS'][3] .'&nbsp;</span>';
+        if ( $database['dbTABLECOUNT'] ) {
+            echo '<span class="normal">&nbsp;'. $database['dbTABLECOUNT'] .' tables&nbsp;</span>';
+        } else {
+            echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
+        }
 
         echo '</div></div>';
         echo '</div>';
 
 
-//        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Opens:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-
-        echo '<span class="normal">'. $database['dbHOSTSTATS'][4] .'&nbsp;</span>';
-
-        echo '</div></div>';
-        echo '</div>';
-
-
-//        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Flush Tables:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-
-        echo '<span class="normal">'. $database['dbHOSTSTATS'][5] .'&nbsp;</span>';
-
-        echo '</div></div>';
-        echo '</div>';
-
-
-
-//        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Open Tables:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-
-        echo '<span class="normal">'. $database['dbHOSTSTATS'][6] .'&nbsp;</span>';
-
-        echo '</div></div>';
-        echo '</div>';
-
-
-
-        //        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Avg. Queries/Sec:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-
-        echo '<span class="normal">'. $database['dbHOSTSTATS'][7] .'&nbsp;</span>';
-
-        echo '</div></div>';
-        echo '</div>';
 
 
 /***
@@ -2445,25 +2485,8 @@ while($row = mysql_fetch_array($result)) {
 
             } else { // an instance wasn't found in the initial checks, so no folders to check
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">NOT FOUND</div>';
-            echo '<div class="warn" style="width:50px;margin: 0px auto;">'. _FPA_U .'</div>';
-        echo '</div>';
-        echo '</div>';
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">NOT FOUND</div>';
-            if ( $instance['configSIZEVALID'] == _FPA_N ) {
-                echo '<div class="warn" style="width:99%;margin: 0px auto;">could be empty</div>';
-            }
-        echo '</div>';
-        echo '</div>';
-
-
                 echo '<div class="row-content-container nothing-to-display" style="">';
-                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">it seems FPA could connect to your database<br />no '. $instance['ARRNAME'] .' checks performed</div>';
+                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Unable to contact database<br />no '. $database['ARRNAME'] .' performance to display</div>';
                 echo '</div>';
             }
 
@@ -2474,9 +2497,6 @@ while($row = mysql_fetch_array($result)) {
     echo '<div style="clear:both;"></div>';
 
     showDev( $database );
-    showDev( $tables );
-    showDev( $phpenv );
-
 
     echo '</div>'; // end half-section container
 
@@ -2484,9 +2504,81 @@ while($row = mysql_fetch_array($result)) {
     ?>
 
 
+<?php
+    if ( $showTables == '1' ) {
+
+        /** display the table statistics and details for the selected database *******************/
+        echo '<div class="section-information">';
+        echo '<div class="section-title" style="text-align:center;">'. $tables['ARRNAME'] .'</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+
+        echo '<div class="column-title" style="width:20%;float:left;text-align:center;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:7%;float:left;left;text-align:center;">'. _FPA_TSIZ .'</div>';
+        echo '<div class="column-title" style="width:6%;float:left;text-align:center;">'. _FPA_TREC .'</div>';
+        echo '<div class="column-title" style="width:8%;float:left;text-align:center;">'. _FPA_TAVL .'</div>';
+        echo '<div class="column-title" style="width:10%;float:left;text-align:center;">'. _FPA_TFRA .'</div>';
+        echo '<div class="column-title" style="width:6%;float:left;text-align:center;">'. _FPA_TENG .'</div>';
+        echo '<div class="column-title" style="width:10%;float:left;text-align:center;">'. _FPA_TCOL .'</div>';
+        echo '<div class="column-title" style="width:9%;float:left;text-align:center;">'. _FPA_TCRE .'</div>';
+        echo '<div class="column-title" style="width:9%;float:left;text-align:center;">'. _FPA_TUPD .'</div>';
+        echo '<div class="column-title" style="width:9%;float:left;text-align:center;">'. _FPA_TCKD .'</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+        if ( $instance['instanceFOUND'] == _FPA_Y AND $database['dbERROR'] == _FPA_N ) {
+
+            foreach ( $tables as $i => $show ) {
+
+                if ( !$show['ARRNAME'] ) {
+
+                    // produce the output
+                    echo '<div style="font-size:9px;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
+
+                        if ( $showProtected == '1' ) {
+                            echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;'. $show['TABLE'] .'</div>';
+                        } else {
+                            echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div>';
+                        }
+
+                    echo '<div style="font-size:9px;text-align:center;float:left;width:8%;">'. $show['SIZE'] .'</div>';
+                    echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['RECORDS'] .'</div>';
+                    echo '<div style="font-size:9px;text-align:center;float:left;width:8%;">'. $show['AVGLEN'] .'</div>';
+                    echo '<div style="font-size:9px;text-align:center;float:left;width:10%;">'. $show['FRAGSIZE'] .'</div>';
+                    echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['ENGINE'] .'</div>';
+                    echo '<div style="font-size:9px;text-align:center;float:left;width:12%;">'. $show['COLLATION'] .'</div>';
+
+                    $pieces = explode( " ", $show['CREATED'] );
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:9%;">'. $pieces['0'] .'</div>';
+
+                    $pieces = explode( " ", $show['UPDATED'] );
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:9%;">'. $pieces['0'] .'</div>';
+
+                    $pieces = explode( " ", $show['CHECKED'] );
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:9%;">'. $pieces['0'] .'</div>';
+
+                    echo '<br /></div>';
+
+                } // endif , dont show array name
+
+            } // end foreach
 
 
+        } else { // an instance wasn't found in the initial checks, so no tables to check
+            echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Unable to contact database, no '. $tables['ARRNAME'] .' to display</div>';
+            echo '</div>';
+        }
 
+
+        echo '</div>'; // end container
+
+    showDev( $tables );
+    } // end showTables
+
+
+    showDev( $phpenv );
+?>
 
 
 
@@ -2601,7 +2693,14 @@ while($row = mysql_fetch_array($result)) {
             echo '</div>';
 
             echo '<div class="column-content '. $alertClass .'" style="width:58%;float:left;padding-left:5px;">';
-            echo $show;  // display the folder name
+
+            if ( $showProtected == '1' ) {
+                echo $show;  // display the folder name
+            } else {
+                echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
+            }
+
+
             echo '</div>';
 
             echo '<div class="column-content '. $groupClass .'" style="float:right;width:12%;text-align:center;">';
@@ -2637,16 +2736,6 @@ while($row = mysql_fetch_array($result)) {
     showDev( $system );
 ?>
 
-<?php
-    // LEGENDS
-    echo '<div class="half-section-container" style="text-align:left;clear:all;">';
-    echo '<span class="normal" style="width:60px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</span>';
-    echo '<span class="ok-hilite" style="text-align:center;width:60px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</span>';
-    echo '<span class="warn" style="text-align:center;width:60px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</span>';
-    echo '<span class="alert" style="text-align:center;width:60px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</span>';
-    echo '</div>';
-    echo '<div style="clear:both;"></div>';
-?>
 
 <?php
     showDev( $fpa );
@@ -2679,6 +2768,21 @@ while($row = mysql_fetch_array($result)) {
         echo '</div>';
         echo '</div>';
     }
+
+
+
+    // LEGENDS
+    echo '<div class="half-section-container" style="text-align:left;clear:all;">';
+    echo '<span class="normal" style="width:30px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</span>';
+    echo '<span class="ok-hilite" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</span>';
+    echo '<span class="warn" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</span>';
+    echo '<span class="alert" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</span>';
+    echo '<span class="protected" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
+    echo '</div>';
+    echo '<div style="clear:both;"></div>';
+
+
+
 
         echo '<div class="dev-mode-information dev-mode-title" style="text-align:center;color:#4D8000!important;">';
         echo '<a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a>';
