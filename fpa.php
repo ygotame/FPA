@@ -12,7 +12,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    define ( '_FPA_DEV', 1 );   // developer-mode
+    //define ( '_FPA_DEV', 1 );   // developer-mode
     //define ( '_FPA_DIAG', 1 );  // diagnostic-mode
 
     // these are for testing only and are selected by the user on the FPA page in normal use
@@ -58,7 +58,7 @@
     $tables['ARRNAME'] = 'Table Structure';
     $modecheck['ARRNAME'] = 'Permissions Checks';
     // folders to be tested for permissions
-    $folders['ARRNAME'] = 'Selected Folders';
+    $folders['ARRNAME'] = 'Core Folders';
     $folders[] = 'images/';
     $folders[] = 'components/';
     $folders[] = 'modules/';
@@ -640,7 +640,13 @@
                 $instance['configSEFSUFFIX'] = $configSEFSUFFIX[1];
                 $instance['configLANGDEBUG'] = $configLANGDEBUG[1];
                 $instance['configFTP'] = $configFTP[1];
-                $instance['configSSL'] = $configSSL[1];
+
+                if ( $configSSL ) { // 1.7 hack, 1.7.0 seems not to have this option
+                    $instance['configSSL'] = $configSSL[1];
+                } else {
+                    $instance['configSSL'] = _FPA_NA;
+                }
+
         }
 
 
@@ -936,7 +942,7 @@
 
         foreach ( $folders as $i => $show ) {
 
-            if ( $show != 'Selected Folders' ) { // ignore the ARRNAME
+            if ( $show != 'Core Folders' ) { // ignore the ARRNAME
 
                 if ( file_exists( $show ) ) {
                     $modecheck[$show]['mode'] = substr( sprintf('%o', fileperms( $show ) ),-3, 3 );
@@ -969,8 +975,6 @@
         // here we take the folders array and unset folders that aren't relevant to a specific release
         function filter_folders( $folders, $instance ) {
         GLOBAL $folders;
-
-            unset ( $folders['ARRNAME'] );
 
             if ( $instance['cmsRELEASE'] != '1.0' ) { // ignore the folders for J!1.0
                 unset ( $folders[4] );
@@ -1097,6 +1101,7 @@
                 mysql_select_db($instance['configDBNAME'], $dBconn);
                 $tblResult = mysql_query("SHOW TABLE STATUS");
 
+                    $database['dbSIZE'] = 0;
                     $rowCount = 0;
                     while ( $row = mysql_fetch_array( $tblResult ) ) {
                         $rowCount++;
@@ -1172,6 +1177,7 @@
                 // find all the dB tables and calculate the size
                 $tblResult = @$dBconn->query( "SHOW TABLE STATUS" );
 
+                    $database['dbSIZE'] = 0;
                     $rowCount = 0;
                     while ( $row = mysqli_fetch_array( $tblResult ) ) {
                         $rowCount++;
@@ -1564,6 +1570,26 @@
                 color: #404040;
             }
 
+            .normal-note {
+                color: #404040;
+color:#4D8000;
+                background-color: #FFF;
+                padding:2px;
+                margin-left: 5px;
+                margin-right: 5px;
+                font-weight:normal;
+                /** CSS3 **/
+                border:1px solid #4D8000;
+                /** CSS3 **/
+                box-shadow: 2px 2px 2px #C0C0C0;
+                -moz-box-shadow: 2px 2px 2px #C0C0C0;
+                -webkit-box-shadow: 2px 2px 2px #C0C0C0;
+                border-radius: 3px;
+                -moz-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                text-shadow: 1px 1px 1px #F5F5F5;
+            }
+
             .ok {
                 color: #008000;
             }
@@ -1637,17 +1663,7 @@
     echo '</div>';
 ?>
 
-<?php
-    // LEGENDS
-    echo '<div class="half-section-container" style="text-align:left;clear:all;">';
-    echo '<span class="normal" style="width:30px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</span>';
-    echo '<span class="ok-hilite" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</span>';
-    echo '<span class="warn" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</span>';
-    echo '<span class="alert" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</span>';
-    echo '<span class="protected" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
-    echo '</div>';
-    echo '<div style="clear:both;"></div>';
-?>
+
 
 <?php
     // build a full-width div to hold two 'half-width' section, side-by-side
@@ -1699,7 +1715,7 @@
 
         if ( $instance['platformVFILE'] != _FPA_N ) {
             echo ''. $instance['platformPRODUCT'] .'<br />';
-            echo '<strong>'. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'</strong><br />';
+            echo '<strong>'. $instance['platformRELEASE'] .'.'. @$instance['platformDEVLEVEL'] .'</strong><br />';
 
 //                if ( $instance['platformPRODUCT'] == 'Nooku' ) {
 //                    if ( preg_match( '#PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformPRODUCT
@@ -2530,7 +2546,7 @@ while($row = mysql_fetch_array($result)) {
 
             foreach ( $tables as $i => $show ) {
 
-                if ( !$show['ARRNAME'] ) {
+                if ( $show != $tables['ARRNAME'] ) {
 
                     // produce the output
                     echo '<div style="font-size:9px;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
@@ -2546,7 +2562,12 @@ while($row = mysql_fetch_array($result)) {
                     echo '<div style="font-size:9px;text-align:center;float:left;width:8%;">'. $show['AVGLEN'] .'</div>';
                     echo '<div style="font-size:9px;text-align:center;float:left;width:10%;">'. $show['FRAGSIZE'] .'</div>';
                     echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['ENGINE'] .'</div>';
-                    echo '<div style="font-size:9px;text-align:center;float:left;width:12%;">'. $show['COLLATION'] .'</div>';
+
+                    if ( $show['COLLATION'] != $database['dbCOLLATION'] ) {
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:12%;"><span class="warn-text" style="font-size:9px;">'. $show['COLLATION'] .'</span></div>';
+                    } else {
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:12%;">'. $show['COLLATION'] .'</div>';
+                    }
 
                     $pieces = explode( " ", $show['CREATED'] );
                         echo '<div style="font-size:9px;text-align:center;float:left;width:9%;">'. $pieces['0'] .'</div>';
@@ -2604,9 +2625,9 @@ while($row = mysql_fetch_array($result)) {
 
 
 <?php
-    /** display the mode-set details for each selected folder ********************************/
+    /** display the mode-set details for each core folder ********************************/
     echo '<div class="section-information">';
-    echo '<div class="section-title" style="text-align:center;">'. $modecheck['ARRNAME'] .'</div>';
+    echo '<div class="section-title" style="text-align:center;">'. $folders['ARRNAME'] .' '. $modecheck['ARRNAME'] .'</div>';
 
     echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
     // this is the column heading area, if any
@@ -2625,94 +2646,97 @@ while($row = mysql_fetch_array($result)) {
 
         foreach ( $folders as $i => $show ) {
 
-            // looking for --7 or -7- or -77 (default folder permissions are usually 755)
-            if ( substr( $modecheck[$show]['mode'],1 ,1 ) == '7' OR substr( $modecheck[$show]['mode'],2 ,1 ) == '7' ) {
-                $modeClass = 'alert';
-                $alertClass = 'alert-text';
-                $userClass = 'normal';
-                $groupClass = 'normal';
-            } elseif ( $modecheck[$show]['mode'] == '755' ) {
-                $modeClass = 'ok';
-                $alertClass = 'normal';
-                $userClass = 'normal';
-                $groupClass = 'normal';
-            } else if ( substr( $modecheck[$show]['mode'],0 ,1 ) <= '5' AND $modecheck[$show]['mode'] != '---' ) {
-                $modeClass = 'warn';
-                $alertClass = 'warn-text';
-                $userClass = 'normal';
-                $groupClass = 'normal';
-            } else if ( $modecheck[$show]['group']['name'] == _FPA_N ) {
-                $modeClass = 'warn-text';
-                $alertClass = 'warn-text';
-                $userClass = 'warn-text';
-                $groupClass = 'warn-text';
-            } else {
-                $modeClass = 'normal';
-                $alertClass = 'normal';
-                $userClass = 'normal';
-                $groupClass = 'normal';
-            }
+            if ( $show != 'Core Folders' ) {
 
-            // is the folder writable?
-            if ( ( $modecheck[$show]['writable'] != _FPA_Y ) ) {
-                $writeClass = 'warn-text';
-            } elseif ( ( $modecheck[$show]['writable'] == _FPA_Y ) AND ( substr( $modecheck[$show]['mode'],0 ,1 ) == '7' ) ) {
-                $writeClass = 'normal';
-            } elseif ( $modecheck[$show]['writable'] == _FPA_N ) {
-                $writeClass = 'ok';
-            }
-
-            // is the 'executing' owner the same as the folder owner? and is the users groupID the same as the folders groupID?
-            if ( ( $modecheck[$show]['owner']['name'] != $system['sysEXECUSER'] ) AND ( $modecheck[$show]['group']['name'] != _FPA_DNE ) ) {
-                $userClass = 'warn-text';
-                $groupClass = 'normal';
-            } elseif ( isset( $modecheck[$show]['group']['gid'] ) AND isset( $modecheck[$show]['owner']['gid'] ) ) {
-
-                if ( $modecheck[$show]['group']['gid'] != $modecheck[$show]['owner']['gid'] ) {
+                // looking for --7 or -7- or -77 (default folder permissions are usually 755)
+                if ( substr( $modecheck[$show]['mode'],1 ,1 ) == '7' OR substr( $modecheck[$show]['mode'],2 ,1 ) == '7' ) {
+                    $modeClass = 'alert';
+                    $alertClass = 'alert-text';
                     $userClass = 'normal';
+                    $groupClass = 'normal';
+                } elseif ( $modecheck[$show]['mode'] == '755' ) {
+                    $modeClass = 'ok';
+                    $alertClass = 'normal';
+                    $userClass = 'normal';
+                    $groupClass = 'normal';
+                } else if ( substr( $modecheck[$show]['mode'],0 ,1 ) <= '5' AND $modecheck[$show]['mode'] != '---' ) {
+                    $modeClass = 'warn';
+                    $alertClass = 'warn-text';
+                    $userClass = 'normal';
+                    $groupClass = 'normal';
+                } else if ( $modecheck[$show]['group']['name'] == _FPA_N ) {
+                    $modeClass = 'warn-text';
+                    $alertClass = 'warn-text';
+                    $userClass = 'warn-text';
+                    $groupClass = 'warn-text';
+                } else {
+                    $modeClass = 'normal';
+                    $alertClass = 'normal';
+                    $userClass = 'normal';
+                    $groupClass = 'normal';
+                }
+
+                // is the folder writable?
+                if ( ( $modecheck[$show]['writable'] != _FPA_Y ) ) {
+                    $writeClass = 'warn-text';
+                } elseif ( ( $modecheck[$show]['writable'] == _FPA_Y ) AND ( substr( $modecheck[$show]['mode'],0 ,1 ) == '7' ) ) {
+                    $writeClass = 'normal';
+                } elseif ( $modecheck[$show]['writable'] == _FPA_N ) {
+                    $writeClass = 'ok';
+                }
+
+                // is the 'executing' owner the same as the folder owner? and is the users groupID the same as the folders groupID?
+                if ( ( $modecheck[$show]['owner']['name'] != $system['sysEXECUSER'] ) AND ( $modecheck[$show]['group']['name'] != _FPA_DNE ) ) {
+                    $userClass = 'warn-text';
+                    $groupClass = 'normal';
+                } elseif ( isset( $modecheck[$show]['group']['gid'] ) AND isset( $modecheck[$show]['owner']['gid'] ) ) {
+
+                    if ( $modecheck[$show]['group']['gid'] != $modecheck[$show]['owner']['gid'] ) {
+                        $userClass = 'normal';
+                        $groupClass = 'warn-text';
+                    }
+
+                } elseif ( $modecheck[$show]['group']['name'] == _FPA_DNE ) {
+                    $modeClass = 'warn-text';
+                    $alertClass = 'warn-text';
+                    $writeClass = 'warn-text';
+                    $userClass = 'warn-text';
                     $groupClass = 'warn-text';
                 }
 
-            } elseif ( $modecheck[$show]['group']['name'] == _FPA_DNE ) {
-                $modeClass = 'warn-text';
-                $alertClass = 'warn-text';
-                $writeClass = 'warn-text';
-                $userClass = 'warn-text';
-                $groupClass = 'warn-text';
+                // produce the output
+                echo '<div style="border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
+
+                echo '<div class="column-content '. $modeClass .'" style="float:left;width:7%;text-align:center;">';
+                echo $modecheck[$show]['mode'];  // display the mode
+                echo '</div>';
+
+                echo '<div class="column-content '. $writeClass .'" style="width:8%;float:left;text-align:center;">';
+                echo $modecheck[$show]['writable'];  // display if writable
+                echo '</div>';
+
+                echo '<div class="column-content '. $alertClass .'" style="width:58%;float:left;padding-left:5px;">';
+
+                if ( $showProtected == '1' ) {
+                    echo $show;  // display the folder name
+                } else {
+                    echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
+                }
+
+
+                echo '</div>';
+
+                echo '<div class="column-content '. $groupClass .'" style="float:right;width:12%;text-align:center;">';
+                echo $modecheck[$show]['group']['name'];  // display the group
+                echo '</div>';
+
+                echo '<div class="column-content '. $userClass .'"" style="float:right;width:12%;text-align:center;">';
+                echo $modecheck[$show]['owner']['name'];  // display the owner
+                echo '</div>';
+
+                echo '<div style="clear:both;"></div>';
+                echo '</div>';
             }
-
-            // produce the output
-            echo '<div style="border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
-
-            echo '<div class="column-content '. $modeClass .'" style="float:left;width:7%;text-align:center;">';
-            echo $modecheck[$show]['mode'];  // display the mode
-            echo '</div>';
-
-            echo '<div class="column-content '. $writeClass .'" style="width:8%;float:left;text-align:center;">';
-            echo $modecheck[$show]['writable'];  // display if writable
-            echo '</div>';
-
-            echo '<div class="column-content '. $alertClass .'" style="width:58%;float:left;padding-left:5px;">';
-
-            if ( $showProtected == '1' ) {
-                echo $show;  // display the folder name
-            } else {
-                echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
-            }
-
-
-            echo '</div>';
-
-            echo '<div class="column-content '. $groupClass .'" style="float:right;width:12%;text-align:center;">';
-            echo $modecheck[$show]['group']['name'];  // display the group
-            echo '</div>';
-
-            echo '<div class="column-content '. $userClass .'"" style="float:right;width:12%;text-align:center;">';
-            echo $modecheck[$show]['owner']['name'];  // display the owner
-            echo '</div>';
-
-            echo '<div style="clear:both;"></div>';
-            echo '</div>';
         }
 
     } else { // an instance wasn't found in the initial checks, so no folders to check
@@ -2725,7 +2749,7 @@ while($row = mysql_fetch_array($result)) {
     echo '<div style="clear:both;"></div>';
 
     // !TODO fix missing heading properly rather than this messy work-around
-    $folders['ARRNAME'] = 'Selected Folders';
+    $folders['ARRNAME'] = 'Core Folders';
     showDev( $folders );
     showDev( $modecheck );
 
@@ -2771,22 +2795,72 @@ while($row = mysql_fetch_array($result)) {
 
 
 
-    // LEGENDS
-    echo '<div class="half-section-container" style="text-align:left;clear:all;">';
-    echo '<span class="normal" style="width:30px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</span>';
-    echo '<span class="ok-hilite" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</span>';
-    echo '<span class="warn" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</span>';
-    echo '<span class="alert" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</span>';
-    echo '<span class="protected" style="text-align:center;width:80px;float:left;margin-left:10px;margin-right:10px;">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
-    echo '</div>';
-    echo '<div style="clear:both;"></div>';
 
 
 
 
-        echo '<div class="dev-mode-information dev-mode-title" style="text-align:center;color:#4D8000!important;">';
+        echo '<div class="header-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
+        echo '<span class="header-title">Legends and Settings</span>';
+        echo '<div style="width:85%;margin:0 auto;margin-top:10px;">';
+        // LEGENDS
+        echo '<div class="half-section-container" style="text-align:left;clear:all;">';
+//        echo '<div class="normal" style="width:30px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</div>';
+        echo '<div class="ok-hilite" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</div>';
+        echo '<div class="warn" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</div>';
+        echo '<div class="alert" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</div>';
+        echo '<div class="protected" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</div>';
+        echo '</div>';
+        echo '<div style="clear:both;"><br /></div>';
+
+
+        // SELECTIONS
+        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Developer-Mode<br />';
+            if ( defined ( '_FPA_DEV' ) ) {
+                echo '<div class="normal-note">Enabled</div>';
+            } else {
+                echo '<div class="normal-note">Disabled</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Diagnostic-Mode<br />';
+            if ( defined ( '_FPA_DIAG' ) ) {
+                echo '<div class="normal-note">Enabled</div>';
+            } else {
+                echo '<div class="normal-note">Disabled</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Sensitive Information<br />';
+            if ( $showProtected == '1' ) {
+                echo '<div class="normal-note">Show</div>';
+            } else {
+                echo '<div class="normal-note">Hide</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">DataBase Tables<br />';
+            if ( $showTables == '1' ) {
+                echo '<div class="normal-note">Show</div>';
+            } else {
+                echo '<div class="normal-note">Hide</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Elevated Permissions<br />';
+            if ( $showElevated == '1' ) {
+                echo '<div class="normal-note">Show</div>';
+            } else {
+                echo '<div class="normal-note">Hide</div>';
+            }
+        echo '</div>';
+
+        echo '</div>';
+        echo '<div style="clear:both;"><br /></div>';
+
         echo '<a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a>';
         echo '</div>';
+
+
 ?>
 
     </body>
