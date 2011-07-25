@@ -17,7 +17,7 @@
 
     // these are for testing only and are selected by the user on the FPA page in normal use
     // 0 = hide,  1= display (default is 'hide')
-    $showProtected  = '1';  // hides/displays sensitive output
+    $showProtected  = '0';  // hides/displays sensitive output
     $showTables     = '1';  // hides/displays the database table statistics
     $showElevated   = '1';  // hides/displays a list of directories with elevated permissions
 
@@ -52,6 +52,7 @@
     $instance['ARRNAME'] = 'Application Instance';
     $system['ARRNAME'] = 'Systems Environment';
     $phpenv['ARRNAME'] = 'PHP Environment';
+    $phpenv['phpLASTERR'] = '';
     $phpreq['ARRNAME'] = 'PHP Requirements';
     $phpreq['libxml'] = '';
     $phpreq['xml'] = '';
@@ -62,6 +63,7 @@
     $phpreq['mysql'] = '';
     $phpreq['mysqli'] = '';
     $phpreq['mcrypt'] = '';
+    $phpreq['suhosin'] = '';
     $phpreq['russ'] = '';
     $phpextensions['ARRNAME'] = 'PHP Extensions';
     $apachemodules['ARRNAME'] = 'Apache Modules';
@@ -142,7 +144,7 @@
             // if the file was modified less than one day ago, grab the last error entry
             if ( $file_time - $now_time < $age ) {
 //!FIXME memory allocation error on large error file
-//                $phpenv['phpLASTERR'] = array_pop( file( $phpenv['phpERRLOGFILE'] ) );
+                $phpenv['phpLASTERR'] = array_pop( file( $phpenv['phpERRLOGFILE'] ) );
             }
     }
 ?>
@@ -751,7 +753,10 @@
 	if ( $system['sysSHORTOS'] != 'WIN' ) {
     // !BUGID #1 $_ENV USER doesn't work on lightspeed server? maybe tie it down to apache only
 	    $system['sysEXECUSER'] = $_ENV['USER']; // user that executed this script
-        $system['sysDOCROOT'] = $_SERVER['DOCUMENT_ROOT'];
+        if ( !$_ENV['USER'] ) {
+            $system['sysEXECUSER'] = $system['sysCURRUSER'];
+        }
+	    $system['sysDOCROOT'] = $_SERVER['DOCUMENT_ROOT'];
 	} else {
         $localpath = getenv( 'SCRIPT_NAME' );
         $absolutepath = str_replace( '\\', '/', realpath( basename( getenv( 'SCRIPT_NAME' ) ) ) );
@@ -849,7 +854,7 @@
     $phpenv['phpUPLOADS'] = ini_get( 'file_uploads' );
     $phpenv['phpMAXUPSIZE'] = ini_get( 'upload_max_filesize' );
     $phpenv['phpMAXPOSTSIZE'] = ini_get( 'post_max_size' );
-    $phpenv['phpMAXIMPUTTIME'] = ini_get( 'max_input_time' );
+    $phpenv['phpMAXINPUTTIME'] = ini_get( 'max_input_time' );
     $phpenv['phpMAXEXECTIME'] = ini_get( 'max_execution_time' );
     $phpenv['phpMEMLIMIT'] = ini_get( 'memory_limit' );
 
@@ -931,12 +936,23 @@
      *****************************************************************************************/
 
     /** general apache loaded modules? *******************************************************/
-	if ( function_exists( 'apache_get_version' ) ) {
+	if ( function_exists( 'apache_get_version' ) ) {  // for Apache module interface
+
         foreach ( apache_get_modules() as $i => $modules ) {
            $apachemodules[$i] = ( $modules );  // show the version of loaded extensions
         }
+
         // include the Apache version
         $apachemodules[] = apache_get_version();
+
+	} else {  // for Apache cgi interface
+
+
+
+//cgi-fcgi
+print_r(get_extension_funcs("cgi-fcgi"));
+//	    $test = apache_getenv();
+//print_r ( $test );
     }
     // !TODO see if there are IIS specific functions/modules
 ?>
@@ -2632,13 +2648,154 @@ while($row = mysql_fetch_array($result)) {
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
         // this is the column heading area, if any
 
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">PHP Version:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpVERSION'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">PHP API:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+
+            if ( $phpenv['phpAPI'] == 'apache2handler' ) {
+                $status = 'warn-text';
+            } else {
+                $status = 'ok';
+            }
+
+        echo '<span class="'. $status.'">'. $phpenv['phpAPI'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Display Errors:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpERRORDISPLAY'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Error Report Level:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpERRORREPORT'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">MySQLi Support:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpSUPPORTSMYSQLI'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Magic Quotes:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpMAGICQUOTES'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Safe Mode:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpSAFEMODE'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Memory Limit:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpMEMLIMIT'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Uploads Enabled:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpUPLOADS'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Max. Upload Size:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpMAXUPSIZE'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Max. Post Size:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpMAXPOSTSIZE'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Max. Input Time:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpMAXINPUTTIME'] .' seconds&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Register Globals:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpREGGLOBAL'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+        /**
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Date Last PHP Error:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">'. $phpenv['phpLASTERRDATE'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+        **/
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Server User:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+        echo '<span class="normal">'. $system['sysWEBOWNER'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+        echo "<br />";
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Session Path:<div style="float:right;">';
+        echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpSESSIONPATH'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Session Path Writable:<div style="float:right;">';
+
+            if ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_Y ) {
+                echo '<span class="ok" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpSESSIONPATHWRITABLE'] .'&nbsp;</span>';
+            } elseif ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_N ) {
+                echo '<span class="alert-text" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpSESSIONPATHWRITABLE'] .'&nbsp;</span>';
+            } else {
+                echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">'. _FPA_U .'&nbsp;</span>';
+            }
+
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">INI File Path:<div style="float:right;">';
+        echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpINIFILE'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
         if ( $phpenv['phpLASTERR'] ) {
+            echo "<br />";
             echo '<div class="mini-content-box-small" style="">';
             echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;">'. $phpenv['phpLASTERR'] .'</div>';
-            echo '</div>';
-        } else {
-            echo '<div class="mini-content-box-small" style="">';
-            echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;">'. _FPA_NA .'</div>';
             echo '</div>';
         }
 
@@ -2646,90 +2803,6 @@ while($row = mysql_fetch_array($result)) {
         echo '</div></div>';
 
 
-        /** display the instance information *************************************************/
-        echo '<div class="half-section-information-right">'; // start right content block
-
-        echo '<div class="section-title" style="text-align:center;">'. $phpextensions['ARRNAME'] .' :: Discovery</div>';
-        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
-
-
-            foreach ( $phpextensions as $key => $show ) {
-
-                if ( $show != $phpextensions['ARRNAME'] ) {
-
-                    if ( $key == 'exif' ) {
-                        $pieces = explode( " $", $show );
-                        $show = $pieces[0];
-                    }
-
-
-                    // find the requirements and mark them as present or missing
-                    if ( $key == 'libxml' OR $key == 'xml' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' ) {
-                        $status = 'ok';
-                        $border = '4D8000';
-                        $background = 'CAFFD8';
-                        $weight = 'normal';
-                    } elseif ( $key == 'apache2handler' ) {
-                        $status = 'warn-text';
-                        $border = 'FFA500';
-                        $background = 'FFE4B5';
-                        $weight = 'bold';
-                    } else {
-                        $status = 'normal';
-                        $border = '42AEC2';
-                        $background = 'FFF';
-                        $weight = 'normal';
-                    }
-
-
-                    echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:20px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $key .'</span><br />'. $show .'</div>';
-
-                } // endif !arrname
-
-
-
-                // look for recommended extensions that aren't installed
-                if ( !in_array( $key, $phpreq ) ) {
-                    unset ( $phpreq[$key]);
-                }
-
-            } // end foreach
-
-
-
-            if ( $phpreq ) {
-            echo '<br style="clear:both;" /><br />';
-                echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#800000;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing PHP Extensions:<br /><div style="float:left;text-transform:none;">';
-
-//        echo 'Missing Recommended Extensions';
-            echo '<br style="clear:both;" />';
-
-            $status = 'warn-text';
-            $border = '800000';
-            $background = 'FFE4B5';
-            $weight = 'bold';
-
-            foreach ( $phpreq as $missingkey => $missing ) {
-                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:20px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="color:#800000;font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
-            }
-
-        echo '</div></div>';
-        echo '</div>';
-            }
-
-        echo '</div></div>';
-
-        echo '<br style="clear:both;" />';
-        echo '</div>';
-
-
-    showDev( $phpenv );
-    showDev( $phpextensions );
-    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
-    showDev( $phpreq );
-?>
 
 
 
@@ -2738,16 +2811,9 @@ while($row = mysql_fetch_array($result)) {
 
 
 
-
-<?php
-
-
-
-	        // build a full-width div to hold two 'half-width' section, side-by-side
-    echo '<div class="half-section-container" style="">'; // start half-section container
 
         /** display the instance information *************************************************/
-        echo '<div class="half-section-information-left">'; // start left content block
+        echo '<div class="half-section-information-right">'; // start left content block
 
         echo '<div class="section-title" style="text-align:center;">'. $system['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
@@ -2884,14 +2950,150 @@ while($row = mysql_fetch_array($result)) {
         echo '</div>';
 
         echo '<br style="clear:both;" />';
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Switch User Configuration:<div style="float:right;">';
+        echo '<br style="clear:both;" />';
+        echo '<div style="background-color: #fff;border:1px solid #42aec2;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;font-weight:normal;">suExec<br /><b>'. $phpenv['phpAPACHESUEXEC'] .'</b></div>';
+        echo '<div style="background-color: #fff;border:1px solid #42aec2;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;font-weight:normal;">PHP suExec<br /><b>'. $phpenv['phpPHPSUEXEC'] .'</b></div>';
+        echo '<div style="background-color: #fff;border:1px solid #42aec2;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;font-weight:normal;">Custom su<br /><b>'. $phpenv['phpCUSTOMSU'] .'</b></div>';
+        echo '<div style="background-color: #fff;border:1px solid #42aec2;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;font-weight:normal;">Ownership Probs<br /><b>';
+
+            if ( $phpenv['phpOWNERPROB'] == _FPA_N ) {
+                $status = 'ok';
+            } elseif ( $phpenv['phpOWNERPROB'] == _FPA_M ) {
+                $status = 'warn-text';
+            } elseif ( $phpenv['phpOWNERPROB'] == _FPA_Y ) {
+                $status = 'alert-text';
+            } else {
+                $status = 'warn-text';
+            }
+
+        echo '<span class="'. $status .'" style="font-size:8px;">'. $phpenv['phpOWNERPROB'] .'</span>';
+        echo '</b></div>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<br style="clear:both;" />';
+        echo '</div></div>';
+
+
+        echo '<br style="clear:both;" />';
+        echo '</div>';
+
+
+    showDev( $phpenv );
+    showDev( $system );
+/**
+    showDev( $phpextensions );
+    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
+    showDev( $phpreq );
+**/
+?>
+
+
+
+
+
+
+
+
+
+<?php
+
+
+
+	        // build a full-width div to hold two 'half-width' section, side-by-side
+    echo '<div class="half-section-container" style="">'; // start half-section container
+
+        /** display the instance information *************************************************/
+        echo '<div class="half-section-information-left">'; // start right content block
+
+        echo '<div class="section-title" style="text-align:center;">'. $phpextensions['ARRNAME'] .' :: Discovery</div>';
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+        // this is the column heading area, if any
+
+
+            foreach ( $phpextensions as $key => $show ) {
+
+                if ( $show != $phpextensions['ARRNAME'] ) {
+
+                    if ( $key == 'exif' ) {
+                        $pieces = explode( " $", $show );
+                        $show = $pieces[0];
+                    }
+
+
+                    // find the requirements and mark them as present or missing
+                    if ( $key == 'libxml' OR $key == 'xml' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
+                        $status = 'ok';
+                        $border = '4D8000';
+                        $background = 'CAFFD8';
+                        $weight = 'normal';
+                    } elseif ( $key == 'apache2handler' ) {
+                        $status = 'warn-text';
+                        $border = 'FFA500';
+                        $background = 'FFE4B5';
+                        $weight = 'bold';
+                    } else {
+                        $status = 'normal';
+                        $border = '42AEC2';
+                        $background = 'FFF';
+                        $weight = 'normal';
+                    }
+
+
+                    echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:20px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $key .'</span><br />'. $show .'</div>';
+
+                } // endif !arrname
+
+
+
+                // look for recommended extensions that aren't installed
+                if ( !in_array( $key, $phpreq ) ) {
+                    unset ( $phpreq[$key] );
+                }
+
+            } // end foreach
+
+
+
+            if ( $phpreq ) {
+            echo '<br style="clear:both;" /><br />';
+                echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#800000;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing PHP Extensions:<br /><div style="float:left;text-transform:none;">';
+
+//        echo 'Missing Recommended Extensions';
+            echo '<br style="clear:both;" />';
+
+            $status = 'warn-text';
+            $border = '800000';
+            $background = 'FFE4B5';
+            $weight = 'bold';
+
+            foreach ( $phpreq as $missingkey => $missing ) {
+                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="color:#800000;font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
+            }
+
+        echo '</div></div>';
+        echo '</div>';
+            }
+
         echo '</div></div>';
 
 
 
 
 
-    if ( function_exists( 'apache_get_version' ) ) { // don't show if not Apache
 
+
+
+
+
+//    if ( function_exists( 'apache_get_version' ) ) { // don't show if not Apache
+//    if ( $system['sysSHORTWEB'] == 'APA' ) {
+
+        if ( $phpenv['phpAPI'] == 'apache2handler' ) {
         /** display the instance information *************************************************/
         echo '<div class="half-section-information-right">'; // start right content block
 
@@ -2915,11 +3117,19 @@ while($row = mysql_fetch_array($result)) {
         echo '</div>';
 
         showDev( $apachemodules );
-	} // end if Apache
+	} else { // end if Apache
+        echo '<br style="clear:both;" />';
+        echo '</div>';
+	}
 
 
+/**
     showDev( $system );
+**/
 
+    showDev( $phpextensions );
+    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
+    showDev( $phpreq );
 ?>
 
 
