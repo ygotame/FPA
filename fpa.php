@@ -12,7 +12,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    define ( '_FPA_DEV', 1 );   // developer-mode
+    //define ( '_FPA_DEV', 1 );   // developer-mode
     //define ( '_FPA_DIAG', 1 );  // diagnostic-mode
 
     // these are for testing only and are selected by the user on the FPA page in normal use
@@ -58,6 +58,8 @@
     $phpreq['libxml'] = '';
     $phpreq['xml'] = '';
     $phpreq['zlib'] = '';
+    $phpreq['zip'] = '';
+    $phpreq['openssl'] = '';
     $phpreq['curl'] = '';
     $phpreq['iconv'] = '';
     $phpreq['mbstring'] = '';
@@ -65,7 +67,6 @@
     $phpreq['mysqli'] = '';
     $phpreq['mcrypt'] = '';
     $phpreq['suhosin'] = '';
-    $phpreq['russ'] = '';
     $apachemodules['ARRNAME'] = 'Apache Modules';
     $apachereq['ARRNAME'] = 'Apache Requirements';
     $apachereq['mod_rewrite'] = '';
@@ -518,7 +519,7 @@
         $instance['configMODE'] = substr( sprintf('%o', fileperms( $instance['configPATH'] ) ),-3, 3 );
 //        $instance['configMODE'] = substr( sprintf('%o', fileperms( 'configuration.php' ) ),-3, 3 );
 
-        if ( $system['sysSHORTOS'] != 'WIN' ) { // gets the UiD and converts to 'name' on non Windows systems
+        if ( function_exists( 'posix_getpwuid' ) AND $system['sysSHORTOS'] != 'WIN' ) { // gets the UiD and converts to 'name' on non Windows systems
             $instance['configOWNER'] = posix_getpwuid( fileowner( $instance['configPATH'] ) );
             $instance['configGROUP'] = posix_getgrgid( filegroup( $instance['configPATH'] ) );
 //            $instance['configOWNER'] = posix_getpwuid(fileowner('configuration.php'));
@@ -762,8 +763,8 @@
     //$system['sysSERVIP'] =  $_SERVER['LOCAL_ADDR'];
 	if ( $system['sysSHORTOS'] != 'WIN' ) {
     // !BUGID #1 $_ENV USER doesn't work on lightspeed server? maybe tie it down to apache only
-	    $system['sysEXECUSER'] = $_ENV['USER']; // user that executed this script
-        if ( !$_ENV['USER'] ) {
+	    $system['sysEXECUSER'] = @$_ENV['USER']; // user that executed this script
+        if ( !@$_ENV['USER'] ) {
             $system['sysEXECUSER'] = $system['sysCURRUSER'];
         }
 	    $system['sysDOCROOT'] = $_SERVER['DOCUMENT_ROOT'];
@@ -995,7 +996,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
                         $modecheck[$show]['writable'] = _FPA_N;
                     }
 
-                    if ( $system['sysSHORTOS'] != 'WIN' ) {
+                    if ( function_exists( 'posix_getwuid' ) AND $system['sysSHORTOS'] != 'WIN' ) {
                         $modecheck[$show]['owner'] = posix_getpwuid( fileowner( $show ) );
                         $modecheck[$show]['group'] = posix_getgrgid( filegroup( $show ) );
                     } else {
@@ -3070,15 +3071,22 @@ while($row = mysql_fetch_array($result)) {
 
 
 
+
+
+
+
+
+
 <?php
 
 
 
 	        // build a full-width div to hold two 'half-width' section, side-by-side
-    echo '<div class="half-section-container" style="">'; // start half-section container
+////    echo '<div class="half-section-container" style="">'; // start half-section container
 
         /** display the instance information *************************************************/
-        echo '<div class="half-section-information-left">'; // start right content block
+////        echo '<div class="half-section-information-left">'; // start right content block
+        echo '<div class="section-information">'; // start right content block
 
         echo '<div class="section-title" style="text-align:center;">'. $phpextensions['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
@@ -3096,7 +3104,7 @@ while($row = mysql_fetch_array($result)) {
 
 
                     // find the requirements and mark them as present or missing
-                    if ( $key == 'libxml' OR $key == 'xml' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
+                    if ( $key == 'libxml' OR $key == 'xml'OR $key == 'zip' OR $key == 'openssl' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
                         $status = 'ok';
                         $border = '4D8000';
                         $background = 'CAFFD8';
@@ -3114,7 +3122,7 @@ while($row = mysql_fetch_array($result)) {
                     }
 
 
-                    echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:20px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $key .'</span><br />'. $show .'</div>';
+                    echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:20px;width:82px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $key .'</span><br />'. $show .'</div>';
 
                 } // endif !arrname
 
@@ -3132,26 +3140,32 @@ while($row = mysql_fetch_array($result)) {
             if ( $phpreq ) {
             echo '<br style="clear:both;" /><br />';
                 echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#800000;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing PHP Extensions:<br /><div style="float:left;text-transform:none;">';
+        echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing PHP Extensions:<br /><div style="float:left;text-transform:none;">';
 
 //        echo 'Missing Recommended Extensions';
             echo '<br style="clear:both;" />';
 
             $status = 'warn-text';
-            $border = '800000';
-            $background = 'FFE4B5';
+            $border = 'FFA500';
+            $background = 'FFF';
             $weight = 'bold';
 
             foreach ( $phpreq as $missingkey => $missing ) {
-                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="color:#800000;font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
+                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:82px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
             }
 
         echo '</div></div>';
         echo '</div>';
             }
 
+        echo '<br style="clear:both;" />';
         echo '</div></div>';
 
+    showDev( $phpextensions );
+    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
+    showDev( $phpreq );
+
+?>
 
 
 
@@ -3160,13 +3174,14 @@ while($row = mysql_fetch_array($result)) {
 
 
 
-
+<?php
 //    if ( function_exists( 'apache_get_version' ) ) { // don't show if not Apache
 //    if ( $system['sysSHORTWEB'] == 'APA' ) {
 
         if ( $phpenv['phpAPI'] == 'apache2handler' ) {
         /** display the instance information *************************************************/
-        echo '<div class="half-section-information-right">'; // start right content block
+/////        echo '<div class="half-section-information-right">'; // start right content block
+        echo '<div class="section-information">'; // start right content block
 
         echo '<div class="section-title" style="text-align:center;">'. $apachemodules['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
@@ -3195,14 +3210,15 @@ while($row = mysql_fetch_array($result)) {
                     }
 
 
-                    echo '<div class="'. $status .'" style="background-color: #'. $background .';border:1px solid #'. $border .';font-weight: '. $weight .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;">'. $show .'</div>';
+                    echo '<div class="'. $status .'" style="background-color: #'. $background .';border:1px solid #'. $border .';font-weight: '. $weight .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:82px;padding:1px;float:left;font-size:8px;">'. $show .'</div>';
 
                 } // endif !arrname
 
 
                 // look for recommended extensions that aren't installed
                 if ( !in_array( $show, $apachereq ) ) {
-                    unset ( $apachereq[$key] );
+                    unset ( $apachereq[ARRNAME] );
+                    unset ( $apachereq[$show] );
                 }
 
 
@@ -3212,47 +3228,47 @@ while($row = mysql_fetch_array($result)) {
             if ( $apachereq ) {
             echo '<br style="clear:both;" /><br />';
                 echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#800000;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing Apache Modules:<br /><div style="float:left;text-transform:none;">';
+        echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing Apache Modules:<br /><div style="float:left;text-transform:none;">';
 
 //        echo 'Missing Recommended Extensions';
             echo '<br style="clear:both;" />';
 
             $status = 'warn-text';
-            $border = '800000';
-            $background = 'FFE4B5';
+            $border = 'FFA500';
+            $background = 'FFF';
             $weight = 'bold';
 
             foreach ( $apachereq as $missingkey => $missing ) {
-                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="color:#800000;font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
+                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:82px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
             }
 
         echo '</div></div>';
         echo '</div>';
             }
 
-
-
-        echo '</div></div>';
 
         echo '<br style="clear:both;" />';
-        echo '</div>';
+        echo '</div></div>';
 
         showDev( $apachemodules );
         $apachereq['ARRNAME'] = 'Potential Missing Apache Modules';
         showDev( $apachereq );
-        } else { // end if Apache
-        echo '<br style="clear:both;" />';
-        echo '</div>';
-	}
+
+        }
+
+        /////else { // end if Apache
+/////        echo '<br style="clear:both;" />';
+/////        echo '</div>';
+/////	}
 
 
 /**
     showDev( $system );
 **/
 
-    showDev( $phpextensions );
-    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
-    showDev( $phpreq );
+////    showDev( $phpextensions );
+////    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
+////    showDev( $phpreq );
 ?>
 
 
