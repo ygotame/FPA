@@ -12,7 +12,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    //define ( '_FPA_DEV', 1 );   // developer-mode
+    define ( '_FPA_DEV', 1 );   // developer-mode
     //define ( '_FPA_DIAG', 1 );  // diagnostic-mode
 
     // these are for testing only and are selected by the user on the FPA page in normal use
@@ -53,6 +53,7 @@
     $system['ARRNAME'] = 'Systems Environment';
     $phpenv['ARRNAME'] = 'PHP Environment';
     $phpenv['phpLASTERR'] = '';
+    $phpextensions['ARRNAME'] = 'PHP Extensions';
     $phpreq['ARRNAME'] = 'PHP Requirements';
     $phpreq['libxml'] = '';
     $phpreq['xml'] = '';
@@ -65,8 +66,17 @@
     $phpreq['mcrypt'] = '';
     $phpreq['suhosin'] = '';
     $phpreq['russ'] = '';
-    $phpextensions['ARRNAME'] = 'PHP Extensions';
     $apachemodules['ARRNAME'] = 'Apache Modules';
+    $apachereq['ARRNAME'] = 'Apache Requirements';
+    $apachereq['mod_rewrite'] = '';
+    $apachereq['mod_expires'] = '';
+    $apachereq['mod_deflate'] = '';
+    $apachereq['mod_security'] = '';
+    $apachereq['mod_evasive'] = '';
+    $apachereq['mod_dosevasive'] = '';
+    $apachereq['mod_ssl'] = '';
+    $apachereq['mod_qos'] = '';
+    $apachereq[' mod_userdir'] = '';
     $database['ARRNAME'] = 'dataBase Instance';
     $tables['ARRNAME'] = 'Table Structure';
     $modecheck['ARRNAME'] = 'Permissions Checks';
@@ -1685,6 +1695,40 @@ print_r(get_extension_funcs("cgi-fcgi"));
             }
         </style>
 
+        <!-- Show/Hide Post Form
+        <script language="javascript">
+        function toggle(showHideDiv, switchTextDiv) {
+            var ele = document.getElementById(showHideDiv);
+            var text = document.getElementById(switchTextDiv);
+
+            if(ele.style.display == "block") {
+                ele.style.display = "none";
+                text.innerHTML = "show";
+            } else {
+                ele.style.display = "block";
+                text.innerHTML = "hide";
+            }
+        }
+        </script>
+        Show/Hide Post Form -->
+<script>
+function toggle2(showHideDiv, switchTextDiv) {
+    var ele = document.getElementById(showHideDiv);
+    var text = document.getElementById(switchTextDiv);
+    if(ele.style.display == "block") {
+            ele.style.display = "none";
+        text.innerHTML = "show";
+    }
+    else {
+        ele.style.display = "block";
+        text.innerHTML = "hide";
+    }
+}
+</script>
+
+
+
+
         </head>
     <body>
 
@@ -1696,6 +1740,26 @@ print_r(get_extension_funcs("cgi-fcgi"));
     echo '<div style="clear:both;"></div>';
     echo '</div>';
 ?>
+
+
+
+<!--  POST FORM -->
+<div class="header-information">
+<div id="headerDiv" class="">
+     <div id="titleText">Random Snippets Hide/Show Div Demo - Click here ==></div><a id="myHeader" href="javascript:toggle2('myContent','myHeader');" >show</a>
+</div>
+<div style="clear:both;"></div>
+<div id="contentDiv">
+     <div id="myContent" style="display: none;">This is the content that is dynamically being collapsed.</div>
+</div>
+</div>
+
+
+
+
+
+
+
 
 
 
@@ -2764,6 +2828,13 @@ while($row = mysql_fetch_array($result)) {
 
 
         echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Open Base Path:<div style="float:right;">';
+        echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpOPENBASE'] .'&nbsp;</span>';
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Session Path:<div style="float:right;">';
         echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpSESSIONPATH'] .'&nbsp;</span>';
         echo '</div></div>';
@@ -2799,7 +2870,7 @@ while($row = mysql_fetch_array($result)) {
             echo '</div>';
         }
 
-        echo '<br style="clear:both;" />';
+//        echo '<br style="clear:both;" />';
         echo '</div></div>';
 
 
@@ -3099,16 +3170,66 @@ while($row = mysql_fetch_array($result)) {
 
         echo '<div class="section-title" style="text-align:center;">'. $apachemodules['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
 
-            foreach ( $apachemodules as $i => $show ) {
+
+            foreach ( $apachemodules as $key => $show ) {
 
                 if ( $show != $apachemodules['ARRNAME'] ) {
-                    echo '<div style="background-color: #fff;border:1px solid #42aec2;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;">'. $show .'</div>';
-//                    echo '<div style="border:1px solid red;text-align:center;margin:5px;width:100px;height:15px;float:left;">'. $show .'</div>';
+
+                    // find the requirements and mark them as present or missing
+                    if ( $show == 'mod_rewrite' OR $show == 'mod_cgi' OR $show == 'mod_cgid' OR $show == 'mod_expires' OR $show == 'mod_deflate' OR $show == 'mod_auth'  ) {
+                        $status = 'ok';
+                        $border = '4D8000';
+                        $background = 'CAFFD8';
+                        $weight = 'normal';
+                    } elseif ( $show == 'mod_php4' ) {
+                        $status = 'warn-text';
+                        $border = 'FFA500';
+                        $background = 'FFE4B5';
+                        $weight = 'bold';
+                    } else {
+                        $status = 'normal';
+                        $border = '42AEC2';
+                        $background = 'FFF';
+                        $weight = 'normal';
+                    }
+
+
+                    echo '<div class="'. $status .'" style="background-color: #'. $background .';border:1px solid #'. $border .';font-weight: '. $weight .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;">'. $show .'</div>';
+
                 } // endif !arrname
 
+
+                // look for recommended extensions that aren't installed
+                if ( !in_array( $show, $apachereq ) ) {
+                    unset ( $apachereq[$key] );
+                }
+
+
             } // end foreach
+
+
+            if ( $apachereq ) {
+            echo '<br style="clear:both;" /><br />';
+                echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#800000;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing Apache Modules:<br /><div style="float:left;text-transform:none;">';
+
+//        echo 'Missing Recommended Extensions';
+            echo '<br style="clear:both;" />';
+
+            $status = 'warn-text';
+            $border = '800000';
+            $background = 'FFE4B5';
+            $weight = 'bold';
+
+            foreach ( $apachereq as $missingkey => $missing ) {
+                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:78px;float:left;font-size:8px;"><span class="'. $status .'" style="color:#800000;font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
+            }
+
+        echo '</div></div>';
+        echo '</div>';
+            }
+
 
 
         echo '</div></div>';
@@ -3117,7 +3238,9 @@ while($row = mysql_fetch_array($result)) {
         echo '</div>';
 
         showDev( $apachemodules );
-	} else { // end if Apache
+        $apachereq['ARRNAME'] = 'Potential Missing Apache Modules';
+        showDev( $apachereq );
+        } else { // end if Apache
         echo '<br style="clear:both;" />';
         echo '</div>';
 	}
