@@ -17,7 +17,7 @@
 
     // these are for testing only and are selected by the user on the FPA page in normal use
     // 0 = hide,  1= display (default is 'hide')
-    $showProtected  = '0';  // hides/displays sensitive output
+    $showProtected  = '1';  // hides/displays sensitive output
     $showTables     = '1';  // hides/displays the database table statistics
     $showElevated   = '1';  // hides/displays a list of directories with elevated permissions
 
