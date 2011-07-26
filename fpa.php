@@ -67,6 +67,7 @@
     $phpreq['mysqli'] = '';
     $phpreq['mcrypt'] = '';
     $phpreq['suhosin'] = '';
+//    $phpreq['test'] = '';
     $apachemodules['ARRNAME'] = 'Apache Modules';
     $apachereq['ARRNAME'] = 'Apache Requirements';
     $apachereq['mod_rewrite'] = '';
@@ -78,6 +79,7 @@
     $apachereq['mod_ssl'] = '';
     $apachereq['mod_qos'] = '';
     $apachereq[' mod_userdir'] = '';
+//    $apachereq['test'] = '';
     $database['ARRNAME'] = 'dataBase Instance';
     $tables['ARRNAME'] = 'Table Structure';
     $modecheck['ARRNAME'] = 'Permissions Checks';
@@ -98,7 +100,7 @@
     $folders[] = 'administrator/language/';
     $folders[] = 'administrator/templates/';
     $folders[] = 'sites/';                         // nooku only
-    $folders[] = 'test/';
+//    $folders[] = 'test/';
 
 
     // build the developer-mode function to display the raw arrays
@@ -997,7 +999,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
                     }
 
 //                    if ( $system['sysSHORTOS'] != 'WIN' ) {
-                    if ( function_exists( 'posix_getwuid' ) AND $system['sysSHORTOS'] != 'WIN' ) {
+                    if ( function_exists( 'posix_getpwuid' ) AND $system['sysSHORTOS'] != 'WIN' ) {
                         $modecheck[$show]['owner'] = posix_getpwuid( fileowner( $show ) );
                         $modecheck[$show]['group'] = posix_getgrgid( filegroup( $show ) );
                     } else {
@@ -1697,36 +1699,21 @@ print_r(get_extension_funcs("cgi-fcgi"));
             }
         </style>
 
-        <!-- Show/Hide Post Form
-        <script language="javascript">
-        function toggle(showHideDiv, switchTextDiv) {
+        <!-- Show/Hide Post Form -->
+        <script>
+        function toggle2(showHideDiv, switchTextDiv) {
             var ele = document.getElementById(showHideDiv);
             var text = document.getElementById(switchTextDiv);
 
-            if(ele.style.display == "block") {
+            if ( ele.style.display == "block" ) {
                 ele.style.display = "none";
-                text.innerHTML = "show";
+            	text.innerHTML = "<span style=\"font-size:12px;\"><span style=\"font-size:18px;color:#008000;\">&Theta;</span> Show the <strong>Forum Post form</strong></span>";
             } else {
-                ele.style.display = "block";
-                text.innerHTML = "hide";
+            	ele.style.display = "block";
+            	text.innerHTML = "<span style=\"font-size:12px;\"><span style=\"font-size:20px;color:#800000;\">&otimes;</span> Hide the <strong>Forum Post form</strong></span>";
             }
         }
         </script>
-        Show/Hide Post Form -->
-<script>
-function toggle2(showHideDiv, switchTextDiv) {
-    var ele = document.getElementById(showHideDiv);
-    var text = document.getElementById(switchTextDiv);
-    if(ele.style.display == "block") {
-            ele.style.display = "none";
-        text.innerHTML = "show";
-    }
-    else {
-        ele.style.display = "block";
-        text.innerHTML = "hide";
-    }
-}
-</script>
 
 
 
@@ -1745,17 +1732,22 @@ function toggle2(showHideDiv, switchTextDiv) {
 
 
 
-<!--  POST FORM -->
-<div class="header-information">
-<div id="headerDiv" class="">
-     <div id="titleText">Random Snippets Hide/Show Div Demo - Click here ==></div><a id="myHeader" href="javascript:toggle2('myContent','myHeader');" >show</a>
-</div>
-<div style="clear:both;"></div>
-<div id="contentDiv">
-     <div id="myContent" style="display: none;">This is the content that is dynamically being collapsed.</div>
-</div>
-</div>
+<!-- FORUM POST FORM -->
+<!--     <div class="dev-mode-information"> -->
+    <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:750px; background-color:#FFFFCC; border:1px solid #800000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
+        <div id="headerDiv" class="">
 
+            <div id="titleText"><a id="myHeader" style="line-height:22px;text-decoration:none;" href="javascript:toggle2('myContent','myHeader');" ><span style="font-size:12px;"><span style="font-size:18px;color:#008000;">&Theta;</span> Show the <strong>Forum Post form</strong></span></a></div>
+
+        </div>
+        <div style="clear:both;"></div>
+        <div id="contentDiv">
+
+            <div id="myContent" style="display: none;">THIS WILL BE THE FORUM POST FORM</div>
+
+        </div>
+    </div>
+<!-- FORUM POST FORM -->
 
 
 
@@ -2051,8 +2043,8 @@ function toggle2(showHideDiv, switchTextDiv) {
         echo '<div class="mini-content-title" style="margin-bottom:0px!important;">dataBase</div>';
         echo '<div class="mini-content-box-small">';
         echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Type:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">'. $database['dbHOSTSERV'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">CharSet:<div style="float:right;font-size:9px;">'. $database['dbCHARSET'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">'. @$database['dbHOSTSERV'] .'</div></div>';
+        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">CharSet:<div style="float:right;font-size:9px;">'. @$database['dbCHARSET'] .'</div></div>';
         echo '</div>';
         echo '</div>';
         echo '</div>';
@@ -2189,13 +2181,13 @@ function toggle2(showHideDiv, switchTextDiv) {
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' '. _FPA_VER .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
 //        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' '. _FPA_VER .':<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
-            if ( $database['dbHOSTSERV'] ) {
+            if ( @$database['dbHOSTSERV'] ) {
                 echo '<span class="normal">Server: '. $database['dbHOSTSERV'] .'&nbsp;</span>';
             } else {
                 echo '<span class="normal">Server:</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
             }
 
-            if ( $database['dbHOSTCLIENT'] ) {
+            if ( @$database['dbHOSTCLIENT'] ) {
                 echo '<span class="normal">&nbsp;&nbsp;Client: '. $database['dbHOSTCLIENT'] .'&nbsp;</span>';
             } else {
                 echo '<span class="normal">&nbsp;&nbsp;Client:</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
@@ -2240,9 +2232,9 @@ function toggle2(showHideDiv, switchTextDiv) {
         echo '<span class="normal">';
             if ( $database['dbLOCAL'] == _FPA_Y ) {
                 echo '('. _FPA_LOCAL .') '. $database['dbHOSTINFO'] .'&nbsp';
-            } elseif ( $database['dbLOCAL'] == _FPA_N AND $database['dbHOSTINFO'] ) {
+            } elseif ( $database['dbLOCAL'] == _FPA_N AND @$database['dbHOSTINFO'] ) {
                 echo '('. _FPA_REMOTE .') '. $database['dbHOSTINFO'] .'&nbsp';
-            } elseif ( $database['dbLOCAL'] == _FPA_N AND !$database['dbHOSTINFO'] ) {
+            } elseif ( $database['dbLOCAL'] == _FPA_N AND !@$database['dbHOSTINFO'] ) {
                 echo '('. _FPA_REMOTE .') <span class="warn-text"> '. _FPA_U .'</span>&nbsp';
             } else {
                 echo '<span class="warn-text">'. _FPA_U .'</span>';
@@ -2317,7 +2309,7 @@ function toggle2(showHideDiv, switchTextDiv) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Character Set:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
-            if ( $database['dbCHARSET'] ) {
+            if ( @$database['dbCHARSET'] ) {
                 echo '<span class="normal">&nbsp;'. $database['dbCHARSET'] .'&nbsp;</span>';
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
@@ -2330,7 +2322,7 @@ function toggle2(showHideDiv, switchTextDiv) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_DEF .' Character Set:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
-            if ( $database['dbHOSTDEFCHSET'] ) {
+            if ( @$database['dbHOSTDEFCHSET'] ) {
                 echo '<span class="normal">&nbsp;'. $database['dbHOSTDEFCHSET'] .'&nbsp;</span>';
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
@@ -2346,7 +2338,7 @@ function toggle2(showHideDiv, switchTextDiv) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Collation:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
-            if ( $database['dbCOLLATION'] ) {
+            if ( @$database['dbCOLLATION'] ) {
                 echo '<div class="normal">&nbsp;'. $database['dbCOLLATION'] .'&nbsp;</div>';
 
             } elseif ( $database['dbERROR'] != _FPA_N ) {
@@ -2362,11 +2354,11 @@ function toggle2(showHideDiv, switchTextDiv) {
 
 
 
-
+/**
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Size:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
-        if ( $database['dbSIZE'] ) {
+        if ( @$database['dbSIZE'] ) {
             echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
         } else {
             echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
@@ -2374,16 +2366,16 @@ function toggle2(showHideDiv, switchTextDiv) {
 
         echo '</div></div>';
         echo '</div>';
-
+**/
 
 
 
 //        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Number of Tables:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Database size:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
 
-        if ( $database['dbTABLECOUNT'] ) {
-            echo '<span class="normal">&nbsp;'. $database['dbTABLECOUNT'] .' tables&nbsp;</span>';
+        if ( @$database['dbSIZE'] ) {
+            echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
         } else {
             echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
         }
@@ -2500,7 +2492,7 @@ while($row = mysql_fetch_array($result)) {
 
 
 
-
+/**
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Size:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
@@ -2512,7 +2504,7 @@ while($row = mysql_fetch_array($result)) {
 
         echo '</div></div>';
         echo '</div>';
-
+**/
 
 
 
