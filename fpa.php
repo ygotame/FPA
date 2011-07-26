@@ -996,12 +996,13 @@ print_r(get_extension_funcs("cgi-fcgi"));
                         $modecheck[$show]['writable'] = _FPA_N;
                     }
 
+//                    if ( $system['sysSHORTOS'] != 'WIN' ) {
                     if ( function_exists( 'posix_getwuid' ) AND $system['sysSHORTOS'] != 'WIN' ) {
                         $modecheck[$show]['owner'] = posix_getpwuid( fileowner( $show ) );
                         $modecheck[$show]['group'] = posix_getgrgid( filegroup( $show ) );
                     } else {
-                        $modecheck[$show]['owner'] = fileowner( $show );
-                        $modecheck[$show]['group'] = filegroup( $show );
+                        $modecheck[$show]['owner']['name'] = fileowner( $show );
+                        $modecheck[$show]['group']['name'] = filegroup( $show );
                     }
 
                 } else {
@@ -2010,7 +2011,7 @@ function toggle2(showHideDiv, switchTextDiv) {
         echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Enabled:<div style="float:right;font-size:9px;">'. $instance['configSEF'] .'</div></div>';
         echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Suffix:<div style="float:right;font-size:9px;">'. $instance['configSEFSUFFIX'] .'</div></div>';
 
-            if ( $system['sysSHORTWEB'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITEHTWC'] != '1' ) {
+            if ( $system['sysSHORTWEB'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITEHTWC'] != _FPA_Y ) {
                 $sefColor = 'ff0000';
             } else {
                 $sefColor = '404040';
@@ -2663,7 +2664,7 @@ while($row = mysql_fetch_array($result)) {
                     echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['ENGINE'] .'</div>';
 
                     if ( $show['COLLATION'] != $database['dbCOLLATION'] ) {
-                        echo '<div style="font-size:9px;text-align:center;float:left;width:12%;"><span class="warn-text" style="font-size:9px;">'. $show['COLLATION'] .'</span></div>';
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:12%;"><span class="warn-text" style="font-size:9px;">*</span>'. $show['COLLATION'] .'</div>';
                     } else {
                         echo '<div style="font-size:9px;text-align:center;float:left;width:12%;">'. $show['COLLATION'] .'</div>';
                     }
@@ -2863,15 +2864,22 @@ while($row = mysql_fetch_array($result)) {
         echo '</div></div>';
         echo '</div>';
 
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Last Known PHP Error:<div style="float:right;">';
 
-        if ( $phpenv['phpLASTERR'] ) {
-            echo "<br />";
-            echo '<div class="mini-content-box-small" style="">';
-            echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;">'. $phpenv['phpLASTERR'] .'</div>';
-            echo '</div>';
-        }
+            if ( $phpenv['phpLASTERR'] ) {
+//                echo "<br />";
+//                echo '<div class="mini-content-box-small" style="">';
+                echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;text-transform:none;">'. $phpenv['phpLASTERR'] .'</div>';
+//                echo '</div>';
+            } else {
+                echo '<span class="ok" style="margin:5px;text-transform:none;font-weight:normal;font-size:9px;padding:2px;">None</span>';
+            }
 
-//        echo '<br style="clear:both;" />';
+        echo '</div></div>';
+        echo '</div>';
+
+        //        echo '<br style="clear:both;" />';
         echo '</div></div>';
 
 
@@ -2922,6 +2930,39 @@ while($row = mysql_fetch_array($result)) {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
             }
 
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Total Disk Space:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+            if ( function_exists( 'disk_free_space' ) ) {
+                $total_space = sprintf( '%.2f', disk_total_space( './' ) /1073741824 );
+                echo '<span class="normal">'. $total_space .' GiB&nbsp;</span>';
+            } else {
+                echo '<span class="normal">'. _FPA_U .'&nbsp;</span>';
+            }
+        echo '</div></div>';
+        echo '</div>';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Free Disk Space:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+            if ( function_exists( 'disk_free_space' ) ) {
+
+                $free_space = sprintf( '%.2f', disk_free_space( './' ) /1073741824 );
+                $percent_free = $free_space ? round($free_space / $total_space, 2) * 100 : 0;
+
+                if ( $percent_free <= '5' ) {
+                    $status = 'warn';
+                } else {
+                    $status = 'normal';
+                }
+
+                echo '<span class="normal">(<span class="'. $status .'">'. $percent_free.'%</span>)  '. $free_space .' GiB&nbsp;</span>';
+            } else {
+                echo '<span class="normal">'. _FPA_U .'&nbsp;</span>';
+            }
         echo '</div></div>';
         echo '</div>';
 
@@ -2982,7 +3023,7 @@ while($row = mysql_fetch_array($result)) {
         echo "<br />";
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Document Root:<div style="float:right;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Doc Root:<div style="float:right;">';
 
            if ( $showProtected == '1' ) {
         echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysDOCROOT'] .'&nbsp;</span>';
@@ -3021,7 +3062,8 @@ while($row = mysql_fetch_array($result)) {
         echo '</div></div>';
         echo '</div>';
 
-        echo '<br style="clear:both;" />';
+
+        //echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Switch User Configuration:<div style="float:right;">';
         echo '<br style="clear:both;" />';
@@ -3217,7 +3259,7 @@ while($row = mysql_fetch_array($result)) {
 
                 // look for recommended extensions that aren't installed
                 if ( !in_array( $show, $apachereq ) ) {
-                    unset ( $apachereq[ARRNAME] );
+                    unset ( $apachereq['ARRNAME'] );
                     unset ( $apachereq[$show] );
                 }
 
