@@ -3,7 +3,7 @@
 
 <?php
 /**
- **  @package Forum Post Assistant
+ **  @package Forum Post Assistant / Bug Report Assistant
  **  @version 1.2.0
  **  @release playGround
  **  @date 24/06/2011
@@ -14,8 +14,9 @@
     /** SET THE FPA DEFAULTS *****************************************************************/
     //define ( '_FPA_DEV', 1 );   // developer-mode
     //define ( '_FPA_DIAG', 1 );  // diagnostic-mode
+    //define ( '_FPA_BRA', 1 );  // bug-report-mode
 
-    // these are for testing only and are selected by the user on the FPA page in normal use
+// these are for testing only and are selected by the user on the FPA page in normal use
     // 0 = hide,  1= display (default is 'hide')
     $showProtected  = '1';  // hides/displays sensitive output
     $showTables     = '1';  // hides/displays the database table statistics
@@ -47,8 +48,14 @@
 
 //!TODO setup these like the phpreq array?
     // build the initial arrays used throughout fpa
-    $fpa['ARRNAME'] = 'Forum Post Assistant';
-    $fpa['diagLOG'] = 'fpaDiag.log';
+    if ( defined ( '_FPA_BRA' ) ) {
+        $fpa['ARRNAME'] = 'Bug Report Assistant';
+        $fpa['diagLOG'] = 'braDiag.log';
+    } else {
+        $fpa['ARRNAME'] = 'Forum Post Assistant';
+        $fpa['diagLOG'] = 'fpaDiag.log';
+    }
+
     $instance['ARRNAME'] = 'Application Instance';
     $system['ARRNAME'] = 'Systems Environment';
     $phpenv['ARRNAME'] = 'PHP Environment';
@@ -101,7 +108,7 @@
     $folders[] = 'administrator/templates/';
     $folders[] = 'sites/';                         // nooku only
 //    $folders[] = 'test/';
-
+    $elevated['ARRNAME'] = 'Elevated Permissions';
 
     // build the developer-mode function to display the raw arrays
     function showDev( &$section ) {
@@ -253,7 +260,11 @@
 //  define ( 'SITE_ROOT', trim(FPA_ROOT, FPA_DIR) );  // Main Site ROOT
 
     /** DEFINE LANGUAGE STRINGS **************************************************************/
-    define ( '_RES', 'Forum Post Assistant' );
+    if ( defined ( '_FPA_BRA' ) ) {
+        define ( '_RES', 'Bug Report Assistant' );
+    } else {
+        define ( '_RES', 'Forum Post Assistant' );
+    }
     define ( '_RES_VERSION', '1.2.0' );
     define ( '_RES_RELEASE', 'Alpha' ); // can be Alpha, Beta, RC, Final
     define ( '_RES_BRANCH', 'playGround' ); // can be playGround, currentDevelopment, masterPublic
@@ -1049,6 +1060,77 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
 
 
+<?php
+    /** directory list of elevated permissions ***********************************************/
+    if ( $showElevated == '1' ) {
+
+        $dirCount = 0;
+
+        function getDirectory( $path = '.', $level = 0 ){
+            GLOBAL $elevated, $dirCount;
+
+            // Directories to ignore when listing output. Many hosts
+            $ignore = array( '.', '..' );
+
+            // Open the directory to the handle $dh
+            $dh = @opendir( $path );
+
+            // Loop through the directory
+            while ( false !== ( $file = readdir( $dh ) ) ) {
+
+                // Check that this file is not to be ignored
+                if ( !in_array( $file, $ignore ) ) {
+
+                    // Its a directory, so we need to keep reading down...
+                    if ( is_dir( "$path/$file" ) ) {
+
+                        $dirName = $path .'/'. $file;
+                        $dirMode = substr( sprintf( '%o', fileperms( $dirName ) ),-3, 3 );
+
+                            // looking for --7 or -7- or -77 (default folder permissions are usually 755)
+                            if ( substr( $dirMode,1 ,1 ) == '7' OR substr( $dirMode,2 ,1 ) == '7' ) {
+                                $elevated[''. str_replace( './','', $dirName ) .'']['mode'] = $dirMode;
+
+                                if ( is_writable( $dirName ) ) {
+                                    $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_Y;
+                                } else {  // custom ownership or setUiD/GiD in-effect
+                                    $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_N;
+                                }
+
+                                $dirCount++;
+                            }
+
+                            // don't waste time or resources if there are too many folders with elevated permissions
+                            if ( $dirCount == 25 ) { // 25 or more folder will cancel the processing
+                                $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.'] = '';
+                                $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.']['mode'] = '-';
+                                $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.']['writable'] = '-';
+
+                                // stop processing and move-on...
+                                continue;
+                            }
+
+                            // Re-call this same function but on a new directory.
+                            getDirectory ( "$path/$file", ( $level +1 ) );
+
+                    }
+
+                }
+
+            }
+
+        // Close the directory handle
+        closedir( $dh );
+        }
+
+        getDirectory( '.' );
+        ksort( $elevated );
+
+    } // end showElevated
+?>
+
+
+
 
 <?php
     /** DETERMINE THE MYSQL VERSION AND IF WE CAN CONNECT *************************************
@@ -1707,10 +1789,10 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
             if ( ele.style.display == "block" ) {
                 ele.style.display = "none";
-            	text.innerHTML = "<span style=\"font-size:12px;\"><span style=\"font-size:18px;color:#008000;\">&Theta;</span> Show the <strong>Forum Post form</strong></span>";
+            	text.innerHTML = "<span style=\"font-size:12px;color:#4D8000;\"><span style=\"font-size:18px;color:#008000;\">&Theta;</span> Show the <strong><?php echo _RES; ?></strong></span>";
             } else {
             	ele.style.display = "block";
-            	text.innerHTML = "<span style=\"font-size:12px;\"><span style=\"font-size:20px;color:#800000;\">&otimes;</span> Hide the <strong>Forum Post form</strong></span>";
+            	text.innerHTML = "<span style=\"font-size:12px;color:#800000;\"><span style=\"font-size:20px;color:#800000;\">&otimes;</span> Hide the <strong><?php echo _RES; ?></strong></span>";
             }
         }
         </script>
@@ -1732,22 +1814,35 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
 
 
-<!-- FORUM POST FORM -->
+<!-- POST FORM -->
 <!--     <div class="dev-mode-information"> -->
-    <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:750px; background-color:#FFFFCC; border:1px solid #800000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
+    <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:750px; background-color:#FEFEFE; border:1px solid #4D8000; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
         <div id="headerDiv" class="">
 
-            <div id="titleText"><a id="myHeader" style="line-height:22px;text-decoration:none;" href="javascript:toggle2('myContent','myHeader');" ><span style="font-size:12px;"><span style="font-size:18px;color:#008000;">&Theta;</span> Show the <strong>Forum Post form</strong></span></a></div>
+            <div id="titleText"><a id="myHeader" style="line-height:22px;text-decoration:none;color:#4D8000;" href="javascript:toggle2('myContent','myHeader');" ><span style="font-size:12px;color:#4D8000;"><span style="font-size:18px;color:#008000;">&Theta;</span> Show the <strong><?php echo _RES; ?></strong></span></a></div>
 
         </div>
         <div style="clear:both;"></div>
-        <div id="contentDiv">
+        <div id="contentDiv" style="border:1px dotted blue;">
 
-            <div id="myContent" style="display: none;">THIS WILL BE THE FORUM POST FORM</div>
+            <div id="myContent" style="display: none;">
+            THIS WILL BE THE POST FORM
+
+
+<?php
+    if ( defined( '_FPA_BRA' ) ) { // bug report post form
+echo 'bug report form';
+    } else { // forum post form
+echo 'forum post form';
+    }
+
+?>
+
+            </div>
 
         </div>
     </div>
-<!-- FORUM POST FORM -->
+<!-- POST FORM -->
 
 
 
@@ -3437,13 +3532,96 @@ while($row = mysql_fetch_array($result)) {
     $folders['ARRNAME'] = 'Core Folders';
     showDev( $folders );
     showDev( $modecheck );
-
-
-
-
-
-
 ?>
+
+
+<?php
+    /** display the folders with elevated permissions ************************************/
+    if ( $showElevated == '1' ) {
+
+        echo '<div class="section-information">';
+        echo '<div class="section-title" style="text-align:center;">'. $elevated['ARRNAME'] .'</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+
+        echo '<div class="column-title" style="width:7%;float:left;text-align:center;">'. _FPA_MODE .'</div>';
+        echo '<div class="column-title" style="width:8%;float:left;left;text-align:center;">'. _FPA_WRITABLE .'</div>';
+        echo '<div class="column-title" style="width:58%;float:left;">'. _FPA_FOLDER .'</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+
+        // only do mode/permissions checks if an instance was found in the intial checks
+        if ( $instance['instanceFOUND'] == _FPA_Y ) {
+
+            foreach ( $elevated as $key => $show ) {
+
+                if ( $show != $elevated['ARRNAME'] ) {
+
+                    // looking for --7 or -7- or -77 (default folder permissions are usually 755)
+                    if ( substr( $show['mode'],1 ,1 ) == '7' OR substr( $show['mode'],2 ,1 ) == '7' ) {
+                        $modeClass = 'alert';
+                        $alertClass = 'alert-text';
+                    } else {
+                        $modeClass = 'normal';
+                        $alertClass = 'normal';
+                    }
+
+                    // is the folder writable?
+                    if ( ( $show['writable'] == _FPA_Y ) ) {
+                        $writeClass = 'alert-text';
+                    } else {
+                        $writeClass = 'warn-text';
+                    }
+
+                    // hilite the "cancelled processing" message, after 25 elevated folders (limited to save resources on a really bad site
+                    if ( substr( $key, 0, 4 ) == '*PRO' ) {
+                        $alertClass = 'alert';
+                    }
+
+                    echo '<div style="border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
+
+                    echo '<div class="column-content '. $modeClass .'" style="float:left;width:7%;text-align:center;">';
+                    echo $show['mode'];  // display the mode
+                    echo '</div>';
+
+                    echo '<div class="column-content '. $writeClass .'" style="width:8%;float:left;text-align:center;">';
+                    echo $show['writable'];  // display if writable
+                    echo '</div>';
+
+                    echo '<div class="column-content '. $alertClass .'" style="width:58%;float:left;padding-left:5px;">';
+                        if ( $showProtected == '1' ) {
+                            echo $key;  // display the folder name
+                        } else {
+                            echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
+                        }
+
+
+                    echo '</div>';
+
+                    echo '<div style="clear:both;"></div>';
+                    echo '</div>';
+
+                } // endif ARRNAME
+
+            } // end for each
+
+
+        } else { // an instance wasn't found in the initial checks, so no folders to check
+            echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $elevated['ARRNAME'] .' checls performed</div>';
+            echo '</div>';
+        }
+
+        echo '</div>';
+        echo '<div style="clear:both;"></div>';
+
+        showDev( $elevated );
+
+    } // endif showElevated
+?>
+
+
 
 
 <?php
