@@ -1437,6 +1437,51 @@ print_r(get_extension_funcs("cgi-fcgi"));
                 color: #404040;
             }
 
+  /*this is what we want the div to look like
+    when it is not showing*/
+  div.loading-invisible{
+    /*make invisible*/
+    display:none;
+  }
+
+  /*this is what we want the div to look like
+    when it IS showing*/
+  div.loading-visible{
+    /*make visible*/
+    display:block;
+
+    /*position it 200px down the screen*/
+    position:absolute;
+    top:200px;
+    left:0;
+    width:100%;
+    text-align:center;
+
+    /*in supporting browsers, make it
+      a little transparent*/
+    background:#fff;
+    filter: alpha(opacity=75); /* internet explorer */
+    -khtml-opacity: 0.75;      /* khtml, old safari */
+    -moz-opacity: 0.75;       /* mozilla, netscape */
+    opacity: 0.75;           /* fx, safari, opera */
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+  }
+
+
+#div2 {
+  -webkit-animation-name: rotateThis;
+  -webkit-animation-duration:2s;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-timing-function:linear;
+}
+@-webkit-keyframes rotateThis {
+  from {-webkit-transform:scale(0.5) rotate(0deg);}
+  to {-webkit-transform:scale(0.5) rotate(360deg);}
+}
+
+
+
             .dev-mode-information {
                 margin: 0 auto;
                 margin-top:10px;
@@ -1818,6 +1863,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
             }
         </style>
 
+
         <!-- Show/Hide Post Form -->
         <script type="text/javascript">
         function toggle2(showHideDiv, switchTextDiv) {
@@ -1847,6 +1893,8 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
         </head>
     <body>
+
+
 
 <?php
     /** display the fpa heading ***************************************************************/
