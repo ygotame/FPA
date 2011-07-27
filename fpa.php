@@ -12,15 +12,38 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    //define ( '_FPA_DEV', 1 );   // developer-mode
-    //define ( '_FPA_DIAG', 1 );  // diagnostic-mode
-    //define ( '_FPA_BRA', 1 );  // bug-report-mode
+    //define ( '_FPA_BRA', TRUE );  // bug-report-mode
+    //define ( '_FPA_DEV', TRUE );   // developer-mode
+    //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
+
 
 // these are for testing only and are selected by the user on the FPA page in normal use
     // 0 = hide,  1= display (default is 'hide')
-    $showProtected  = '1';  // hides/displays sensitive output
-    $showTables     = '1';  // hides/displays the database table statistics
-    $showElevated   = '1';  // hides/displays a list of directories with elevated permissions
+
+
+    if ( @$_POST['showProtected'] ) {
+        $showProtected  = @$_POST['showProtected'];
+    } else {
+        $showProtected = 2; // default (limited masking)
+//        @$_POST['showProtected'] = $showProtected;
+    }
+
+
+    if ( @$_POST['showElevated'] == 1 ) {
+        $showElevated  = 1;
+    } else {
+        $showElevated = 0; // default (hide)
+    }
+
+
+    if ( @$_POST['showTables'] == 1 ) {
+        $showTables  = 1;
+    } else {
+        $showTables = 0; // default (hide)
+    }
+
+
+
 
 
     /** TIMER-POPS ***************************************************************************/
@@ -136,11 +159,22 @@
 
 <?php
     /** DETERMINE SOME SETTINGS BEFORE FPA MIGHT PLAY WITH THEM ******************************/
-    $phpenv['phpERRORDISPLAY'] = ini_get('display_errors');
-    $phpenv['phpERRORREPORT'] = ini_get('error_reporting');
+    $phpenv['phpERRORDISPLAY'] = ini_get( 'display_errors' );
+    $phpenv['phpERRORREPORT'] = ini_get( 'error_reporting' );
+    $fpa['ORIGphpMEMLIMIT'] = ini_get( 'memory_limit' );
+    $fpa['ORIGphpMAXEXECTIME'] = ini_get( 'max_execution_time' );
     $phpenv['phpERRLOGFILE'] = ini_get( 'error_log' );
     $system['sysSHORTOS'] = strtoupper( substr( PHP_OS, 0, 3 ) ); // WIN, DAR, LIN, SOL
     $system['sysSHORTWEB'] = strtoupper( substr( $_SERVER['SERVER_SOFTWARE'], 0, 3 ) ); // APA = Apache, MIC = MS IIS
+
+
+    // if the user see's Out Of Memory or Execution Timer pops, double the current memory_limit and max_execution_time
+    if ( @$_POST['increasePOPS'] == 1 ) {
+        ini_set ( 'memory_limit', $fpa['ORIGphpMEMLIMIT']*2 );
+        ini_set ( 'max_execution_time', $fpa['ORIGphpMAXEXECTIME']*2 );
+    }
+
+
 
     /** DETERMINE IF THERE IS A KNOWN ERROR ALREADY *******************************************
      ** here we try and determine if there is an existing php error log file, if there is we
@@ -281,15 +315,16 @@
 
     /** user instructions and data entry fields **********************************************/
     define ( '_FPA_INSTRUCTIONS', 'Instructions' );
-    define ( '_FPA_INS_1', 'Complete your problem description <i>(optional)</i>' );
-    define ( '_FPA_INS_2', 'Add <i>single line</i> error message of log entry <i>(optional)</i>' );
-    define ( '_FPA_INS_3', 'Explain what actions have already been taken to resolve this issue <i>(optional)</i>' );
-    define ( '_FPA_INS_4', 'Select additional level(s) of detail to generate in post.' );
-    define ( '_FPA_INS_5', 'Click "<em>Generate Forum Post</em>" button.' );
+    define ( '_FPA_INS_1', 'Enter your problem description <i>(optional)</i>' );
+    define ( '_FPA_INS_2', 'Enter any error messages you see <i>(optional)</i>' );
+    define ( '_FPA_INS_3', 'Enter any actions taken to resolve the issue <i>(optional)</i>' );
+    define ( '_FPA_INS_4', 'Select detail level options of output <i>(optional)</i>' );
+    define ( '_FPA_INS_5', 'Then click <span class="normal-note">Generate Post</span> button' );
+    define ( '_FPA_INS_6', 'Copy the contents of the <span class="ok-hilite">&nbsp;Post Text-Box&nbsp;</span> and paste it into a post' );
     define ( '_FPA_POST_NOTE', 'Leave ALL fields blank/empty to simply post diagnostic information.' );
-    define ( '_FPA_PROB_DESC', 'Problem Description' );
-    define ( '_FPA_LOG_MSG', 'Log/Error Message' );
-    define ( '_FPA_ACTION', 'Actions Taken To Resolve' );
+    define ( '_FPA_PROB_DSC', 'Problem Description' );
+    define ( '_FPA_PROB_MSG', 'Log/Error Message' );
+    define ( '_FPA_PROB_ACT', 'Actions Taken To Resolve' );
 
     /** common screen and post output strings ************************************************/
     define ( '_FPA_GOOD', 'OK/GOOD' );
@@ -1392,6 +1427,8 @@ print_r(get_extension_funcs("cgi-fcgi"));
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title><?php echo _RES .' : v'. _RES_VERSION .' ('. _RES_RELEASE .')';?></title>
 
+        <?php //!TODO different icons ?>
+        <link rel="shortcut icon" href="./templates/rhuk_milkyway/favicon.ico" />
 
         <style type="text/css" media="screen">
             html, body, div, p, span {
@@ -1782,7 +1819,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
         </style>
 
         <!-- Show/Hide Post Form -->
-        <script>
+        <script type="text/javascript">
         function toggle2(showHideDiv, switchTextDiv) {
             var ele = document.getElementById(showHideDiv);
             var text = document.getElementById(switchTextDiv);
@@ -1797,7 +1834,15 @@ print_r(get_extension_funcs("cgi-fcgi"));
         }
         </script>
 
+        <!-- Auto-Select all the output on Focus in the output textarea -->
+        <script type="text/javascript">
+            function select_all() {
+                var text_val=eval("document.postDetails.postOUTPUT");
+                    text_val.focus();
+                    text_val.select();
+            }
 
+        </script>
 
 
         </head>
@@ -1819,27 +1864,220 @@ print_r(get_extension_funcs("cgi-fcgi"));
     <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:750px; background-color:#FEFEFE; border:1px solid #4D8000; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
         <div id="headerDiv" class="">
 
+            <?php
+                if ( @$_POST['doIT'] == 1 ) {
+                    $displayMode = 'block';
+                } else {
+                    $displayMode = 'none';
+                }
+            ?>
+
             <div id="titleText"><a id="myHeader" style="line-height:22px;text-decoration:none;color:#4D8000;" href="javascript:toggle2('myContent','myHeader');" ><span style="font-size:12px;color:#4D8000;"><span style="font-size:18px;color:#008000;">&Theta;</span> Show the <strong><?php echo _RES; ?></strong></span></a></div>
 
         </div>
         <div style="clear:both;"></div>
-        <div id="contentDiv" style="border:1px dotted blue;">
+        <div id="contentDiv" style="">
 
-            <div id="myContent" style="display: none;">
-            THIS WILL BE THE POST FORM
+            <div id="myContent" style="display: <?php echo $displayMode; ?>;">
 
 
-<?php
-    if ( defined( '_FPA_BRA' ) ) { // bug report post form
-echo 'bug report form';
-    } else { // forum post form
-echo 'forum post form';
-    }
+            <?php
+                if ( defined( '_FPA_BRA' ) ) { // bug report post form
 
-?>
+                }
+            ?>
+
+                <div class="half-section-container" style="width:730px;">
+
+                    <div class="half-section-information-left" style="width:340px;padding-top:10px;padding-bottom:10px;">
+
+                        <div class="normal-note">
+                        <strong><?php echo _FPA_INSTRUCTIONS;  ?></strong>
+
+                        <?php
+                            echo '<ol style="margin-left:-15px;">';
+                            echo '<li><span class="normal">'. _FPA_INS_1 .'</span></li>';
+                            echo '<li><span class="normal">'. _FPA_INS_2 .'</span></li>';
+                            echo '<li><span class="normal">'. _FPA_INS_3 .'</span></li>';
+                            echo '<li><span class="normal">'. _FPA_INS_4 .'</span></li><br />';
+                            echo '<li><span class="normal">'. _FPA_INS_5 .'</span></li><br />';
+                            echo '<li><span class="normal">'. _FPA_INS_6 .'</span></li>';
+                            echo '</ol>';
+                        ?>
+                        </div>
+
+                    <br />
+
+                        <div class="normal-note" style="padding-left:10px;">
+                            <form method="post" name="postDetails" id="postDetails">
+
+                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_DSC; ?>:</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probDSC" /></div>
+                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_MSG; ?>:</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probMSG2" /></div>
+
+                                <?php
+                                    if ( $phpenv['phpLASTERR'] ) {
+                                        echo '<div style="text-align:right;padding:2px;"><div class="warn-text" style="text-align:left;width:120px;float:left;">'. _FPA_LAST .' '. _FPA_ER .':</div> <input class="normal-note" style="color: #800000;background-color: #FFFFCC;width:175px;font-size:9px;" type="text" value="'. $phpenv['phpLASTERR'] .'" name="probMSG1" /><br /><span class="normal" style="font-size:8px;">auto-completed from your php error log&nbsp;&nbsp;</span></div>';
+                                    } else {
+                                        echo '<div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;">'. _FPA_PROB_MSG .':</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probMSG1" /></div>';
+                                    }
+                                ?>
+
+                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_ACT; ?>:</div> <textarea class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="problemDESC"></textarea></div>
+
+                                <?php  echo _FPA_POST_NOTE; ?>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="half-section-information-right" style="width:340px;padding-top:10px;padding-bottom:10px;">
+
+                        <div class="normal-note">
+                        <strong>Run-Time Options</strong><br /><br />
+
+                            <div style="float:left; width:170px;">
+
+                            <?php
+                                if ( @$_POST['showElevated'] ) {
+                                    $selectshowElevated = 'CHECKED';
+                                } else {
+                                    $selectshowElevated = '';
+                                }
+
+                                if ( @$_POST['showTables'] ) {
+                                    $selectshowTables = 'CHECKED';
+                                } else {
+                                    $selectshowTables = '';
+                                }
+
+                                if ( @$_POST['showComponents'] ) {
+                                    $selectshowComponents = 'CHECKED';
+                                } else {
+                                    $selectshowComponents = '';
+                                }
+
+                                if ( @$_POST['showModules'] ) {
+                                    $selectshowModules = 'CHECKED';
+                                } else {
+                                    $selectshowModules = '';
+                                }
+
+                                if ( @$_POST['showPlugins'] ) {
+                                    $selectshowPlugins = 'CHECKED';
+                                } else {
+                                    $selectshowPlugins = '';
+                                }
+                                ?>
+
+                                <strong>Optional Settings:</strong><br />
+                                <input style="font-size:9px;" type="checkbox" name="showElevated" value="1" <?php echo $selectshowElevated ?> /><span class="normal">Show elevated folder permissions</span><br />
+                                <input style="font-size:9px;" type="checkbox" name="showTables" value="1" <?php echo $selectshowTables ?> /><span class="normal">Show database table statistics</span><br />
+                                <input style="font-size:9px;" type="checkbox" name="showComponents" value="1" <?php echo $selectshowComponents ?> /><span class="normal">Show Components</span><br />
+                                <input style="font-size:9px;" type="checkbox" name="showModules" value="1" <?php echo $selectshowModules ?> /><span class="normal">Show Modules</span><br />
+                                <input style="font-size:9px;" type="checkbox" name="showPlugins" value="1" <?php echo $selectshowPlugins ?> /><span class="normal">Show Plugins</span><br />
+                            </div>
+
+                            <div style="float:right; width:150px;">
+                            <?php
+                                if ( $showProtected >= 3 OR  @$_POST['showProtected'] >= 3 ) {
+                                    $selectshowProtected_1 = '';
+                                    $selectshowProtected_2 = '';
+                                    $selectshowProtected_3 = 'CHECKED';
+                                } elseif ( $showProtected == 2 OR @$_POST['showProtected'] == 2 ) {
+                                    $selectshowProtected_1 = '';
+                                    $selectshowProtected_2 = 'CHECKED';
+                                    $selectshowProtected_3 = '';
+                                } elseif ( $showProtected == 1 OR @$_POST['showProtected'] == 1 ) {
+                                    $selectshowProtected_1 = 'CHECKED';
+                                    $selectshowProtected_2 = '';
+                                    $selectshowProtected_3 = '';
+                                } elseif ( $showProtected == 2 ) {
+                                    $selectshowProtected_1 = '';
+                                    $selectshowProtected_2 = 'CHECKED';
+                                    $selectshowProtected_3 = '';
+                                } else {
+                                    $selectshowProtected_1 = '';
+                                    $selectshowProtected_2 = 'CHECKED';
+                                    $selectshowProtected_3 = '';
+                                }
+echo $showProtected;
+                            ?>
+
+                                <strong>Information Privacy:</strong><br />
+                                <input style="font-size:9px;" type="radio" name="showProtected" value="1" <?php echo $selectshowProtected_1; ?> /><span class="ok">None</span><br /><span style="line-height:8px;padding:0px;margin:0px;margin-left:15px;font-size:8px;">No elements are masked</span><br />
+                                <input style="font-size:9px;" type="radio" name="showProtected" value="2" <?php echo $selectshowProtected_2; ?> /><span class="warn-text">Partial (default)</span><br /><span style="line-height:8px;padding:0px;margin:0px;margin-left:15px;font-size:8px;">Some elements are masked</span><br />
+                                <input style="font-size:9px;" type="radio" name="showProtected" value="3" <?php echo $selectshowProtected_3; ?> /><span class="alert-text">Strict</span><br /><span style="line-height:8px;padding:0px;margin:0px;margin-left:15px;font-size:8px;">All indentifiable elements are masked</span>
+                            </div>
+
+                        <div style="clear:both;"><br /></div>
+                        </div>
+
+                    <br />
+
+                        <div class="normal-note">
+                        <div style="clear:both;"><br /></div>
+
+                            <!-- Generate the diagnostic post output -->
+                            <div style = "margin: 0px auto; width:85%;text-align:center;">
+                                <input type="hidden" name="doIT" value="1" />
+
+                                <input type="submit" class="ok-hilite" style="text-transform:uppercase;cursor:pointer;cursor:hand;" name="submit" value="Click Here To Generate Post" />
+
+                                    <div class="normal" style="text-shadow:none!important;margin-left:10px;float:left;width:90%;text-align:left;">
+                                        <span class="ok">Click the "Generate Post" button above</span> to generate a pre-prepared post, then copy and paste the provided output in to your post.
+                                    </div>
+
+
+                                <input type="reset" class="warn" style="font-size:8px;cursor:pointer;cursor:hand;" name="reset" value="reset" />
+
+
+                            <div style="clear:both;"><br /></div>
+                            </div>
+
+
+
+                            <div style="clear:both;"></div>
+                            <?php
+                                if ( @$_POST['increasePOPS'] ) {
+                                    $selectPOPS = 'CHECKED';
+                                } else {
+                                    $selectPOPS = '';
+                                }
+                            ?>
+
+                            <div class="normal" style="margin-left:15px;">
+                                <input style="font-size:9px;" type="checkbox" name="increasePOPS" value="1" <?php echo $selectPOPS; ?> />Seeing PHP "<span class="warn-text">Out of Memory</span>" or "<span class="warn-text">Execution Time</span>" Errors?<br />
+                                <span style="margin-left:15px;font-size:8px;">Temporarily increase PHP Memory and Execution Time.</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+        <div style="clear:both;"></div>
+
+        <?php
+            if ( @$_POST['doIT'] == '1' ) {
+                echo '<div class="normal-note" style="width:725px;text-align:center;margin: 0px auto;padding:2px;">';
+                echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail:</span><br />';
+                echo '<textarea class="protected" style="width:700px;font-size:9px;margin-top:5px;" type="text" name="postOUTPUT" id="postOUTPUT">';
+
+                echo 'COMING SOON';
+
+                echo '</textarea>';
+                echo '<div style="clear:both;"><br /></div>';
+                echo '</div>';
+            }
+        ?>
+
+                        </form>
 
             </div>
 
+        <div style="clear:both;"><br /></div>
         </div>
     </div>
 <!-- POST FORM -->
@@ -2028,7 +2266,13 @@ echo 'forum post form';
             echo '<div class="mini-content-container">';
             echo '<div class="mini-content-box">';
             echo '<div class="mini-content-title">Config Owner</div>';
-            echo $instance['configOWNER']['name'];
+
+                if ( $showProtected <= 2 ) {
+                    echo $instance['configOWNER']['name'];
+                } else {
+                    echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+                }
+
             echo '</div>';
             echo '</div>';
 
@@ -2037,7 +2281,13 @@ echo 'forum post form';
             echo '<div class="mini-content-container">';
             echo '<div class="mini-content-box">';
             echo '<div class="mini-content-title">Config Group</div>';
-            echo $instance['configGROUP']['name'];
+
+                if ( $showProtected <= 2 ) {
+                    echo $instance['configGROUP']['name'];
+                } else {
+                    echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+                }
+
             echo '</div>';
             echo '</div>';
 
@@ -2299,7 +2549,8 @@ echo 'forum post form';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Hostname:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 //        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Hostname:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
 
-            if ( $showProtected == '1' ) {
+
+            if ( $showProtected == 1 ) {
 
                 if ( $instance['configDBHOST'] ) {
                     echo '<div class="normal">&nbsp;'. $instance['configDBHOST'] .'&nbsp;</div>';
@@ -2311,7 +2562,6 @@ echo 'forum post form';
 
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
-
             }
 
         echo '</div></div>';
@@ -2328,7 +2578,13 @@ echo 'forum post form';
             if ( $database['dbLOCAL'] == _FPA_Y ) {
                 echo '('. _FPA_LOCAL .') '. $database['dbHOSTINFO'] .'&nbsp';
             } elseif ( $database['dbLOCAL'] == _FPA_N AND @$database['dbHOSTINFO'] ) {
-                echo '('. _FPA_REMOTE .') '. $database['dbHOSTINFO'] .'&nbsp';
+
+                if ( $showProtected <= 2 ) {
+                    echo '('. _FPA_REMOTE .') '. $database['dbHOSTINFO'] .'&nbsp';
+                } else {
+                    echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+                }
+
             } elseif ( $database['dbLOCAL'] == _FPA_N AND !@$database['dbHOSTINFO'] ) {
                 echo '('. _FPA_REMOTE .') <span class="warn-text"> '. _FPA_U .'</span>&nbsp';
             } else {
@@ -2738,7 +2994,7 @@ while($row = mysql_fetch_array($result)) {
                     // produce the output
                     echo '<div style="font-size:9px;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
 
-                        if ( $showProtected == '1' ) {
+                        if ( $showProtected <= 2 ) {
                             echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;'. $show['TABLE'] .'</div>';
                         } else {
                             echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div>';
@@ -2860,7 +3116,13 @@ while($row = mysql_fetch_array($result)) {
 
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Memory Limit:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $phpenv['phpMEMLIMIT'] .'&nbsp;</span>';
+        echo '<span class="normal">';
+
+            if ( @$_POST['increasePOPS'] == 1 ) { // the user set the increasePOPS setting for memory or time out errors
+                echo '<i class="warn-text">(increased by user, was '. $fpa['ORIGphpMEMLIMIT'] .')</i>&nbsp;';
+            }
+
+        echo $phpenv['phpMEMLIMIT'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
@@ -2894,8 +3156,14 @@ while($row = mysql_fetch_array($result)) {
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Register Globals:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $phpenv['phpREGGLOBAL'] .'&nbsp;</span>';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Max. Execution Time:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<span class="normal">';
+
+            if ( @$_POST['increasePOPS'] == 1 ) { // the user set the increasePOPS setting for memory or time out errors
+                echo '<i class="warn-text">(increased by user, was '. $fpa['ORIGphpMAXEXECTIME'] .')</i>&nbsp;';
+            }
+
+        echo $phpenv['phpMAXEXECTIME'] .' seconds&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
@@ -2908,8 +3176,8 @@ while($row = mysql_fetch_array($result)) {
         **/
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Server User:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
-        echo '<span class="normal">'. $system['sysWEBOWNER'] .'&nbsp;</span>';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Register Globals:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+        echo '<span class="normal">'. $phpenv['phpREGGLOBAL'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
@@ -3011,7 +3279,7 @@ while($row = mysql_fetch_array($result)) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Host Name:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
-            if ( $showProtected == '1' ) {
+            if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysPLATNAME'] .'&nbsp;</span>';
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
@@ -3057,7 +3325,7 @@ while($row = mysql_fetch_array($result)) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server Name:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
-            if ( $showProtected == '1' ) {
+            if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysSERVNAME'] .'&nbsp;</span>';
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
@@ -3070,7 +3338,7 @@ while($row = mysql_fetch_array($result)) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server IP:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
-            if ( $showProtected == '1' ) {
+            if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysSERVIP'] .'&nbsp;</span>';
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
@@ -3112,8 +3380,9 @@ while($row = mysql_fetch_array($result)) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Doc Root:<div style="float:right;">';
 
-           if ( $showProtected == '1' ) {
-        echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysDOCROOT'] .'&nbsp;</span>';
+
+            if ( $showProtected <= 2 ) {
+                echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysDOCROOT'] .'&nbsp;</span>';
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
             }
@@ -3125,7 +3394,7 @@ while($row = mysql_fetch_array($result)) {
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server Temp:<div style="float:right;">';
 
-            if ( $showProtected == '1' ) {
+            if ( $showProtected <= 2 ) {
                 echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysSYSTMPDIR'] .'&nbsp;</span>';
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
@@ -3497,12 +3766,11 @@ while($row = mysql_fetch_array($result)) {
 
                 echo '<div class="column-content '. $alertClass .'" style="width:58%;float:left;padding-left:5px;">';
 
-                if ( $showProtected == '1' ) {
-                    echo $show;  // display the folder name
-                } else {
-                    echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
-                }
-
+                    if ( $showProtected <= 2 ) {
+                        echo $show;  // display the folder name
+                    } else {
+                        echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
+                    }
 
                 echo '</div>';
 
@@ -3590,12 +3858,12 @@ while($row = mysql_fetch_array($result)) {
                     echo '</div>';
 
                     echo '<div class="column-content '. $alertClass .'" style="width:58%;float:left;padding-left:5px;">';
-                        if ( $showProtected == '1' ) {
+
+                        if ( $showProtected <= 2 ) {
                             echo $key;  // display the folder name
                         } else {
                             echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
                         }
-
 
                     echo '</div>';
 
@@ -3630,7 +3898,7 @@ while($row = mysql_fetch_array($result)) {
     if ( defined( '_FPA_DEV' ) ) {
 
         echo '<div class="dev-mode-information">';
-        echo '<span class="dev-mode-title">FPA Memory Statistics : </span> (requires PHP4.3.2 & PHP5.2.0)<br />';
+        echo '<span class="dev-mode-title">'. _RES .' Memory Statistics : </span> (requires PHP4.3.2 & PHP5.2.0)<br />';
         echo '<div style="margin-left: 10px;">';
 
             function convert($size) {
@@ -3681,7 +3949,7 @@ while($row = mysql_fetch_array($result)) {
             if ( defined ( '_FPA_DEV' ) ) {
                 echo '<div class="normal-note">Enabled</div>';
             } else {
-                echo '<div class="normal-note">Disabled</div>';
+                echo '<div class="normal-note">Disabled (Default)</div>';
             }
         echo '</div>';
 
@@ -3689,15 +3957,17 @@ while($row = mysql_fetch_array($result)) {
             if ( defined ( '_FPA_DIAG' ) ) {
                 echo '<div class="normal-note">Enabled</div>';
             } else {
-                echo '<div class="normal-note">Disabled</div>';
+                echo '<div class="normal-note">Disabled (Default)</div>';
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Sensitive Information<br />';
-            if ( $showProtected == '1' ) {
-                echo '<div class="normal-note">Show</div>';
-            } else {
-                echo '<div class="normal-note">Hide</div>';
+        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Information Privacy<br />';
+            if ( $showProtected == 1 ) {
+                echo '<div class="normal-note"><span class="ok">None</span></div>';
+            } elseif ( $showProtected == 2 ) {
+                echo '<div class="normal-note"><span class="warn-text">Partial</span> (Default)</div>';
+            } elseif ( $showProtected >= 3 ) {
+                echo '<div class="normal-note"><span class="alert-text">Strict</span></div>';
             }
         echo '</div>';
 
@@ -3705,15 +3975,15 @@ while($row = mysql_fetch_array($result)) {
             if ( $showTables == '1' ) {
                 echo '<div class="normal-note">Show</div>';
             } else {
-                echo '<div class="normal-note">Hide</div>';
+                echo '<div class="normal-note">Hide (Default)</div>';
             }
         echo '</div>';
 
         echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Elevated Permissions<br />';
-            if ( $showElevated == '1' ) {
+            if ( $showElevated == 1 ) {
                 echo '<div class="normal-note">Show</div>';
             } else {
-                echo '<div class="normal-note">Hide</div>';
+                echo '<div class="normal-note">Hide (Default)</div>';
             }
         echo '</div>';
 
