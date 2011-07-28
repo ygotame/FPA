@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" >
 
+
 <?php
 /**
  **  @package Forum Post Assistant / Bug Report Assistant
@@ -12,9 +13,36 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    //define ( '_FPA_BRA', TRUE );  // bug-report-mode
-    //define ( '_FPA_DEV', TRUE );   // developer-mode
+    define ( '_FPA_BRA', TRUE );  // bug-report-mode
+    define ( '_FPA_DEV', TRUE );   // developer-mode
     //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
+
+
+    // Define some basic assistant information
+    if ( defined ( '_FPA_BRA' ) ) {
+        define ( '_RES', 'Bug Report Assistant' );
+    } else {
+        define ( '_RES', 'Forum Post Assistant' );
+    }
+    define ( '_RES_VERSION', '1.2.0' );
+    define ( '_RES_RELEASE', 'Alpha' ); // can be Alpha, Beta, RC, Final
+    define ( '_RES_BRANCH', 'playGround' ); // can be playGround, currentDevelopment, masterPublic
+    define ( '_RES_FPALINK', 'https://github.com/ForumPostAssistant/FPA/archives/masterPublic' ); // where to get the latest 'Final release'
+    define ( '_RES_FPALATEST', 'Get the latest release of the ' );
+
+
+
+    // Display a "Processing" Message whilst the routines run
+    echo '<div id="slowScreenSplash" style="padding:20px;border: 2px solid #4D8000;background-color:#FFFAF0;border-radius: 10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;margin: 0 auto; margin-top:50px;margin-bottom:20px;width:700px;position:relative;z-index:9999;top:10%;" align="center">';
+    echo '<h1>'. _RES .'</h1>';
+        if ( @$_POST['doIT'] == 1 ) {
+            echo '<h3 style="color:#4D8000;">Generating The Post Output For You</h3>';
+        } else {
+            echo '<h3 style="color:#4D8000;">Hang On In There While We Run Some Test Routines</h3>';
+        }
+    echo '<br />v'. _RES_VERSION .'-'. _RES_RELEASE .' ('. _RES_BRANCH .')';
+    echo '</div>';
+
 
 
 // these are for testing only and are selected by the user on the FPA page in normal use
@@ -132,6 +160,12 @@
     $folders[] = 'sites/';                         // nooku only
 //    $folders[] = 'test/';
     $elevated['ARRNAME'] = 'Elevated Permissions';
+
+
+
+
+
+
 
     // build the developer-mode function to display the raw arrays
     function showDev( &$section ) {
@@ -294,18 +328,7 @@
 //  define ( 'SITE_ROOT', trim(FPA_ROOT, FPA_DIR) );  // Main Site ROOT
 
     /** DEFINE LANGUAGE STRINGS **************************************************************/
-    if ( defined ( '_FPA_BRA' ) ) {
-        define ( '_RES', 'Bug Report Assistant' );
-    } else {
-        define ( '_RES', 'Forum Post Assistant' );
-    }
-    define ( '_RES_VERSION', '1.2.0' );
-    define ( '_RES_RELEASE', 'Alpha' ); // can be Alpha, Beta, RC, Final
-    define ( '_RES_BRANCH', 'playGround' ); // can be playGround, currentDevelopment, masterPublic
-    define ( '_RES_FPALINK', 'https://github.com/ForumPostAssistant/FPA/archives/masterPublic' ); // where to get the latest 'Final release'
-    define ( '_RES_FPALATEST', 'Get the latest release of the ' );
     define ( '_FPA_LEGEND', 'Legend' );
-
 
     /** php options and messages *************************************************************/
     define ( '_PHP_DISERR', 'Display PHP Errors Enabled' );
@@ -319,8 +342,8 @@
     define ( '_FPA_INS_2', 'Enter any error messages you see <i>(optional)</i>' );
     define ( '_FPA_INS_3', 'Enter any actions taken to resolve the issue <i>(optional)</i>' );
     define ( '_FPA_INS_4', 'Select detail level options of output <i>(optional)</i>' );
-    define ( '_FPA_INS_5', 'Then click <span class="normal-note">Generate Post</span> button' );
-    define ( '_FPA_INS_6', 'Copy the contents of the <span class="ok-hilite">&nbsp;Post Text-Box&nbsp;</span> and paste it into a post' );
+    define ( '_FPA_INS_5', 'Click the <span class="normal-note">Generate</span> post button to build the post content' );
+    define ( '_FPA_INS_6', 'Copy the contents of the <span class="ok-hilite">&nbsp;Post Detail&nbsp;</span> box and paste it into a post' );
     define ( '_FPA_POST_NOTE', 'Leave ALL fields blank/empty to simply post diagnostic information.' );
     define ( '_FPA_PROB_DSC', 'Problem Description' );
     define ( '_FPA_PROB_MSG', 'Log/Error Message' );
@@ -1419,10 +1442,6 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
 
 
-
-
-
-
         <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title><?php echo _RES .' : v'. _RES_VERSION .' ('. _RES_RELEASE .')';?></title>
@@ -1437,52 +1456,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
                 color: #404040;
             }
 
-  /*this is what we want the div to look like
-    when it is not showing*/
-  div.loading-invisible{
-    /*make invisible*/
-    display:none;
-  }
-
-  /*this is what we want the div to look like
-    when it IS showing*/
-  div.loading-visible{
-    /*make visible*/
-    display:block;
-
-    /*position it 200px down the screen*/
-    position:absolute;
-    top:200px;
-    left:0;
-    width:100%;
-    text-align:center;
-
-    /*in supporting browsers, make it
-      a little transparent*/
-    background:#fff;
-    filter: alpha(opacity=75); /* internet explorer */
-    -khtml-opacity: 0.75;      /* khtml, old safari */
-    -moz-opacity: 0.75;       /* mozilla, netscape */
-    opacity: 0.75;           /* fx, safari, opera */
-    border-top:1px solid #ddd;
-    border-bottom:1px solid #ddd;
-  }
-
-
-#div2 {
-  -webkit-animation-name: rotateThis;
-  -webkit-animation-duration:2s;
-  -webkit-animation-iteration-count:infinite;
-  -webkit-animation-timing-function:linear;
-}
-@-webkit-keyframes rotateThis {
-  from {-webkit-transform:scale(0.5) rotate(0deg);}
-  to {-webkit-transform:scale(0.5) rotate(360deg);}
-}
-
-
-
-            .dev-mode-information {
+             .dev-mode-information {
                 margin: 0 auto;
                 margin-top:10px;
                 margin-bottom:10px;
@@ -1880,21 +1854,12 @@ print_r(get_extension_funcs("cgi-fcgi"));
         }
         </script>
 
-        <!-- Auto-Select all the output on Focus in the output textarea -->
-        <script type="text/javascript">
-            function select_all() {
-                var text_val=eval("document.postDetails.postOUTPUT");
-                    text_val.focus();
-                    text_val.select();
-            }
-
-        </script>
-
+<script>
+    document.all["slowScreenSplash"].style.display = "none";
+</script>
 
         </head>
     <body>
-
-
 
 <?php
     /** display the fpa heading ***************************************************************/
@@ -1939,7 +1904,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                     <div class="half-section-information-left" style="width:340px;padding-top:10px;padding-bottom:10px;">
 
-                        <div class="normal-note">
+                        <div class="normal-note" style="min-height:135px;">
                         <strong><?php echo _FPA_INSTRUCTIONS;  ?></strong>
 
                         <?php
@@ -1956,21 +1921,23 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                     <br />
 
-                        <div class="normal-note" style="padding-left:10px;">
+                        <div class="normal-note" style="min-height:145px;padding-left:10px;">
+                        <strong>Optional Information</strong><br /><br />
+
                             <form method="post" name="postDetails" id="postDetails">
 
                                 <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_DSC; ?>:</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probDSC" /></div>
-                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_MSG; ?>:</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probMSG2" /></div>
+                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_MSG; ?>:</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probMSG1" /></div>
 
                                 <?php
                                     if ( $phpenv['phpLASTERR'] ) {
-                                        echo '<div style="text-align:right;padding:2px;"><div class="warn-text" style="text-align:left;width:120px;float:left;">'. _FPA_LAST .' '. _FPA_ER .':</div> <input class="normal-note" style="color: #800000;background-color: #FFFFCC;width:175px;font-size:9px;" type="text" value="'. $phpenv['phpLASTERR'] .'" name="probMSG1" /><br /><span class="normal" style="font-size:8px;">auto-completed from your php error log&nbsp;&nbsp;</span></div>';
+                                        echo '<div style="text-align:right;padding:2px;"><div class="warn-text" style="text-align:left;width:120px;float:left;">'. _FPA_LAST .' '. _FPA_ER .':</div> <input class="normal-note" style="color: #800000;background-color: #FFFFCC;width:175px;font-size:9px;" type="text" value="'. $phpenv['phpLASTERR'] .'" name="probMSG2" /><br /><span class="normal" style="font-size:8px;">auto-completed from your php error log&nbsp;&nbsp;</span></div>';
                                     } else {
-                                        echo '<div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;">'. _FPA_PROB_MSG .':</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probMSG1" /></div>';
+                                        echo '<div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;">'. _FPA_PROB_MSG .':</div> <input class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probMSG2" /></div>';
                                     }
                                 ?>
 
-                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_ACT; ?>:</div> <textarea class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="problemDESC"></textarea></div>
+                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_ACT; ?>:</div> <textarea class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probACT"></textarea></div>
 
                                 <?php  echo _FPA_POST_NOTE; ?>
 
@@ -1981,7 +1948,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                     <div class="half-section-information-right" style="width:340px;padding-top:10px;padding-bottom:10px;">
 
-                        <div class="normal-note">
+                        <div class="normal-note" style="min-height:135px;">
                         <strong>Run-Time Options</strong><br /><br />
 
                             <div style="float:left; width:170px;">
@@ -2049,7 +2016,6 @@ print_r(get_extension_funcs("cgi-fcgi"));
                                     $selectshowProtected_2 = 'CHECKED';
                                     $selectshowProtected_3 = '';
                                 }
-echo $showProtected;
                             ?>
 
                                 <strong>Information Privacy:</strong><br />
@@ -2058,22 +2024,23 @@ echo $showProtected;
                                 <input style="font-size:9px;" type="radio" name="showProtected" value="3" <?php echo $selectshowProtected_3; ?> /><span class="alert-text">Strict</span><br /><span style="line-height:8px;padding:0px;margin:0px;margin-left:15px;font-size:8px;">All indentifiable elements are masked</span>
                             </div>
 
-                        <div style="clear:both;"><br /></div>
+                        <div style="clear:both;"></div>
                         </div>
 
                     <br />
 
-                        <div class="normal-note">
+                        <div class="normal-note" style="min-height:145px;">
                         <div style="clear:both;"><br /></div>
 
                             <!-- Generate the diagnostic post output -->
-                            <div style = "margin: 0px auto; width:85%;text-align:center;">
+                            <div style = "margin: 0px auto; width:90%;text-align:center;margin-top:10px;">
                                 <input type="hidden" name="doIT" value="1" />
 
-                                <input type="submit" class="ok-hilite" style="text-transform:uppercase;cursor:pointer;cursor:hand;" name="submit" value="Click Here To Generate Post" />
+                                <input type="submit" class="ok-hilite" style="box-shadow: 2px 2px 2px #C0C0C0;-moz-box-shadow: 2px 2px 2px #C0C0C0;-webkit-box-shadow: 2px 2px 2px #C0C0C0;text-transform:uppercase;cursor:pointer;cursor:hand;" name="submit" value="Click Here To Generate Post" />
 
-                                    <div class="normal" style="text-shadow:none!important;margin-left:10px;float:left;width:90%;text-align:left;">
-                                        <span class="ok">Click the "Generate Post" button above</span> to generate a pre-prepared post, then copy and paste the provided output in to your post.
+                                    <div class="normal" style="text-shadow:none!important;margin-left:10px;float:left;width:95%;text-align:left;">
+                                        <br />
+                                        <span class="ok"><?php echo _FPA_INS_5; ?></span>
                                     </div>
 
 
@@ -2094,7 +2061,7 @@ echo $showProtected;
                                 }
                             ?>
 
-                            <div class="normal" style="margin-left:15px;">
+                            <div class="normal" style="margin-left:15px;border-top:1px dotted #CCC;margin-top:30px;margin-right:15px;">
                                 <input style="font-size:9px;" type="checkbox" name="increasePOPS" value="1" <?php echo $selectPOPS; ?> />Seeing PHP "<span class="warn-text">Out of Memory</span>" or "<span class="warn-text">Execution Time</span>" Errors?<br />
                                 <span style="margin-left:15px;font-size:8px;">Temporarily increase PHP Memory and Execution Time.</span>
                             </div>
@@ -2109,13 +2076,28 @@ echo $showProtected;
 
         <?php
             if ( @$_POST['doIT'] == '1' ) {
-                echo '<div class="normal-note" style="width:725px;text-align:center;margin: 0px auto;padding:2px;">';
-                echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail:</span><br />';
-                echo '<textarea class="protected" style="width:700px;font-size:9px;margin-top:5px;" type="text" name="postOUTPUT" id="postOUTPUT">';
 
-                echo 'COMING SOON';
+                echo '<div class="normal-note" style="width:725px;text-align:center;margin: 0px auto;padding:2px;">';
+
+                echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail:</span><br />';
+
+                // load up the postOUTPUT textarea with the post details
+                echo '<textarea class="protected" style="width:700px;height:35px;font-size:9px;margin-top:5px;" type="text" rows="10" cols="100" name="postOUTPUT" id="postOUTPUT">';
+                //echo 'COMING SOON';
+
+                echo '[quote="'. _RES .'"][size=85]';
+                    if ( $_POST['probDSC'] ) { echo '[b][color=black]Problem Description:[/color][/b] &nbsp;'. $_POST['probDSC']; echo "\n\n"; }
+                    if ( $_POST['probMSG1'] ) { echo '[b]Error Message:[/b] &nbsp;'. $_POST['probMSG1']; echo "\n"; }
+                    if ( $_POST['probMSG2'] ) { echo '[b]Last Known PHP Error:[/b] &nbsp;'. $_POST['probMSG2']; echo "\n"; }
+                    if ( $_POST['probACT'] ) { echo "\n"; echo '[b]Actions Taken:[/b] &nbsp;'. $_POST['probACT']; }
+                echo '[/size][/quote]';
+
+
+
 
                 echo '</textarea>';
+                echo '<div style="clear:both;"><br /></div>';
+                echo '<span class="ok">'. _FPA_INS_6 .'</span>';
                 echo '<div style="clear:both;"><br /></div>';
                 echo '</div>';
             }
@@ -2132,15 +2114,9 @@ echo $showProtected;
 
 
 
-
-
-
-
-
-
 <?php
     // build a full-width div to hold two 'half-width' section, side-by-side
-    echo '<div class="half-section-container" style="">'; // start half-section container
+    echo '<div class="half-section-container" style="z-index:1;">'; // start half-section container
 
         /** display the instance information *************************************************/
         echo '<div class="half-section-information-left">'; // start left content block
@@ -3273,7 +3249,7 @@ while($row = mysql_fetch_array($result)) {
             if ( $phpenv['phpLASTERR'] ) {
 //                echo "<br />";
 //                echo '<div class="mini-content-box-small" style="">';
-                echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;text-transform:none;">'. $phpenv['phpLASTERR'] .'</div>';
+                echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;text-transform:none;word-wrap: break-word;width:325px;">'. $phpenv['phpLASTERR'] .'</div>';
 //                echo '</div>';
             } else {
                 echo '<span class="ok" style="margin:5px;text-transform:none;font-weight:normal;font-size:9px;padding:2px;">None</span>';
@@ -4043,6 +4019,8 @@ while($row = mysql_fetch_array($result)) {
 
 
 ?>
+
+
 
     </body>
 </html>
