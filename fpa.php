@@ -13,8 +13,8 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    define ( '_FPA_BRA', TRUE );  // bug-report-mode
-    define ( '_FPA_DEV', TRUE );   // developer-mode
+    //define ( '_FPA_BRA', TRUE );  // bug-report-mode
+    //define ( '_FPA_DEV', TRUE );   // developer-mode
     //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
 
@@ -160,10 +160,14 @@
     $folders[] = 'sites/';                         // nooku only
 //    $folders[] = 'test/';
     $elevated['ARRNAME'] = 'Elevated Permissions';
-
-
-
-
+    $component['ARRNAME'] = 'Components';
+    $module['ARRNAME'] = 'Modules';
+    $plugin['ARRNAME'] = 'Plugins';
+    $template['ARRNAME'] = 'Templates';
+//    $adminComponent['ARRNAME'] = 'Admin Components';
+//    $adminModule['ARRNAME'] = 'Admin Modules';
+//    $adminPlugin['ARRNAME'] = 'Admin Plugins';
+//    $adminTemplate['ARRNAME'] = 'Admin Templates';
 
 
 
@@ -354,8 +358,10 @@
     define ( '_FPA_WARNINGS', 'WARNINGS' );
     define ( '_FPA_ALERTS', 'ALERTS' );
     define ( '_FPA_BY', 'by' );
+    define ( '_FPA_OR', 'or' );
     define ( '_FPA_FOR', 'for' );
     define ( '_FPA_IS', 'is' );
+    define ( '_FPA_AT', 'at' );
     define ( '_FPA_LAST', 'Last' );
     define ( '_FPA_DEF', 'default' );
     define ( '_FPA_Y', 'Yes' );
@@ -1113,6 +1119,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
         // !FIXME need to fix warning in array_filter
         @array_filter( $folders, filter_folders( $folders, $instance ) );
     }
+    unset ( $key, $show );
 ?>
 
 
@@ -1434,6 +1441,773 @@ print_r(get_extension_funcs("cgi-fcgi"));
     /** find a MySQL instance? ***************************************************************/
 ?>
 
+
+
+
+
+
+<?php
+    /** find the SITE components ***************************************************************/
+/******
+$dir = "components/";
+
+    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
+
+        while ( $file = readdir( $dir_handle ) ) {
+
+            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
+                $newDir = $dir .''. $file;
+                $dir1 = opendir( $newDir );
+
+                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
+
+                    $component['SITE'][$cDir]['author'] = '-';
+                    $component['SITE'][$cDir]['authorUrl'] = '-';
+                    $component['SITE'][$cDir]['version'] = '-';
+                    $component['SITE'][$cDir]['creationDate'] = '-';
+                    $component['SITE'][$cDir]['type'] = '-';
+
+                    while ($f = readdir( $dir1 ) ) {
+
+                        $component['SITE'][$cDir]['name'] = $cDir;
+
+                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
+
+                            $content = file_get_contents($newDir.'/'.$f);
+
+                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                $component['SITE'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                            } else {
+                                $component['SITE'][$cDir]['name'] = _FPA_U;
+                            }
+
+                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                $component['SITE'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                if ( $author[1] == 'Joomla! Project' ) {
+                                    $component['SITE'][$cDir]['type'] = 'Core';
+                                } else {
+                                    $component['SITE'][$cDir]['type'] = '3rd Party';
+                                }
+
+                            } else {
+                                $component['SITE'][$cDir]['author'] = '-';
+                                $component['SITE'][$cDir]['type'] = '-';
+                            }
+
+                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                $component['SITE'][$cDir]['version'] = $version[1];
+                            } else {
+                                $component['SITE'][$cDir]['version'] = '-';
+                            }
+
+                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                $component['SITE'][$cDir]['creationDate'] = $creationDate[1];
+                            } else {
+                                $component['SITE'][$cDir]['creationDate'] = '-';
+                            }
+
+                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                $component['SITE'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                            } else {
+                                $component['SITE'][$cDir]['authorUrl'] = '-';
+                            }
+
+                        }
+
+                    }
+
+            }
+
+        }
+        closedir( $dir_handle );
+
+///        array_multisort($component['SITE']['type'], SORT_ASC, SORT_STRING,
+//                        $component['SITE']['name'], SORT_ASC, SORT_STRING,
+///                        $component['SITE']['name'], SORT_ASC, SORT_STRING);
+******/
+
+
+    /** find the ADMIN components ***************************************************************/
+/******
+    $dir = "administrator/components/";
+
+    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
+
+        while ( $file = readdir( $dir_handle ) ) {
+
+            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
+                $newDir = $dir .''. $file;
+                $dir1 = opendir( $newDir );
+
+                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
+
+                    $component['ADMIN'][$cDir]['author'] = '-';
+                    $component['ADMIN'][$cDir]['authorUrl'] = '-';
+                    $component['ADMIN'][$cDir]['version'] = '-';
+                    $component['ADMIN'][$cDir]['creationDate'] = '-';
+                    $component['ADMIN'][$cDir]['type'] = '-';
+
+                    while ($f = readdir( $dir1 ) ) {
+
+                        $component['ADMIN'][$cDir]['name'] = $cDir;
+
+                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
+
+                            $content = file_get_contents($newDir.'/'.$f);
+
+                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                $component['ADMIN'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                            } else {
+                                $component['ADMIN'][$cDir]['name'] = _FPA_U;
+                            }
+
+                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                $component['ADMIN'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                if ( $author[1] == 'Joomla! Project' ) {
+                                    $component['ADMIN'][$cDir]['type'] = 'Core';
+                                } else {
+                                    $component['ADMIN'][$cDir]['type'] = '3rd Party';
+                                }
+
+                            } else {
+                                $component['ADMIN'][$cDir]['author'] = '-';
+                                $component['ADMIN'][$cDir]['type'] = '-';
+                            }
+
+                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                $component['ADMIN'][$cDir]['version'] = $version[1];
+                            } else {
+                                $component['ADMIN'][$cDir]['version'] = '-';
+                            }
+
+                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                $component['ADMIN'][$cDir]['creationDate'] = $creationDate[1];
+                            } else {
+                                $component['ADMIN'][$cDir]['creationDate'] = '-';
+                            }
+
+                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                $component['ADMIN'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                            } else {
+                                $component['ADMIN'][$cDir]['authorUrl'] = '-';
+                            }
+
+                        }
+
+                    }
+
+            }
+
+        }
+        closedir( $dir_handle );
+
+//        array_multisort($component['ADMIN']['name'], SORT_ASC, SORT_STRING,
+//                        $component['ADMIN']['type'], SORT_ASC, SORT_STRING,
+//                        $component['ADMIN']['author'], SORT_ASC, SORT_STRING);
+******/
+?>
+
+
+
+
+<?php
+    /** find the SITE modules ***************************************************************/
+/******
+
+    // !FIXME doesn't work for J!1.0
+    $dir = "modules/";
+
+//    if ( $instance['cmsRELEASE'] != '1.0' ) {
+        $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
+
+            while ( $file = readdir( $dir_handle ) ) {
+//    }
+
+            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
+                $newDir = $dir .''. $file;
+                $dir1 = opendir( $newDir );
+
+                    if ( $instance['cmsRELEASE'] != '1.0' ) {
+                        $cDir = substr( strrchr( $newDir, '/' ), 1 );
+                    }
+
+                    $module['SITE'][$cDir]['author'] = '-';
+                    $module['SITE'][$cDir]['authorUrl'] = '-';
+                    $module['SITE'][$cDir]['version'] = '-';
+                    $module['SITE'][$cDir]['creationDate'] = '-';
+                    $module['SITE'][$cDir]['type'] = '-';
+
+                    while ($f = readdir( $dir1 ) ) {
+
+
+//                        if ( $instance['cmsRELEASE'] != '1.0' ) {
+                            $module['SITE'][$cDir]['name'] = $cDir;
+//                        }
+
+                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
+
+
+//                            if ( $instance['cmsRELEASE'] == '1.0' ) {
+//                                $cDir = $f;
+//                                $module['SITE'][$cDir]['name'] = $cDir;
+//                            }
+
+                            $content = file_get_contents($newDir.'/'.$f);
+
+                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                $module['SITE'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                            } else {
+                                $module['SITE'][$cDir]['name'] = _FPA_U;
+                            }
+
+                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                $module['SITE'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                if ( $author[1] == 'Joomla! Project' ) {
+                                    $module['SITE'][$cDir]['type'] = 'Core';
+                                } else {
+                                    $module['SITE'][$cDir]['type'] = '3rd Party';
+                                }
+
+                            } else {
+                                $module['SITE'][$cDir]['author'] = '-';
+                                $module['SITE'][$cDir]['type'] = '-';
+                            }
+
+                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                $module['SITE'][$cDir]['version'] = $version[1];
+                            } else {
+                                $module['SITE'][$cDir]['version'] = '-';
+                            }
+
+                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                $module['SITE'][$cDir]['creationDate'] = $creationDate[1];
+                            } else {
+                                $module['SITE'][$cDir]['creationDate'] = '-';
+                            }
+
+                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                $module['SITE'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                            } else {
+                                $module['SITE'][$cDir]['authorUrl'] = '-';
+                            }
+
+                        }
+
+                    }
+
+            }
+
+
+        }
+        closedir( $dir_handle );
+
+///        array_multisort($component['SITE']['type'], SORT_ASC, SORT_STRING,
+//                        $component['SITE']['name'], SORT_ASC, SORT_STRING,
+///                        $component['SITE']['name'], SORT_ASC, SORT_STRING);
+******/
+
+
+    /** find the ADMIN modules ***************************************************************/
+/******
+    $dir = "administrator/modules/";
+
+    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
+
+        while ( $file = readdir( $dir_handle ) ) {
+
+            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
+                $newDir = $dir .''. $file;
+                $dir1 = opendir( $newDir );
+
+                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
+
+                    $module['ADMIN'][$cDir]['author'] = '-';
+                    $module['ADMIN'][$cDir]['authorUrl'] = '-';
+                    $module['ADMIN'][$cDir]['version'] = '-';
+                    $module['ADMIN'][$cDir]['creationDate'] = '-';
+                    $module['ADMIN'][$cDir]['type'] = '-';
+
+                    while ($f = readdir( $dir1 ) ) {
+
+                        $module['ADMIN'][$cDir]['name'] = $cDir;
+
+                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
+
+                            $content = file_get_contents($newDir.'/'.$f);
+
+                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                $module['ADMIN'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                            } else {
+                                $module['ADMIN'][$cDir]['name'] = _FPA_U;
+                            }
+
+                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                $module['ADMIN'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                if ( $author[1] == 'Joomla! Project' ) {
+                                    $module['ADMIN'][$cDir]['type'] = 'Core';
+                                } else {
+                                    $module['ADMIN'][$cDir]['type'] = '3rd Party';
+                                }
+
+                            } else {
+                                $module['ADMIN'][$cDir]['author'] = '-';
+                                $module['ADMIN'][$cDir]['type'] = '-';
+                            }
+
+                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                $module['ADMIN'][$cDir]['version'] = $version[1];
+                            } else {
+                                $module['ADMIN'][$cDir]['version'] = '-';
+                            }
+
+                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                $module['ADMIN'][$cDir]['creationDate'] = $creationDate[1];
+                            } else {
+                                $module['ADMIN'][$cDir]['creationDate'] = '-';
+                            }
+
+                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                $module['ADMIN'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                            } else {
+                                $module['ADMIN'][$cDir]['authorUrl'] = '-';
+                            }
+
+                        }
+
+                    }
+
+            }
+
+        }
+        closedir( $dir_handle );
+
+//        array_multisort($component['ADMIN']['name'], SORT_ASC, SORT_STRING,
+//                        $component['ADMIN']['type'], SORT_ASC, SORT_STRING,
+//                        $component['ADMIN']['author'], SORT_ASC, SORT_STRING);
+******/
+?>
+
+
+
+
+
+
+<?php
+    /** find the SITE mambots/plugins ********************************************************/
+/******
+function getDirectory( $path, $level = 0 ){
+    global $plugin;
+
+    $ignore = array( '.', '..', 'index.htm', 'index.html', '.DS_Store', 'none.xml' );
+    // Directories to ignore when listing output. Many hosts
+
+    $dh = @opendir( $path );
+    // Open the directory to the handle $dh
+
+        while( false !== ( $file = readdir( $dh ) ) ){
+            // Loop through the directory
+
+            if( !in_array( $file, $ignore ) ){
+            // Check that this file is not to be ignored
+
+                if( is_dir( "$path/$file" ) ){
+                // Its a directory, so we need to keep reading down...
+
+                    getDirectory( "$path/$file", ($level+1) );
+                    // Re-call this same function but on a new directory.
+                    // this is what makes function recursive.
+
+                } else {
+
+                    if ( preg_match( "/\.xml/i", $file ) ) { #if filename matches .xml in the name
+
+                        $content = file_get_contents( $path .'/'. $file );
+
+
+                        if ( preg_match( '#(.*)type=[\'|\"]mambot|plugin[\'|\"](.*)#', $content, $isPlugin ) ) {
+
+                            $plugin['SITE'][$file] = '';
+
+                            $plugin['SITE'][$file]['author'] = '-';
+                            $plugin['SITE'][$file]['authorUrl'] = '-';
+                            $plugin['SITE'][$file]['version'] = '-';
+                            $plugin['SITE'][$file]['creationDate'] = '-';
+                            $plugin['SITE'][$file]['type'] = '-';
+
+
+                                if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                    $plugin['SITE'][$file]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                                } else {
+                                    $plugin['SITE'][$file]['name'] = _FPA_U;
+                                }
+
+                                if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                    $plugin['SITE'][$file]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                    if ( $author[1] == 'Joomla! Project' ) {
+                                        $plugin['SITE'][$file]['type'] = 'Core';
+                                    } else {
+                                        $plugin['SITE'][$file]['type'] = '3rd Party';
+                                    }
+
+                                } else {
+                                    $plugin['SITE'][$file]['author'] = '-';
+                                    $plugin['SITE'][$file]['type'] = '-';
+                                }
+
+                                if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                    $plugin['SITE'][$file]['version'] = $version[1];
+                                } else {
+                                    $plugin['SITE'][$file]['version'] = '-';
+                                }
+
+                                if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                    $plugin['SITE'][$file]['creationDate'] = $creationDate[1];
+                                } else {
+                                    $plugin['SITE'][$file]['creationDate'] = '-';
+                                }
+
+                                if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                    $plugin['SITE'][$file]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                                } else {
+                                    $plugin['SITE'][$file]['authorUrl'] = '-';
+                                }
+
+                        } //isPlugin
+
+                    }
+
+                }
+
+            }
+
+        }
+        closedir( $dh );
+    }
+
+    // cater for Joomla! 1.0 differences
+    if ( $instance['cmsRELEASE'] == '1.0' ) {
+        getDirectory( 'mambots' );
+    } else {
+        getDirectory( 'plugins' );
+    }
+
+******/
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+    /** find the SITE mambots/plugins ********************************************************/
+    function getDetails( $path, &$arrname, $loc, $level = 0 ){
+    global $component, $module, $plugin, $template;
+
+    $ignore = array( '.', '..', 'index.htm', 'index.html', '.DS_Store', 'none.xml', 'metadata.xml', 'default.xml', 'form.xml', 'contact.xml', 'edit.xml', 'blog.xml' );
+    // Directories to ignore when listing output. Many hosts
+
+    $dh = @opendir( $path );
+    // Open the directory to the handle $dh
+
+        while( false !== ( $file = readdir( $dh ) ) ){
+            // Loop through the directory
+
+            if( !in_array( $file, $ignore ) ){
+            // Check that this file is not to be ignored
+
+                if( is_dir( "$path/$file" ) ){
+                // Its a directory, so we need to keep reading down...
+
+                    getDetails( "$path/$file", &$arrname, $loc, ($level+1) );
+                    // Re-call this same function but on a new directory.
+                    // this is what makes function recursive.
+
+                } else {
+
+
+                    if ( $path == 'components' ) {
+                        $cDir = substr( strrchr( $path .'/'. $file, '/' ), 1 );
+//                            $cDir = $file;
+                    } else {
+                        $cDir = $path .'/'. $file;
+                    }
+
+
+                    if ( preg_match( "/\.xml/i", $file ) ) { #if filename matches .xml in the name
+
+
+
+                        $content = file_get_contents( $cDir );
+
+                        if ( preg_match( '#<(extension|install|mosinstall)#', $content, $isValidFile ) ) {
+
+                            $arrname[$loc][$cDir] = '';
+
+                            $arrname[$loc][$cDir]['author'] = '-';
+                            $arrname[$loc][$cDir]['authorUrl'] = '-';
+                            $arrname[$loc][$cDir]['version'] = '-';
+                            $arrname[$loc][$cDir]['creationDate'] = '-';
+                            $arrname[$loc][$cDir]['type'] = '-';
+
+
+                                if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                    $arrname[$loc][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                                } else {
+                                    $arrname[$loc][$cDir]['name'] = _FPA_U;
+                                }
+
+                                if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                    $arrname[$loc][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                    if ( $author[1] == 'Joomla! Project' ) {
+                                        $arrname[$loc][$cDir]['type'] = 'Core';
+                                    } else {
+                                        $arrname[$loc][$cDir]['type'] = '3rd Party';
+                                    }
+
+                                } else {
+                                    $arrname[$loc][$cDir]['author'] = '-';
+                                    $arrname[$loc][$cDir]['type'] = '-';
+                                }
+
+                                if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                    $arrname[$loc][$cDir]['version'] = $version[1];
+                                } else {
+                                    $arrname[$loc][$path .'/'. $file]['version'] = '-';
+                                }
+
+                                if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                    $arrname[$loc][$cDir]['creationDate'] = $creationDate[1];
+                                } else {
+                                    $arrname[$loc][$cDir]['creationDate'] = '-';
+                                }
+
+                                if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                    $arrname[$loc][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                                } else {
+                                    $arrname[$loc][$cDir]['authorUrl'] = '-';
+                                }
+
+                        } //isValidFile
+
+                    }
+
+                }
+
+            }
+
+        }
+        closedir( $dh );
+    }
+
+    // cater for Joomla! 1.0 differences
+//    if ( $instance['cmsRELEASE'] == '1.0' ) {
+//        getDirectory( 'mambots' );
+//    } else {
+        getDetails( 'components', $component, 'SITE' );
+        getDetails( 'administrator/components', $component, 'ADMIN' );
+
+        getDetails( 'modules', $module, 'SITE' );
+        getDetails( 'administrator/modules', $module, 'ADMIN' );
+
+        if ( $instance['cmsRELEASE'] == '1.0' ) {
+            getDetails( 'mambots', $plugin, 'SITE' );
+        } else {
+            getDetails( 'plugins', $plugin, 'SITE' );
+        }
+
+        getDetails( 'templates', $template, 'SITE' );
+        getDetails( 'administrator/templates', $template, 'ADMIN' );
+//    }
+?>
+
+
+
+
+
+
+
+
+
+
+
+<?php
+    /** find the SITE components ***************************************************************/
+/****
+    $dir = "templates/";
+
+    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
+
+        while ( $file = readdir( $dir_handle ) ) {
+
+            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
+                $newDir = $dir .''. $file;
+                $dir1 = opendir( $newDir );
+
+                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
+
+                    $template['SITE'][$cDir]['author'] = '-';
+                    $template['SITE'][$cDir]['authorUrl'] = '-';
+                    $template['SITE'][$cDir]['version'] = '-';
+                    $template['SITE'][$cDir]['creationDate'] = '-';
+                    $template['SITE'][$cDir]['type'] = '-';
+
+                    while ($f = readdir( $dir1 ) ) {
+
+                        $template['SITE'][$cDir]['name'] = $cDir;
+
+                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
+
+                            $content = file_get_contents($newDir.'/'.$f);
+
+                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                $template['SITE'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                            } else {
+                                $template['SITE'][$cDir]['name'] = _FPA_U;
+                            }
+
+                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                $template['SITE'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                if ( $author[1] == 'Joomla! Project' ) {
+                                    $template['SITE'][$cDir]['type'] = 'Core';
+                                } else {
+                                    $template['SITE'][$cDir]['type'] = '3rd Party';
+                                }
+
+                            } else {
+                                $template['SITE'][$cDir]['author'] = '-';
+                                $template['SITE'][$cDir]['type'] = '-';
+                            }
+
+                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                $template['SITE'][$cDir]['version'] = $version[1];
+                            } else {
+                                $template['SITE'][$cDir]['version'] = '-';
+                            }
+
+                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                $template['SITE'][$cDir]['creationDate'] = $creationDate[1];
+                            } else {
+                                $template['SITE'][$cDir]['creationDate'] = '-';
+                            }
+
+                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                $template['SITE'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                            } else {
+                                $template['SITE'][$cDir]['authorUrl'] = '-';
+                            }
+
+                        }
+
+                    }
+
+            }
+
+        }
+        closedir( $dir_handle );
+
+///        array_multisort($component['SITE']['type'], SORT_ASC, SORT_STRING,
+//                        $component['SITE']['name'], SORT_ASC, SORT_STRING,
+///                        $component['SITE']['name'], SORT_ASC, SORT_STRING);
+****/
+
+
+    /** find the ADMIN components ***************************************************************/
+/*****
+    $dir = "administrator/templates/";
+
+    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
+
+        while ( $file = readdir( $dir_handle ) ) {
+
+            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
+                $newDir = $dir .''. $file;
+                $dir1 = opendir( $newDir );
+
+                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
+
+                    $template['ADMIN'][$cDir]['author'] = '-';
+                    $template['ADMIN'][$cDir]['authorUrl'] = '-';
+                    $template['ADMIN'][$cDir]['version'] = '-';
+                    $template['ADMIN'][$cDir]['creationDate'] = '-';
+                    $template['ADMIN'][$cDir]['type'] = '-';
+
+                    while ($f = readdir( $dir1 ) ) {
+
+                        $template['ADMIN'][$cDir]['name'] = $cDir;
+
+                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
+
+                            $content = file_get_contents($newDir.'/'.$f);
+
+                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
+                                $template['ADMIN'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+                            } else {
+                                $template['ADMIN'][$cDir]['name'] = _FPA_U;
+                            }
+
+                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
+                                $template['ADMIN'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
+
+                                if ( $author[1] == 'Joomla! Project' ) {
+                                    $template['ADMIN'][$cDir]['type'] = 'Core';
+                                } else {
+                                    $template['ADMIN'][$cDir]['type'] = '3rd Party';
+                                }
+
+                            } else {
+                                $template['ADMIN'][$cDir]['author'] = '-';
+                                $template['ADMIN'][$cDir]['type'] = '-';
+                            }
+
+                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
+                                $template['ADMIN'][$cDir]['version'] = $version[1];
+                            } else {
+                                $template['ADMIN'][$cDir]['version'] = '-';
+                            }
+
+                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
+                                $template['ADMIN'][$cDir]['creationDate'] = $creationDate[1];
+                            } else {
+                                $template['ADMIN'][$cDir]['creationDate'] = '-';
+                            }
+
+                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
+                                $template['ADMIN'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+                            } else {
+                                $template['ADMIN'][$cDir]['authorUrl'] = '-';
+                            }
+
+                        }
+
+                    }
+
+            }
+
+        }
+        closedir( $dir_handle );
+
+//        array_multisort($component['ADMIN']['name'], SORT_ASC, SORT_STRING,
+//                        $component['ADMIN']['type'], SORT_ASC, SORT_STRING,
+//                        $component['ADMIN']['author'], SORT_ASC, SORT_STRING);
+
+*****/
+?>
 
 
 
@@ -2081,18 +2855,45 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                 echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail:</span><br />';
 
-                // load up the postOUTPUT textarea with the post details
+
+                /** LOAD UP THE SELECTED CONFIGURATION AND DIAGNOSTIC INFORMATION FOR THE POST ************
+                 ** this section loads up a text-box with BBCode for the forum, it will quote each section
+                 ** to make viewing easier and once used to the format, hopefully making it simpler to
+                 ** pinpoint related information quickly
+                 **
+                 ** the user then copies and pastes this outputin to forum post
+                 **
+                 ** NOTE IF MODIFYING: carriage returns and line breaks MUST be double-quoted, not single-
+                 ** quote, hence some of the weird quoting and formating
+                 *****************************************************************************************/
                 echo '<textarea class="protected" style="width:700px;height:35px;font-size:9px;margin-top:5px;" type="text" rows="10" cols="100" name="postOUTPUT" id="postOUTPUT">';
-                //echo 'COMING SOON';
 
+                    // post the problem description, if any
+                    if ( $_POST['probDSC'] ) { echo '[quote="'. _FPA_PROB_DSC .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probDSC'] .'[/quote][/size]'; }
+
+                    // post the first error message, if any
+                    if ( $_POST['probMSG1'] ) { echo '[quote="'. _FPA_PROB_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG1'] .'[/quote][/size]'; }
+
+                        // post the second error message, if any (remember if there is a PHP Error in the log, it will be auto-added here instead of the user adding a message
+                        // show the different MSG2 header and content, if there is an existing PHP Error to display
+                        if ( $phpenv['phpLASTERR'] AND $_POST['probMSG2'] ) {
+                            echo '[quote="'. _FPA_LAST .' '. _FPA_ER .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
+                        } elseif ( !$phpenv['phpLASTERROR'] AND $_POST['probMSG2'] ) {
+                            echo '[quote="'. _FPA_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG2'] .'[/quote][/size]';
+                        }
+
+                    // post the actions taken, if any
+                    if ( $_POST['probACT'] ) { echo '[quote="'. _FPA_PROB_ACT .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probACT'] .'[/quote][/size]'; }
+
+//!TODO come back and finish the post details
+/**
                 echo '[quote="'. _RES .'"][size=85]';
-                    if ( $_POST['probDSC'] ) { echo '[b][color=black]Problem Description:[/color][/b] &nbsp;'. $_POST['probDSC']; echo "\n\n"; }
-                    if ( $_POST['probMSG1'] ) { echo '[b]Error Message:[/b] &nbsp;'. $_POST['probMSG1']; echo "\n"; }
-                    if ( $_POST['probMSG2'] ) { echo '[b]Last Known PHP Error:[/b] &nbsp;'. $_POST['probMSG2']; echo "\n"; }
-                    if ( $_POST['probACT'] ) { echo "\n"; echo '[b]Actions Taken:[/b] &nbsp;'. $_POST['probACT']; }
+                    if ( $_POST['probDSC'] ) { echo '[b][u][color=black]Problem Description:[/color][/u][/b] &nbsp;'. $_POST['probDSC']; echo "\n\n"; }
+                    if ( $_POST['probMSG1'] ) { echo '[b][u][color=black]Error Message:[/color][/u][/b] &nbsp;'. $_POST['probMSG1']; echo "\n"; }
+                    if ( $_POST['probMSG2'] ) { echo '[b][u][color=black]Last Known PHP Error:[/color][/u][/b] &nbsp;'. $_POST['probMSG2']; echo "\n"; }
+                    if ( $_POST['probACT'] ) { echo "\n"; echo '[b][u][color=black]Actions Taken:[/color][/u][/b] &nbsp;'. $_POST['probACT']; }
                 echo '[/size][/quote]';
-
-
+**/
 
 
                 echo '</textarea>';
@@ -2729,21 +3530,6 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
 
 
-/**
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Size:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
-
-        if ( @$database['dbSIZE'] ) {
-            echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
-        } else {
-            echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-        }
-
-        echo '</div></div>';
-        echo '</div>';
-**/
-
-
 
 //        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
@@ -2770,19 +3556,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
         echo '</div></div>';
         // end content left block
-/***
-mysql_select_db($instance['configDBNAME'], $dBconn);
-$result = mysql_query("SHOW TABLE STATUS");
-$database['dbTABLES'] = array();
 
-
-while($row = mysql_fetch_array($result)) {
-
-    $total_size = ($row[ "Data_length" ] +
-                   $row[ "Index_length" ]) / 1024;
-    $database['dbTABLES'][$row['Name']] = sprintf("%.2f", $total_size);
-}
-***/
 
 
         /** display the system information *************************************************/
@@ -2867,21 +3641,6 @@ while($row = mysql_fetch_array($result)) {
 
 
 
-/**
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Size:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
-
-        if ( $database['dbSIZE'] ) {
-            echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
-        } else {
-            echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-        }
-
-        echo '</div></div>';
-        echo '</div>';
-**/
-
-
 
 //        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
@@ -2895,75 +3654,6 @@ while($row = mysql_fetch_array($result)) {
 
         echo '</div></div>';
         echo '</div>';
-
-
-
-
-/***
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Site Offline</div>';
-        echo $database['dbHOSTSTATS'][0];
-        echo '</div>';
-        echo '</div>';
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">SEF URL\'s</div>';
-        echo $database['dbHOSTSTATS'][1];
-        echo '</div>';
-        echo '</div>';
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">SEF URL\'s</div>';
-        echo $database['dbHOSTSTATS'][2];
-        echo '</div>';
-        echo '</div>';
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">SEF URL\'s</div>';
-        echo $database['dbHOSTSTATS'][3];
-        echo '</div>';
-        echo '</div>';
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Site Offline</div>';
-        echo $database['dbHOSTSTATS'][4];
-        echo '</div>';
-        echo '</div>';
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">SEF URL\'s</div>';
-        echo $database['dbHOSTSTATS'][5];
-        echo '</div>';
-        echo '</div>';
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">SEF URL\'s</div>';
-        echo $database['dbHOSTSTATS'][6];
-        echo '</div>';
-        echo '</div>';
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">SEF URL\'s</div>';
-        echo $database['dbHOSTSTATS'][7];
-        echo '</div>';
-        echo '</div>';
-***/
-
 
 
             } else { // an instance wasn't found in the initial checks, so no folders to check
@@ -3062,6 +3752,7 @@ while($row = mysql_fetch_array($result)) {
         echo '</div>'; // end container
 
     showDev( $tables );
+    unset ( $key, $show );
     } // end showTables
 ?>
 
@@ -3586,7 +4277,7 @@ while($row = mysql_fetch_array($result)) {
     showDev( $phpextensions );
     $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
     showDev( $phpreq );
-
+    unset ( $key, $show );
 ?>
 
 
@@ -3675,7 +4366,7 @@ while($row = mysql_fetch_array($result)) {
         showDev( $apachemodules );
         $apachereq['ARRNAME'] = 'Potential Missing Apache Modules';
         showDev( $apachereq );
-
+        unset ( $key, $show );
         }
 
         /////else { // end if Apache
@@ -3824,6 +4515,7 @@ while($row = mysql_fetch_array($result)) {
     $folders['ARRNAME'] = 'Core Folders';
     showDev( $folders );
     showDev( $modecheck );
+    unset ( $key, $show );
 ?>
 
 
@@ -3901,7 +4593,7 @@ while($row = mysql_fetch_array($result)) {
 
         } else { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $elevated['ARRNAME'] .' checls performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $elevated['ARRNAME'] .' checks performed</div>';
             echo '</div>';
         }
 
@@ -3909,9 +4601,352 @@ while($row = mysql_fetch_array($result)) {
         echo '<div style="clear:both;"></div>';
 
         showDev( $elevated );
-
+        unset ( $key, $show );
     } // endif showElevated
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+        echo '<div class="section-information">';
+
+        echo '<div class="section-title" style="text-align:center;">'. $component['ARRNAME'] .' :: Site</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+            foreach ( $component['SITE'] as $key => $show ) {
+
+                if ( $show['type'] != '3rd Party' ) {
+                    $typeColor = '404040';
+                } else {
+                    $typeColor = '000080';
+                }
+
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #ccebeb;padding:1px;padding-right:0px;padding-bottom:3px;">';
+                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
+                echo '</div>';
+            }
+        echo '</div></div>';
+
+
+
+
+        echo '<br style="clear:both;" />';
+        echo '<div class="section-title" style="text-align:center;">'. $component['ARRNAME'] .' :: Admin</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+            foreach ( $component['ADMIN'] as $key => $show ) {
+
+                            if ( $show['type'] != '3rd Party' ) {
+                    $typeColor = '404040';
+                } else {
+                    $typeColor = '000080';
+                }
+
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #ccebeb;padding:1px;padding-right:0px;padding-bottom:3px;">';
+                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
+                echo '</div>';
+            }
+        echo '</div></div>';
+
+
+
+        echo '<br style="clear:both;" />';
+        echo '</div></div>';
+        // end content left block
+
+
+    echo '<div style="clear:both;"></div>';
+
+    showDev( $component );
+    unset ( $key, $show );
+    echo '</div>'; // end half-section container
+
+    echo '<div style="clear:both;"></div>';
+?>
+
+
+
+
+
+
+
+
+
+
+<?php
+        echo '<div class="section-information">';
+
+        echo '<div class="section-title" style="text-align:center;">'. $module['ARRNAME'] .' :: Site</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+            foreach ( $module['SITE'] as $key => $show ) {
+
+                if ( $show['type'] != '3rd Party' ) {
+                    $typeColor = '404040';
+                } else {
+                    $typeColor = '000080';
+                }
+
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #ccebeb;padding:1px;padding-right:0px;padding-bottom:3px;">';
+                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
+                echo '</div>';
+            }
+        echo '</div></div>';
+
+
+
+
+        echo '<br style="clear:both;" />';
+        echo '<div class="section-title" style="text-align:center;">'. $module['ARRNAME'] .' :: Admin</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+            foreach ( $module['ADMIN'] as $key => $show ) {
+
+                if ( $show['type'] != '3rd Party' ) {
+                    $typeColor = '404040';
+                } else {
+                    $typeColor = '000080';
+                }
+
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #ccebeb;padding:1px;padding-right:0px;padding-bottom:3px;">';
+                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
+                echo '</div>';
+            }
+        echo '</div></div>';
+
+
+
+        echo '<br style="clear:both;" />';
+        echo '</div></div>';
+        // end content left block
+
+
+    echo '<div style="clear:both;"></div>';
+
+    showDev( $module );
+    unset ( $key, $show );
+    echo '</div>'; // end half-section container
+
+    echo '<div style="clear:both;"></div>';
+?>
+
+
+
+
+
+
+
+
+
+
+<?php
+        echo '<div class="section-information">';
+
+        echo '<div class="section-title" style="text-align:center;">'. $plugin['ARRNAME'] .' :: Site</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+
+
+
+        echo '<div class="mini-content-box-small" style="">';
+            foreach ( $plugin['SITE'] as $key => $show ) {
+
+                if ( $show['type'] != '3rd Party' ) {
+                    $typeColor = '404040';
+                } else {
+                    $typeColor = '000080';
+                }
+
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #ccebeb;padding:1px;padding-right:0px;padding-bottom:3px;">';
+                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
+                echo '</div>';
+            }
+        echo '</div></div>';
+
+
+        echo '<br style="clear:both;" />';
+        echo '</div></div>';
+        // end content left block
+
+
+    echo '<div style="clear:both;"></div>';
+
+    showDev( $plugin );
+    unset ( $key, $show );
+    echo '</div>'; // end half-section container
+
+    echo '<div style="clear:both;"></div>';
+?>
+
+
+
+
+
+
+
+
+
+
+<?php
+        echo '<div class="section-information">';
+
+        echo '<div class="section-title" style="text-align:center;">'. $template['ARRNAME'] .' :: Site</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+
+
+        echo '<div class="mini-content-box-small" style="">';
+            foreach ( $template['SITE'] as $key => $show ) {
+
+                if ( $show['type'] != '3rd Party' ) {
+                    $typeColor = '404040';
+                } else {
+                    $typeColor = '000080';
+                }
+
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #ccebeb;padding:1px;padding-right:0px;padding-bottom:3px;">';
+                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
+                echo '</div>';
+            }
+        echo '</div></div>';
+
+
+
+
+        echo '<br style="clear:both;" />';
+        echo '<div class="section-title" style="text-align:center;">'. $template['ARRNAME'] .' :: Admin</div>';
+
+        echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div style="clear:both;"></div>';
+        echo '</div>';
+
+        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+            foreach ( $template['ADMIN'] as $key => $show ) {
+
+                if ( $show['type'] != '3rd Party' ) {
+                    $typeColor = '404040';
+                } else {
+                    $typeColor = '000080';
+                }
+
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #ccebeb;padding:1px;padding-right:0px;padding-bottom:3px;">';
+                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
+                echo '</div>';
+            }
+        echo '</div></div>';
+
+
+
+        echo '<br style="clear:both;" />';
+        echo '</div></div>';
+        // end content left block
+
+
+    echo '<div style="clear:both;"></div>';
+
+    showDev( $template );
+    unset ( $key, $show );
+    echo '</div>'; // end half-section container
+
+    echo '<div style="clear:both;"></div>';
+?>
+
+
+
+
+
+
+
+
+
+
 
 
 
