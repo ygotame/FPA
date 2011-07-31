@@ -14,8 +14,8 @@
 
     /** SET THE FPA DEFAULTS *****************************************************************/
     //define ( '_FPA_BRA', TRUE );  // bug-report-mode
-    define ( '_FPA_DEV', TRUE );   // developer-mode
-    define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
+    //define ( '_FPA_DEV', TRUE );   // developer-mode
+    //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
 
     // Define some basic assistant information
@@ -121,6 +121,7 @@
         $fpa['diagLOG'] = 'fpaDiag.log';
     }
 
+    $snapshot['ARRNAME'] = 'Environment Support Snapshot';
     $instance['ARRNAME'] = 'Application Instance';
     $system['ARRNAME'] = 'Systems Environment';
     $phpenv['ARRNAME'] = 'PHP Environment';
@@ -2272,12 +2273,30 @@ function getDirectory( $path, $level = 0 ){
                 text-shadow: 1px 1px 1px #FFF;
             }
 
+             .snapshot-information {
+                margin: 0 auto;
+                margin-top:10px;
+                margin-bottom:10px;
+                padding: 5px;
+                width:740px;
+                background-color:#F3EFE0;
+                border:1px solid #999966;
+                /** CSS3 **/
+                /* text-shadow: 1px 1px 1px #FFF; */
+                box-shadow: 3px 3px 3px #C0C0C0;
+                -moz-box-shadow: 3px 3px 3px #C0C0C0;
+                -webkit-box-shadow: 3px 3px 3px #C0C0C0;
+                border-radius: 5px;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+            }
+
             .header-information {
                 margin: 0px auto;
                 margin-top:10px;
                 margin-bottom:10px;
                 padding: 5px;
-                width:750px;
+                width:740px;
                 background-color:#E0FFFF;
                 border:1px solid #42AEC2;
                 /** CSS3 **/
@@ -2318,7 +2337,7 @@ function getDirectory( $path, $level = 0 ){
                 margin-top:10px;
                 margin-bottom:10px;
                 padding: 5px;
-                width:750px;
+                width:740px;
                 background-color:#E0FFFF;
                 border:1px solid #42AEC2;
                 min-height: 188px;
@@ -2447,7 +2466,8 @@ function getDirectory( $path, $level = 0 ){
                 border: 1px solid #42AEC2;
 /*                border: 1px solid #808080; */
                 height: 45px;
-                background-color: #FFFFF0;
+/*                background-color: #FFFFF0; */
+                background-color: #FFFFFF;
 /*                border: 1px solid blue; */
                 /** CSS3 **/
                 border-radius: 5px;
@@ -2654,18 +2674,462 @@ function getDirectory( $path, $level = 0 ){
 
 <?php
     /** display the fpa heading ***************************************************************/
-    echo '<div class="header-information">';
+    echo '<div class="snapshot-information">';
     echo '<div class="header-title" style="">'. _RES .'</div>';
     echo '<div class="header-column-title" style="text-align:center;">'. _FPA_VER .': v'. _RES_VERSION .'-'. _RES_RELEASE .' ('. _RES_BRANCH .')</div>';
+    echo '<div style="text-align:right;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
     echo '<div style="clear:both;"></div>';
     echo '</div>';
 ?>
 
 
 
+
+
+
+
+
+
+<?php
+    /** ENVIRONMENT SUPPORT NOTICE ************************************************************
+     ** this section displays a message explaining if the system, mysql and php environment
+     ** can support the discovered version of Joomla!
+     **
+     ** REQUIREMENTS: (as far as I know!)
+     **          ____________________________________________
+     **          | J1.7/6 | J!1.5.0-14 | J1.5.0-23 |  J!1.0  |
+     ** ------------------------------------------------------
+     ** MIN PHP  | 5.2.4  |   4.3.10   |  4.3.10   |  3.0.1  |
+     ** MAX PHP  | -----  |   5.2.17   |  5.3.6    |  4.4.9  | // 5.0.0 was first release to include MySQLi support
+     ** ------------------------------------------------------
+     ** MIN MYSQL| 5.0.4  |   3.23.0   |  3.23.0   |  3.0.0  |
+     ** MAX MYSQL| -----  |   5.1.43   |  5.1.43   |  4.1.25 | // only limited to 4.1.29 & 5.1 because install sql still has ENGINE TYPE statements (removed in MySQL 5.5)
+     ** ------------------------------------------------------
+     ** BAD PHP  | -----  |   4.39, 4.4.2, 5.0.5   |  -----  |
+     ** BAD SQL  | -----  |        >5.0.0          |  -----  |
+     ** BAD ZEND | -----  |         2.5.10         |  -----  |
+     *****************************************************************************************/
+    $fpa['supportENV'] = '';
+
+    define ( '_FPA_SUPPHP', 'PHP Supports');
+    define ( '_FPA_SUPSQL', 'MySQL Supports');
+    define ( '_FPA_BADPHP', 'Known Buggy PHP');
+    define ( '_FPA_BADZND', 'Known Buggy Zend');
+
+    echo '<div class="snapshot-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
+//    echo '<div class="header-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
+//    echo '<div class="normal-note" style="width:750px;text-align:center;color:#4D8000!important;padding-top:10px;">';
+//    echo '<div style="margin: 0px auto;text-align:center;text-shadow: 1px 1px 1px #FFF; width:750px; background-color:#FEFEFE; border:1px solid #4D8000; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
+    echo '<span class="header-title">'. $snapshot['ARRNAME'] .'</span>';
+    echo '<div style="width:85%;margin:0 auto;margin-top:10px;">';
+
+    /** SUPPORT SECTIONS *************************************************************/
+    if ( $instance['cmsRELEASE'] == '1.7' ) {
+        $fpa['supportENV']['minPHP'] = '5.2.4';
+        $fpa['supportENV']['minSQL'] = '5.0.4';
+        $fpa['supportENV']['maxPHP'] = '6.0.0';  // latest release?
+        $fpa['supportENV']['maxSQL'] = '5.5.0';  // latest release?
+        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
+        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+
+    } elseif ( $instance['cmsRELEASE'] == '1.6' ) {
+        $fpa['supportENV']['minPHP'] = '5.2.4';
+        $fpa['supportENV']['minSQL'] = '5.0.4';
+        $fpa['supportENV']['maxPHP'] = '6.0.0';  // latest release?
+        $fpa['supportENV']['maxSQL'] = '5.5.0';  // latest release?
+        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
+        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+
+    } elseif ( $instance['cmsRELEASE'] == '1.5' ) {
+
+        if ( $instance['cmsDEVLEVEL'] <= '14' ) {
+            $fpa['supportENV']['minPHP'] = '4.3.10';
+            $fpa['supportENV']['minSQL'] = '3.23.0';
+            $fpa['supportENV']['maxPHP'] = '5.2.17';
+            $fpa['supportENV']['maxSQL'] = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
+
+        } else {
+            $fpa['supportENV']['minPHP'] = '4.3.10';
+            $fpa['supportENV']['minSQL'] = '3.23.0';
+            $fpa['supportENV']['maxPHP'] = '5.3.6';
+            $fpa['supportENV']['maxSQL'] = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
+
+        }
+
+        $fpa['supportENV']['badPHP'][0] = '4.3.9';
+        $fpa['supportENV']['badPHP'][1] = '4.4.2';
+        $fpa['supportENV']['badPHP'][2] = '5.0.4';
+        $fpa['supportENV']['badZND'][0] = '2.5.10';
+
+    } elseif ( $instance['cmsRELEASE'] == '1.0' ) {
+        $fpa['supportENV']['minPHP'] = '3.0.1';
+        $fpa['supportENV']['minSQL'] = '3.0.0';
+        $fpa['supportENV']['maxPHP'] = '4.4.9';
+        $fpa['supportENV']['maxSQL'] = '4.1.25';  // limited by ENGINE TYPE changes in 5.0 and install sql syntax
+        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
+        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+
+    } else {
+        $fpa['supportENV']['minPHP'] = _FPA_NA;
+        $fpa['supportENV']['minSQL'] = _FPA_NA;
+        $fpa['supportENV']['maxPHP'] = _FPA_NA;
+        $fpa['supportENV']['maxSQL'] = _FPA_NA;
+        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
+        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+    }
+
+
+
+            // minimum and maximum PHP support requirements met?
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' J!'. @$instance['cmsRELEASE'] .'<br />';
+
+                if ( $fpa['supportENV']['minPHP'] == _FPA_NA ) {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+                    $snapshot['phpSUP4J'] = _FPA_U;
+
+                } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '>=' ) ) AND ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '<=' ) ) ) {
+                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+                    $snapshot['phpSUP4J'] = _FPA_Y;
+
+                } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '<' ) ) OR ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '>' ) ) ) {
+                    echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+                    $snapshot['phpSUP4J'] = _FPA_N;
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+                    $snapshot['phpSUP4J'] = _FPA_U;
+
+                }
+
+            echo '</div>';
+
+
+
+            // PHP API
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP API<br />';
+
+                if ( @$phpenv['phpAPI'] ) {
+
+                    if ( @$phpenv['phpAPI'] == 'apache2handler' ) {
+                        echo '<div class="normal-note"><span class="warn-text">'. @$phpenv['phpAPI'] .'</span></div>';
+                    } else {
+                        echo '<div class="normal-note"><span class="ok">'. @$phpenv['phpAPI'] .'</span></div>';
+                    }
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+                }
+
+            echo '</div>';
+
+
+
+            // MySQL supported by PHP?
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQL<br />';
+
+                if ( @$phpextensions['mysql'] ) {
+                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+                    $snapshot['phpSUP4MYSQL'] = _FPA_Y;
+
+                } else {
+                    echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+                    $snapshot['phpSUP4MYSQL'] = _FPA_N;
+
+                }
+
+            echo '</div>';
+
+
+
+            // MySQLi supported by PHP?
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQLi<br />';
+
+                if ( @$phpextensions['mysqli'] ) {
+                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+                    $snapshot['phpSUP4MYSQL-i'] = _FPA_Y;
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
+                    $snapshot['phpSUP4MYSQL-i'] = _FPA_N;
+
+                }
+
+            echo '</div>';
+
+
+
+        echo '<br style="clear:both;" /><br />';
+
+
+
+            // minimum and maximum MySQL support requirements met?
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' J!'. @$instance['cmsRELEASE'] .'<br />';
+
+                if ( $fpa['supportENV']['minSQL'] == _FPA_NA OR @$database['dbERROR'] != _FPA_N ) {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+                    $snapshot['sqlSUP4J'] = _FPA_U;
+
+                } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '>=' ) ) AND ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '<=' ) ) ) {
+
+                    // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
+                    if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
+                        echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
+                        $snapshot['sqlSUP4J'] = _FPA_M;
+
+                    } else {
+                        echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+                        $snapshot['sqlSUP4J'] = _FPA_Y;
+
+                    }
+
+                } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '<' ) ) OR ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '>' ) ) ) {
+
+                    // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
+                    if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
+                        echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
+                        $snapshot['sqlSUP4J'] = _FPA_M;
+
+                    } else {
+                        echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+                        $snapshot['sqlSUP4J'] = _FPA_N;
+
+                    }
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+                    $snapshot['sqlSUP4J'] = _FPA_U;
+
+                }
+
+            echo '</div>';
+
+
+
+            // MySQLi supported by MySQL?
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' MySQLi<br />';
+
+                if ( !@$database['dbHOSTSERV'] OR @$database['dbERROR'] != _FPA_N ) {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+                    $snapshot['sqlSUP4SQL-i'] = _FPA_U;
+
+                } elseif ( version_compare( @$database['dbHOSTSERV'], '5.0.7', '>=' ) ) {
+                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+                    $snapshot['sqlSUP4SQL-i'] = _FPA_Y;
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
+                    $snapshot['sqlSUP4SQL-i'] = _FPA_N;
+
+                }
+
+            echo '</div>';
+
+
+
+            // J! connection to MySQL
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Connection Type<br />';
+
+                if ( @$instance['configDBTYPE'] ) {
+
+                    if ( $snapshot['sqlSUP4SQL-i'] == _FPA_N AND @$instance['configDBTYPE'] == 'mysqli') {
+                        echo '<div class="normal-note"><span class="alert-text">'. @$instance['configDBTYPE'] .'</span></div>';
+                    } else {
+                        echo '<div class="normal-note"><span class="ok">'. @$instance['configDBTYPE'] .'</span></div>';
+                    }
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+                }
+
+            echo '</div>';
+
+
+
+            // MySQL default collation
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Default Collation<br />';
+
+                if ( @$database['dbHOSTDEFCHSET'] ) {
+                    echo '<div class="normal-note"><span class="ok">'. @$database['dbHOSTDEFCHSET'] .'</span></div>';
+//                    $snapshot['phpSUP4MYSQL'] = _FPA_Y;
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+//                    $snapshot['phpSUP4MYSQL'] = _FPA_N;
+
+                }
+
+            echo '</div>';
+
+
+
+        echo '<br style="clear:both;" /><br />';
+
+
+
+            // Unsupported PHP version
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP Version<br />';
+
+                if ( version_compare( PHP_VERSION, '5', '<' ) ) {
+                    echo '<div class="normal-note"><span class="alert-text">'. PHP_VERSION .'</span></div>';
+
+                } else {
+                    echo '<div class="normal-note"><span class="ok">'. PHP_VERSION .'</span></div>';
+
+                }
+
+            echo '</div>';
+
+
+
+            // known buggy php releases (mainly for installation on 1.5)
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADPHP .'<br />';
+
+                foreach ( $fpa['supportENV']['badPHP'] as $badKey => $badValue ) {
+
+                    if ( version_compare( PHP_VERSION, $badValue, '==' ) ) {
+                        $badANS = _FPA_Y;
+                        continue;
+
+                    }
+
+                }
+
+                if ( @$badANS == _FPA_Y ) {
+                    $badClass = 'alert-text';
+                    $snapshot['buggyPHP'] = _FPA_N;
+
+                } else {
+                    $badANS = _FPA_N;
+                    $badClass = 'ok';
+                    $snapshot['buggyPHP'] = _FPA_N;
+
+                }
+
+            echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
+
+            echo '</div>';
+
+
+
+            // known buggy zend releases (mainly for installation on 1.5)
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADZND .'<br />';
+
+                foreach ( $fpa['supportENV']['badZND'] as $badKey => $badValue ) {
+
+                    if ( version_compare( $phpextensions['Zend Engine'], $badValue, '==' ) ) {
+                        $badANS = _FPA_Y;
+                        continue;
+
+                    }
+
+                }
+
+                if ( @$badANS == _FPA_Y ) {
+                    $badClass = 'alert-text';
+                    $snapshot['buggyZEND'] = _FPA_Y;
+
+                } else {
+                    $badANS = _FPA_N;
+                    $badClass = 'ok';
+                    $snapshot['buggyZEND'] = _FPA_N;
+
+                }
+
+            echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
+
+            echo '</div>';
+
+
+
+            // if Apache, is mod_rewrite installed (for SEF URL's)
+            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">Apache mod_rewrite<br />';
+
+                if ( @$apachemodules['ARRNAME'] ) {
+
+                    foreach ( $apachemodules as $key => $show ) {
+
+                        if ( $show == 'mod_rewrite' ) {
+                            $modANS = _FPA_Y;
+                            continue;
+
+                        }
+
+                    }
+
+                    if ( @$modANS == _FPA_Y ) {
+                        $modClass = 'ok';
+
+                    } else {
+                        $modANS = _FPA_N;
+                        $modClass = 'warn-text';
+
+                    }
+
+
+                echo '<div class="normal-note"><span class="'. $modClass .'">'. $modANS .'</span></div>';
+
+                } else {
+                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+                }
+
+            echo '</div>';
+
+
+
+
+
+//            echo '</div>';
+//            echo '<div style="clear:both;"><br /></div>';
+
+//            echo '<a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a>';
+//            echo '</div>';
+
+
+            // known buggy zend releases (mainly for installation on 1.5)
+/*
+            echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">'. _FPA_BADZND .'<br />';
+
+                foreach ( $fpa['badZEND'] as $badKey => $badValue ) {
+                    if ( version_compare( @$phpextensions ['Zend Engine'], $badValue, '==' ) ) {
+                        echo '<div class="normal-note"><span class="alert-text">'. _FPA_Y .'</span></div>';
+                    } else {
+                        echo '<div class="normal-note"><span class="ok">'. _FPA_N .'</span></div>';
+                    }
+                }
+
+            echo '</div>';
+
+*/
+
+            echo '</div>';
+            echo '<div style="clear:both;"><br /></div>';
+
+            echo '</div>';
+
+    showDev( $snapshot );
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- POST FORM -->
 <!--     <div class="dev-mode-information"> -->
-    <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:750px; background-color:#FEFEFE; border:1px solid #4D8000; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
+    <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:740px; background-color:#F3EFE0;border:1px solid #999966; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
+
         <div id="headerDiv" class="">
 
             <?php
@@ -2693,7 +3157,7 @@ function getDirectory( $path, $level = 0 ){
 
                 <div class="half-section-container" style="width:730px;">
 
-                    <div class="half-section-information-left" style="width:340px;padding-top:10px;padding-bottom:10px;">
+                    <div class="half-section-information-left" style="width:340px;padding-top:10px;padding-bottom:10px;border-color:#F3EFE0;box-shadow:none!important;-webkit-box-shadow:none!important;background-color:transparent!important;">
 
                         <div class="normal-note" style="min-height:135px;">
                         <strong><?php echo _FPA_INSTRUCTIONS;  ?></strong>
@@ -2737,7 +3201,7 @@ function getDirectory( $path, $level = 0 ){
                     </div>
 
 
-                    <div class="half-section-information-right" style="width:340px;padding-top:10px;padding-bottom:10px;">
+                    <div class="half-section-information-right" style="width:340px;padding-top:10px;padding-bottom:10px;border-color:#F3EFE0;box-shadow:none!important;-webkit-box-shadow:none!important;background-color:transparent!important;">
 
                         <div class="normal-note" style="min-height:135px;">
                         <strong>Run-Time Options</strong><br /><br />
@@ -2929,6 +3393,17 @@ function getDirectory( $path, $level = 0 ){
         </div>
     </div>
 <!-- POST FORM -->
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3335,10 +3810,16 @@ function getDirectory( $path, $level = 0 ){
 //    showDev( $system );
 
     echo '</div>'; // end half-section container
-
-
     showDev( $instance );
 ?>
+
+
+
+
+
+
+
+
 
 
 
@@ -3470,10 +3951,10 @@ function getDirectory( $path, $level = 0 ){
             if ( $database['dbDOCHECKS'] == _FPA_N ) {
                 echo '<span class="warn-text">&nbsp;'. _FPA_NOA .', '. _FPA_NC .'&nbsp;</span>';
 
-            } elseif ( $database['dbERROR'] == _FPA_N ) {
+            } elseif ( @$database['dbERROR'] == _FPA_N ) {
                 echo '<span class="ok">&nbsp;'. _FPA_Y .', '. _FPA_YCON .'&nbsp;</span>';
 
-            } elseif ( $database['dbERROR'] != _FPA_N ) {
+            } elseif ( @$database['dbERROR'] != _FPA_N ) {
                 echo '<span class="alert-text">&nbsp;'. _FPA_N .', '. _FPA_ER .'&nbsp;</span>';
 //                echo '<div class="warn-text">'. $database['dbERROR'] .'</div>';
 
@@ -3484,7 +3965,7 @@ function getDirectory( $path, $level = 0 ){
 
 
 
-        if ( $database['dbERROR'] AND $database['dbERROR'] != _FPA_N ) {
+        if ( @$database['dbERROR'] AND @$database['dbERROR'] != _FPA_N ) {
 
             echo '<div class="mini-content-box-small" style="">';
             echo '<div class="alert-text" style="line-height:10px;text-shadow: #fff 1px 1px 1px;border-bottom: 1px solid #ccebeb;font-size:8px;width:99%;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Error:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
@@ -3586,7 +4067,7 @@ function getDirectory( $path, $level = 0 ){
 //        echo '</div>';
 
             // only do mode/permissions checks if an instance was found in the intial checks
-            if ( $database['dbDOCHECKS'] == _FPA_Y AND $database['dbERROR'] == _FPA_N ) {
+            if ( $database['dbDOCHECKS'] == _FPA_Y AND @$database['dbERROR'] == _FPA_N ) {
             // this is the content area
 
 
@@ -3716,7 +4197,7 @@ function getDirectory( $path, $level = 0 ){
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
-        if ( $instance['instanceFOUND'] == _FPA_Y AND $database['dbERROR'] == _FPA_N ) {
+        if ( $instance['instanceFOUND'] == _FPA_Y AND @$database['dbERROR'] == _FPA_N ) {
 
             foreach ( $tables as $i => $show ) {
 
@@ -5118,22 +5599,22 @@ function getDirectory( $path, $level = 0 ){
 
 
 
-        echo '<div class="header-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
+        echo '<div class="snapshot-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
         echo '<span class="header-title">Legends and Settings</span>';
         echo '<div style="width:85%;margin:0 auto;margin-top:10px;">';
         // LEGENDS
-        echo '<div class="half-section-container" style="text-align:left;clear:all;">';
+        echo '<div class="half-section-container" style="clear:both;width:100%;">';
 //        echo '<div class="normal" style="width:30px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</div>';
-        echo '<div class="ok-hilite" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</div>';
-        echo '<div class="warn" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</div>';
-        echo '<div class="alert" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</div>';
-        echo '<div class="protected" style="text-align:center;width:18%;float:left;margin-left:10px;margin-right:10px;">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</div>';
+        echo '<div class="ok-hilite" style="text-align:center;width:21%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</div>';
+        echo '<div class="warn" style="text-align:center;width:21%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</div>';
+        echo '<div class="alert" style="text-align:center;width:21%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</div>';
+        echo '<div class="protected" style="text-align:center;width:21%;float:left;margin-left:10px;margin-right:10px;">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</div>';
         echo '</div>';
         echo '<div style="clear:both;"><br /></div>';
 
 
         // SELECTIONS
-        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Developer-Mode<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Developer-Mode<br />';
             if ( defined ( '_FPA_DEV' ) ) {
                 echo '<div class="normal-note">Enabled</div>';
             } else {
@@ -5141,15 +5622,7 @@ function getDirectory( $path, $level = 0 ){
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Diagnostic-Mode<br />';
-            if ( defined ( '_FPA_DIAG' ) ) {
-                echo '<div class="normal-note">Enabled</div>';
-            } else {
-                echo '<div class="normal-note">Disabled (Default)</div>';
-            }
-        echo '</div>';
-
-        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Information Privacy<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Information Privacy<br />';
             if ( $showProtected == 1 ) {
                 echo '<div class="normal-note"><span class="ok">None</span></div>';
             } elseif ( $showProtected == 2 ) {
@@ -5159,7 +5632,15 @@ function getDirectory( $path, $level = 0 ){
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">DataBase Tables<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Elevated Permissions<br />';
+            if ( $showElevated == 1 ) {
+                echo '<div class="normal-note">Show</div>';
+            } else {
+                echo '<div class="normal-note">Hide (Default)</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">DataBase Tables<br />';
             if ( $showTables == '1' ) {
                 echo '<div class="normal-note">Show</div>';
             } else {
@@ -5167,8 +5648,34 @@ function getDirectory( $path, $level = 0 ){
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">Elevated Permissions<br />';
-            if ( $showElevated == 1 ) {
+        echo '<br style="clear:both;" />';
+
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Diagnostic-Mode<br />';
+            if ( defined ( '_FPA_DIAG' ) ) {
+                echo '<div class="normal-note">Enabled</div>';
+            } else {
+                echo '<div class="normal-note">Disabled (Default)</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Components<br />';
+            if ( $showComponents == '1' ) {
+                echo '<div class="normal-note">Show</div>';
+            } else {
+                echo '<div class="normal-note">Hide (Default)</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Modules<br />';
+            if ( $showModules == '1' ) {
+                echo '<div class="normal-note">Show</div>';
+            } else {
+                echo '<div class="normal-note">Hide (Default)</div>';
+            }
+        echo '</div>';
+
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Plugins<br />';
+            if ( $showPlugins == '1' ) {
                 echo '<div class="normal-note">Show</div>';
             } else {
                 echo '<div class="normal-note">Hide (Default)</div>';
@@ -5178,7 +5685,7 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
         echo '<div style="clear:both;"><br /></div>';
 
-        echo '<a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a>';
+        echo '<div style="text-align:right!important;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
         echo '</div>';
 
 
