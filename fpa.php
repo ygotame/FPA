@@ -13,7 +13,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    //define ( '_FPA_BRA', TRUE );  // bug-report-mode
+    define ( '_FPA_BRA', TRUE );  // bug-report-mode
     //define ( '_FPA_DEV', TRUE );   // developer-mode
     //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
