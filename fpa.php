@@ -13,17 +13,20 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    define ( '_FPA_BRA', TRUE );  // bug-report-mode
-    //define ( '_FPA_DEV', TRUE );   // developer-mode
-    //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
+    //define ( '_FPA_BRA', TRUE );  // bug-report-mode
+    define ( '_FPA_DEV', TRUE );   // developer-mode
+    define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
 
     // Define some basic assistant information
     if ( defined ( '_FPA_BRA' ) ) {
         define ( '_RES', 'Bug Report Assistant' );
+
     } else {
         define ( '_RES', 'Forum Post Assistant' );
+
     }
+
     define ( '_RES_VERSION', '1.2.0' );
     define ( '_RES_RELEASE', 'Alpha' ); // can be Alpha, Beta, RC, Final
     define ( '_RES_BRANCH', 'Development' ); // can be playGround, currentDevelopment, masterPublic
@@ -32,61 +35,72 @@
 
 
 
-    // Display a "Processing" Message whilst the routines run
+    // Display a "Processing" Message while the routines run
     echo '<div id="slowScreenSplash" style="padding:20px;border: 2px solid #4D8000;background-color:#FFFAF0;border-radius: 10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;margin: 0 auto; margin-top:50px;margin-bottom:20px;width:700px;position:relative;z-index:9999;top:10%;" align="center">';
     echo '<h1>'. _RES .'</h1>';
-        if ( @$_POST['doIT'] == 1 ) {
-            echo '<h3 style="color:#4D8000;">Generating The Post Output For You</h3>';
-        } else {
-            echo '<h3 style="color:#4D8000;">Hang On In There While We Run Some Test Routines</h3>';
-        }
+
+    if ( @$_POST['doIT'] == 1 ) {
+        echo '<h3 style="color:#4D8000;">Generating The Post Output For You</h3>';
+    } else {
+        echo '<h3 style="color:#4D8000;">Hang On In There While We Run Some Test Routines</h3>';
+
+    }
+
     echo '<br />v'. _RES_VERSION .'-'. _RES_RELEASE .' ('. _RES_BRANCH .')';
     echo '</div>';
 
 
 
-// these are for testing only and are selected by the user on the FPA page in normal use
-    // 0 = hide,  1= display (default is 'hide')
-
-
+    // setup the default runtime parameters and collect the POST data changes, if any
     if ( @$_POST['showProtected'] ) {
         $showProtected  = @$_POST['showProtected'];
+
     } else {
         $showProtected = 2; // default (limited masking)
-//        @$_POST['showProtected'] = $showProtected;
-    }
 
+    }
 
     if ( @$_POST['showElevated'] == 1 ) {
         $showElevated  = 1;
+
     } else {
         $showElevated = 0; // default (hide)
-    }
 
+    }
 
     if ( @$_POST['showTables'] == 1 ) {
         $showTables  = 1;
+
     } else {
         $showTables = 0; // default (hide)
+
     }
 
     if ( @$_POST['showComponents'] == 1 ) {
         $showComponents  = 1;
+
     } else {
         $showComponents = 0; // default (hide)
+
     }
 
     if ( @$_POST['showModules'] == 1 ) {
         $showModules  = 1;
+
     } else {
         $showModules = 0; // default (hide)
+
     }
 
     if ( @$_POST['showPlugins'] == 1 ) {
         $showPlugins  = 1;
+
     } else {
         $showPlugins = 0; // default (hide)
+
     }
+
+
 
     /** TIMER-POPS ***************************************************************************/
     // mt_get: returns the current microtime
@@ -94,11 +108,13 @@
         global $mt_time;
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
+
     }
 
     // mt_start: starts the microtime counter
     function mt_start(){
         global $mt_time; $mt_time = mt_get();
+
     }
 
     // mt_end: calculates the elapsed time
@@ -106,86 +122,88 @@
         global $mt_time;
         $time_end = mt_get();
         return round($time_end - $mt_time, $len);
+
     }
 
     // start the timer-pop
     mt_start();
 
-//!TODO setup these like the phpreq array?
+
+
     // build the initial arrays used throughout fpa
     if ( defined ( '_FPA_BRA' ) ) {
-        $fpa['ARRNAME'] = 'Bug Report Assistant';
-        $fpa['diagLOG'] = 'braDiag.log';
+        $fpa['ARRNAME']         = 'Bug Report Assistant';
+        $fpa['diagLOG']         = 'braDiag.log';
+
     } else {
-        $fpa['ARRNAME'] = 'Forum Post Assistant';
-        $fpa['diagLOG'] = 'fpaDiag.log';
+        $fpa['ARRNAME']         = 'Forum Post Assistant';
+        $fpa['diagLOG']         = 'fpaDiag.log';
+
     }
 
-    $snapshot['ARRNAME'] = 'Environment Support Snapshot';
-    $instance['ARRNAME'] = 'Application Instance';
-    $system['ARRNAME'] = 'Systems Environment';
-    $phpenv['ARRNAME'] = 'PHP Environment';
-    $phpenv['phpLASTERR'] = '';
-    $phpextensions['ARRNAME'] = 'PHP Extensions';
-    $phpreq['ARRNAME'] = 'PHP Requirements';
-    $phpreq['libxml'] = '';
-    $phpreq['xml'] = '';
-    $phpreq['zlib'] = '';
-    $phpreq['zip'] = '';
-    $phpreq['openssl'] = '';
-    $phpreq['curl'] = '';
-    $phpreq['iconv'] = '';
-    $phpreq['mbstring'] = '';
-    $phpreq['mysql'] = '';
-    $phpreq['mysqli'] = '';
-    $phpreq['mcrypt'] = '';
-    $phpreq['suhosin'] = '';
-//    $phpreq['test'] = '';
-    $apachemodules['ARRNAME'] = 'Apache Modules';
-    $apachereq['ARRNAME'] = 'Apache Requirements';
-    $apachereq['mod_rewrite'] = '';
-    $apachereq['mod_expires'] = '';
-    $apachereq['mod_deflate'] = '';
-    $apachereq['mod_security'] = '';
-    $apachereq['mod_evasive'] = '';
+    $snapshot['ARRNAME']        = 'Environment Support Snapshot';
+    $instance['ARRNAME']        = 'Application Instance';
+    $system['ARRNAME']          = 'Systems Environment';
+    $phpenv['ARRNAME']          = 'PHP Environment';
+    $phpenv['phpLASTERR']       = '';
+    $phpextensions['ARRNAME']   = 'PHP Extensions';
+    $phpreq['ARRNAME']          = 'PHP Requirements';
+    $phpreq['libxml']           = '';
+    $phpreq['xml']              = '';
+    $phpreq['zlib']             = '';
+    $phpreq['zip']              = '';
+    $phpreq['openssl']          = '';
+    $phpreq['curl']             = '';
+    $phpreq['iconv']            = '';
+    $phpreq['mbstring']         = '';
+    $phpreq['mysql']            = '';
+    $phpreq['mysqli']           = '';
+    $phpreq['mcrypt']           = '';
+    $phpreq['suhosin']          = '';
+//    $phpreq['test']             = '';
+    $apachemodules['ARRNAME']   = 'Apache Modules';
+    $apachereq['ARRNAME']       = 'Apache Requirements';
+    $apachereq['mod_rewrite']   = '';
+    $apachereq['mod_expires']   = '';
+    $apachereq['mod_deflate']   = '';
+    $apachereq['mod_security']  = '';
+    $apachereq['mod_evasive']   = '';
     $apachereq['mod_dosevasive'] = '';
-    $apachereq['mod_ssl'] = '';
-    $apachereq['mod_qos'] = '';
-    $apachereq[' mod_userdir'] = '';
-//    $apachereq['test'] = '';
-    $database['ARRNAME'] = 'dataBase Instance';
-    $tables['ARRNAME'] = 'Table Structure';
-    $modecheck['ARRNAME'] = 'Permissions Checks';
+    $apachereq['mod_ssl']       = '';
+    $apachereq['mod_qos']       = '';
+    $apachereq[' mod_userdir']  = '';
+//    $apachereq['test']          = '';
+    $database['ARRNAME']        = 'dataBase Instance';
+    $tables['ARRNAME']          = 'Table Structure';
+    $modecheck['ARRNAME']       = 'Permissions Checks';
     // folders to be tested for permissions
-    $folders['ARRNAME'] = 'Core Folders';
-    $folders[] = 'images/';
-    $folders[] = 'components/';
-    $folders[] = 'modules/';
-    $folders[] = 'plugins/';                       // J!1.5 and above | either / or
-    $folders[] = 'mambots/';                       // J!1.0 only
-    $folders[] = 'language/';
-    $folders[] = 'templates/';
-    $folders[] = 'cache/';
-    $folders[] = 'logs/';
-    $folders[] = 'tmp/';
-    $folders[] = 'administrator/components/';
-    $folders[] = 'administrator/modules/';
-    $folders[] = 'administrator/language/';
-    $folders[] = 'administrator/templates/';
-    $folders[] = 'sites/';                         // nooku only
-//    $folders[] = 'test/';
-    $elevated['ARRNAME'] = 'Elevated Permissions';
-    $component['ARRNAME'] = 'Components';
-    $module['ARRNAME'] = 'Modules';
-    $plugin['ARRNAME'] = 'Plugins';
-    $template['ARRNAME'] = 'Templates';
-//    $adminComponent['ARRNAME'] = 'Admin Components';
-//    $adminModule['ARRNAME'] = 'Admin Modules';
-//    $adminPlugin['ARRNAME'] = 'Admin Plugins';
-//    $adminTemplate['ARRNAME'] = 'Admin Templates';
+    $folders['ARRNAME']         = 'Core Folders';
+    $folders[]                  = 'images/';
+    $folders[]                  = 'components/';
+    $folders[]                  = 'modules/';
+    $folders[]                  = 'plugins/';               // J!1.5 and above | either / or
+    $folders[]                  = 'mambots/';               // J!1.0 only
+    $folders[]                  = 'language/';
+    $folders[]                  = 'templates/';
+    $folders[]                  = 'cache/';
+    $folders[]                  = 'logs/';
+    $folders[]                  = 'tmp/';
+    $folders[]                  = 'administrator/components/';
+    $folders[]                  = 'administrator/modules/';
+    $folders[]                  = 'administrator/language/';
+    $folders[]                  = 'administrator/templates/';
+    $folders[]                  = 'sites/';                 // nooku only?
+//    $folders[]                  = 'test/';
+    $elevated['ARRNAME']        = 'Elevated Permissions';
+    $component['ARRNAME']       = 'Components';
+    $module['ARRNAME']          = 'Modules';
+    $plugin['ARRNAME']          = 'Plugins';
+    $template['ARRNAME']        = 'Templates';
+?>
 
 
 
+<?php
     // build the developer-mode function to display the raw arrays
     function showDev( &$section ) {
 
@@ -196,10 +214,12 @@
             echo '<span style="color: #808080;font-weight:normal;text-transform:lowercase;">[developer-mode information]</span><br />';
             echo $section['ARRNAME'] .' Array :';
             echo '</div>';
+
             echo '<div style="-moz-box-shadow: inset -3px -3px 3px #CAE897;-webkit-box-shadow: inset -3px -3px 3px #CAE897;box-shadow: inset -3px -3px 3px #CAE897;padding:5px;background-color:#E2F4C4; border:1px solid #4D8000;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
                 print_r ( $section );
             echo '<p><em>elapse runtime: <strong>'. mt_end() .'</strong> seconds</em></p>';
             echo '</div>';
+
             echo '</div>';
         } // end if _FPA_DEV defined
 
@@ -208,23 +228,23 @@
 
 
 
-
-
 <?php
     /** DETERMINE SOME SETTINGS BEFORE FPA MIGHT PLAY WITH THEM ******************************/
-    $phpenv['phpERRORDISPLAY'] = ini_get( 'display_errors' );
-    $phpenv['phpERRORREPORT'] = ini_get( 'error_reporting' );
-    $fpa['ORIGphpMEMLIMIT'] = ini_get( 'memory_limit' );
-    $fpa['ORIGphpMAXEXECTIME'] = ini_get( 'max_execution_time' );
-    $phpenv['phpERRLOGFILE'] = ini_get( 'error_log' );
-    $system['sysSHORTOS'] = strtoupper( substr( PHP_OS, 0, 3 ) ); // WIN, DAR, LIN, SOL
-    $system['sysSHORTWEB'] = strtoupper( substr( $_SERVER['SERVER_SOFTWARE'], 0, 3 ) ); // APA = Apache, MIC = MS IIS
+    $phpenv['phpERRORDISPLAY']  = ini_get( 'display_errors' );
+    $phpenv['phpERRORREPORT']   = ini_get( 'error_reporting' );
+    $fpa['ORIGphpMEMLIMIT']     = ini_get( 'memory_limit' );
+    $fpa['ORIGphpMAXEXECTIME']  = ini_get( 'max_execution_time' );
+    $phpenv['phpERRLOGFILE']    = ini_get( 'error_log' );
+    $system['sysSHORTOS']       = strtoupper( substr( PHP_OS, 0, 3 ) ); // WIN, DAR, LIN, SOL
+    $system['sysSHORTWEB']      = strtoupper( substr( $_SERVER['SERVER_SOFTWARE'], 0, 3 ) ); // APA = Apache, MIC = MS IIS
+
 
 
     // if the user see's Out Of Memory or Execution Timer pops, double the current memory_limit and max_execution_time
     if ( @$_POST['increasePOPS'] == 1 ) {
         ini_set ( 'memory_limit', $fpa['ORIGphpMEMLIMIT']*2 );
         ini_set ( 'max_execution_time', $fpa['ORIGphpMAXEXECTIME']*2 );
+
     }
 
 
@@ -237,7 +257,6 @@
 
     /** is there an existing php error-log file? *********************************************/
     if ( file_exists( $phpenv['phpERRLOGFILE'] ) ) {
-
         // when was the file last modified?
         $phpenv['phpLASTERRDATE'] = date ("dS F Y H:i:s.", filemtime( $phpenv['phpERRLOGFILE'] ));
 
@@ -250,13 +269,13 @@
 
             // if the file was modified less than one day ago, grab the last error entry
             if ( $file_time - $now_time < $age ) {
-//!FIXME memory allocation error on large error file
+                // !FIXME memory allocation error on large php_error file
                 $phpenv['phpLASTERR'] = array_pop( file( $phpenv['phpERRLOGFILE'] ) );
+
             }
+
     }
 ?>
-
-
 
 
 
@@ -270,41 +289,39 @@
      *****************************************************************************************/
 
     if ( defined( '_FPA_DEV' ) OR defined( '_FPA_DIAG' ) ) {
-
         // these can only have inline styling because it is outputed before the html styling
         echo '<div style="text-align:center; margin:0px auto; margin-bottom: 5px; width:750px;">';
 
         if ( defined( '_FPA_DEV' ) AND defined( '_FPA_DIAG' ) ) {
             $divwidth = '350px';
+
         } else {
             $divwidth = '740px';
+
         }
-            // display developer-mode notice
-            if ( defined( '_FPA_DEV' ) ) {
-                ini_set('display_errors','Off'); // default-display
 
-                echo '<div style="text-shadow: 1px 1px 1px #FFF;float:right; text-align:center; width:'. $divwidth .'; background-color:#CAFFD8; border:1px solid #4D8000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
-                echo '<strong style="color:#4D8000;">DEVELOPER MODE is enabled</strong><br />';
-                echo 'This means that a variety of diagnostic information will be displayed on-screen to assist with fpa troubleshooting.';
-                echo '</div>';
-            } // end developer-mode display
+        // display developer-mode notice
+        if ( defined( '_FPA_DEV' ) ) {
+            ini_set( 'display_errors', 'Off' ); // default-display
 
+            echo '<div style="text-shadow: 1px 1px 1px #FFF;float:right; text-align:center; width:'. $divwidth .'; background-color:#CAFFD8; border:1px solid #4D8000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
+            echo '<strong style="color:#4D8000;">DEVELOPER MODE is enabled</strong><br />';
+            echo 'This means that a variety of diagnostic information will be displayed on-screen to assist with fpa troubleshooting.';
+            echo '</div>';
 
-            // display diagnostic-mode notice
-            if ( defined( '_FPA_DIAG' ) ) {
-                ini_set('display_errors','On');
-/*
-                    // Try and set PHP's error reporting to maximum useful level
-                    if ( $currentERRRPT < 'E_ALL' ) {
-                        ini_set('error_reporting', version_compare(PHP_VERSION,5,'>=') && version_compare(PHP_VERSION,6,'<') ?E_ALL^E_STRICT:E_ALL);
- */
-                error_reporting( -1 );
-                ini_set('error_log', $fpa['diagLOG'] );
+        } // end developer-mode display
 
-                echo '<div style="text-shadow: 1px 1px 1px #FFF;float:left; text-align:center; width:'. $divwidth .'; background-color:#CAFFD8; border:1px solid #4D8000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
-                echo '<strong style="color:#4D8000;">DIAGNOSTIC MODE is enabled</strong><br />';
-                echo 'This means that all php errors will be displayed on-screen and logged out to a file named '. $fpa['diagLOG'] .'.';
-                echo '</div>';
+        // display diagnostic-mode notice
+        if ( defined( '_FPA_DIAG' ) ) {
+            ini_set( 'display_errors', 1 );
+
+            ini_set ( 'error_reporting', '-1' );
+            ini_set( 'error_log', $fpa['diagLOG'] );
+
+            echo '<div style="text-shadow: 1px 1px 1px #FFF;float:left; text-align:center; width:'. $divwidth .'; background-color:#CAFFD8; border:1px solid #4D8000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
+            echo '<strong style="color:#4D8000;">DIAGNOSTIC MODE is enabled</strong><br />';
+            echo 'This means that all php errors will be displayed on-screen and logged out to a file named '. $fpa['diagLOG'] .'.';
+            echo '</div>';
 
 
                 if ( file_exists( $fpa['diagLOG'] ) ) {
@@ -314,48 +331,47 @@
                     $fpa['fpaLASTERR'] = @array_pop( file( $fpa['diagLOG'] ) );
                     echo $fpa['fpaLASTERR'];
                     echo '</div>';
+
                 } else {
                     echo '<br style="clear:both;" /><div style="margin-top:10px;text-align:left;text-shadow: 1px 1px 1px #FFF; width:740px; background-color:#FFFFCC; border:1px solid #800000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
                     echo '<strong style="color:#800000;">LAST DIAGNOSTIC MODE ERROR</strong> in '. $fpa['diagLOG'] .'<br />';
                     echo 'No FPA errors to report at the moment';
                     echo '</div>';
+
                 }
 
-            } // end diagnostic-mode display
-
+        } // end diagnostic-mode display
 
         echo '<br style="clear:both;" />';
         echo '</div>';
 
+
     } else { // end developer- or diag -mode display
-      ini_set('display_errors','Off'); // default-display
+        ini_set( 'display_errors', 0 ); // default-display
+
     }
 
 
-    // This is a test variable to check that diagnostic mode works, uncomment to cause an Undefined Variable notice
-    // this will display an error if Developer-mode or diagnostic-mode are enabled, otherwise you shouldn't see an error message
-    //echo $ExpectedDiagDevModeErrorVariable;
+    /******************************************************************************************************************/
+    /** This is a test variable to check that diagnostic mode works, uncomment to cause an Undefined Variable notice **/
+    /** this will display an error if Developer-mode/diagnostic-mode are enabled, otherwise you shouldn't see errors **/
+//    echo $ExpectedDiagDevModeErrorVariable;
+    /******************************************************************************************************************/
 
 
     /** SET THE JOOMLA! PARENT FLAG AND CONSTANTS ********************************************/
     define ( '_VALID_MOS', 1 ); // for J!1.0
     define ( '_JEXEC', 1 );     // for J!1.5, J!1.6, J!1.7
-///    define ( 'JPATH_BASE', dirname( __FILE__ ) );
-  // Define Various ROOT directories
-  define ( 'FPA_ROOT', dirname( __FILE__ ) );   // JTS2 ROOT
-//  define ( 'FPA_DIR', substr(FPA_ROOT, 1)=='/'?'':basename(FPA_ROOT) );   // JTS2 ROOT Directory Name
-//  define ( 'SITE_ROOT', trim(FPA_ROOT, FPA_DIR) );  // Main Site ROOT
+
+
 
     /** DEFINE LANGUAGE STRINGS **************************************************************/
     define ( '_FPA_LEGEND', 'Legend' );
 
-    /** php options and messages *************************************************************/
     define ( '_PHP_DISERR', 'Display PHP Errors Enabled' );
     define ( '_PHP_ERRREP', 'PHP Error Reporting Enabled' );
     define ( '_PHP_LOGERR', 'PHP Errors Being Logged To File' );
 
-
-    /** user instructions and data entry fields **********************************************/
     define ( '_FPA_INSTRUCTIONS', 'Instructions' );
     define ( '_FPA_INS_1', 'Enter your problem description <i>(optional)</i>' );
     define ( '_FPA_INS_2', 'Enter any error messages you see <i>(optional)</i>' );
@@ -418,17 +434,9 @@
     define ( '_FPA_LOCAL', 'Local' );
     define ( '_FPA_REMOTE', 'Remote' );
 
-    // instance test strings
-    // system test strings
-    // php test strings
     define ( '_PHP_VERLOW', 'PHP version too low' );
-    // web-server test strings
-    // mysql test strings
-    // permissions test strings
     /** END LANGUAGE STRINGS *****************************************************************/
 ?>
-
-
 
 
 
@@ -451,110 +459,117 @@
     }
 
 
+
     /** what version is the instance? ********************************************************/
-    if ( file_exists( 'includes/version.php' ) AND file_exists( 'mambots/' ) ) {
     // J1.0 includes/version.php & mambots folder
+    if ( file_exists( 'includes/version.php' ) AND file_exists( 'mambots/' ) ) {
         $instance['cmsVFILE'] = 'includes/version.php';
 
-    } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'xmlrpc/' ) ) {
     // J1.5 libraries/joomla/version.php & xmlrpc folder
+    } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'xmlrpc/' ) ) {
         $instance['cmsVFILE'] = 'libraries/joomla/version.php';
 
-    } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'libraries/koowa/koowa.php' ) ) {
     // J1.5 & Nooku Server libraries/joomla/version.php & koowa folder
+    } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'libraries/koowa/koowa.php' ) ) {
         $instance['cmsVFILE'] = 'libraries/joomla/version.php';
 
-    } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'joomla.xml' ) ) {
     // J1.6 libraries/joomla/version.php & joomla.xml files
+    } elseif ( file_exists( 'libraries/joomla/version.php' ) AND file_exists( 'joomla.xml' ) ) {
         $instance['cmsVFILE'] = 'libraries/joomla/version.php';
 
-    } elseif ( file_exists( 'includes/version.php' ) AND file_exists( 'libraries/platform.php' ) ) {
     // J1.7 includes/version.php & libraries/joomla/platform.php files
+    } elseif ( file_exists( 'includes/version.php' ) AND file_exists( 'libraries/platform.php' ) ) {
         $instance['cmsVFILE'] = 'includes/version.php';
 
-    } else {
     // fpa could find the required files to determine version(s)
+    } else {
         $instance['cmsVFILE'] = _FPA_N;
+
     }
 
 
+
     /** what version is the framework? (J!1.7 & above) ***************************************/
-    if ( file_exists( 'libraries/platform.php' ) ) {
     // J1.7 libraries/joomla/platform.php
+    if ( file_exists( 'libraries/platform.php' ) ) {
         $instance['platformVFILE'] = 'libraries/platform.php';
 
-    } elseif ( file_exists( 'libraries/koowa/koowa.php' ) ) {
     // J1.5 Nooku Server libraries/koowa/koowa.php
+    } elseif ( file_exists( 'libraries/koowa/koowa.php' ) ) {
         $instance['platformVFILE'] = 'libraries/koowa/koowa.php';
 
     } else {
         $instance['platformVFILE'] = _FPA_N;
+
     }
+
 
 
     // read the cms version file into $cmsVContent (all versions)
     if ( $instance['cmsVFILE'] != _FPA_N ) {
         $cmsVContent = file_get_contents( $instance['cmsVFILE'] );
+            // find the basic cms information
+            preg_match ( '#\$PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsPRODUCT );
+            preg_match ( '#\$RELEASE.*=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsRELEASE );
+            preg_match ( '#\$(DEV_LEVEL.*|MAINTENANCE.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsDEVLEVEL );
+            preg_match ( '#\$(DEV_STATUS.*|STATUS.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsDEVSTATUS );
+            preg_match ( '#\$(CODENAME.*|CODE_NAME.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsCODENAME );
+            preg_match ( '#\$(RELDATE.*|RELEASE_DATE.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsRELDATE );
 
-        // find the basic cms information
-        preg_match ( '#\$PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsPRODUCT );
-        preg_match ( '#\$RELEASE.*=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsRELEASE );
-        preg_match ( '#\$(DEV_LEVEL.*|MAINTENANCE.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsDEVLEVEL );
-        preg_match ( '#\$(DEV_STATUS.*|STATUS.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsDEVSTATUS );
-        preg_match ( '#\$(CODENAME.*|CODE_NAME.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsCODENAME );
-        preg_match ( '#\$(RELDATE.*|RELEASE_DATE.*)=\s[\'|\"](.*)[\'|\"];#', $cmsVContent, $cmsRELDATE );
+                $instance['cmsPRODUCT'] = $cmsPRODUCT[1];
+                $instance['cmsRELEASE'] = $cmsRELEASE[1];
+                $instance['cmsDEVLEVEL'] = $cmsDEVLEVEL[2];
+                $instance['cmsDEVSTATUS'] = $cmsDEVSTATUS[2];
+                $instance['cmsCODENAME'] = $cmsCODENAME[2];
+                $instance['cmsRELDATE'] = $cmsRELDATE[2];
 
-            $instance['cmsPRODUCT'] = $cmsPRODUCT[1];
-            $instance['cmsRELEASE'] = $cmsRELEASE[1];
-            $instance['cmsDEVLEVEL'] = $cmsDEVLEVEL[2];
-            $instance['cmsDEVSTATUS'] = $cmsDEVSTATUS[2];
-            $instance['cmsCODENAME'] = $cmsCODENAME[2];
-            $instance['cmsRELDATE'] = $cmsRELDATE[2];
     }
+
 
 
     // read the platform version file into $platformVContent (J!1.7 & above only)
     if ( $instance['platformVFILE'] != _FPA_N ) {
         $platformVContent = file_get_contents( $instance['platformVFILE'] );
 
-        // find the basic platform information
-        if ( $instance['platformVFILE'] == 'libraries/koowa/koowa.php' ) {
-        // Nooku platform based
+            // find the basic platform information
+            if ( $instance['platformVFILE'] == 'libraries/koowa/koowa.php' ) {
 
-            preg_match ( '#VERSION.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELEASE );
-            preg_match ( '#VERSION.*=\s[\'|\"].*-(.*)-.*[\'|\"];#', $platformVContent, $platformDEVSTATUS );
+                // Nooku platform based
+                preg_match ( '#VERSION.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELEASE );
+                preg_match ( '#VERSION.*=\s[\'|\"].*-(.*)-.*[\'|\"];#', $platformVContent, $platformDEVSTATUS );
 
-                $instance['platformPRODUCT'] = 'Nooku';
-                $instance['platformRELEASE'] = $platformRELEASE[1];
-                $instance['platformDEVSTATUS'] = $platformDEVSTATUS[1];
+                    $instance['platformPRODUCT'] = 'Nooku';
+                    $instance['platformRELEASE'] = $platformRELEASE[1];
+                    $instance['platformDEVSTATUS'] = $platformDEVSTATUS[1];
 
-        } else {
-        // default to the Joomla! platform, as it is most common at the momemt
+            } else {
 
-        preg_match ( '#PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformPRODUCT );
-        preg_match ( '#RELEASE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELEASE );
-        preg_match ( '#MAINTENANCE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformDEVLEVEL );
-        preg_match ( '#STATUS.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformDEVSTATUS );
-        preg_match ( '#CODE_NAME.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformCODENAME );
-        preg_match ( '#RELEASE_DATE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELDATE );
+                // default to the Joomla! platform, as it is most common at the momemt
+                preg_match ( '#PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformPRODUCT );
+                preg_match ( '#RELEASE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELEASE );
+                preg_match ( '#MAINTENANCE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformDEVLEVEL );
+                preg_match ( '#STATUS.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformDEVSTATUS );
+                preg_match ( '#CODE_NAME.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformCODENAME );
+                preg_match ( '#RELEASE_DATE.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformRELDATE );
 
-            $instance['platformPRODUCT'] = $platformPRODUCT[1];
-            $instance['platformRELEASE'] = $platformRELEASE[1];
-            $instance['platformDEVLEVEL'] = $platformDEVLEVEL[1];
-            $instance['platformDEVSTATUS'] = $platformDEVSTATUS[1];
-            $instance['platformCODENAME'] = $platformCODENAME[1];
-            $instance['platformRELDATE'] = $platformRELDATE[1];
-        }
+                    $instance['platformPRODUCT'] = $platformPRODUCT[1];
+                    $instance['platformRELEASE'] = $platformRELEASE[1];
+                    $instance['platformDEVLEVEL'] = $platformDEVLEVEL[1];
+                    $instance['platformDEVSTATUS'] = $platformDEVSTATUS[1];
+                    $instance['platformCODENAME'] = $platformCODENAME[1];
+                    $instance['platformRELDATE'] = $platformRELDATE[1];
+            }
+
     }
 
 
-    /** is Joomla! installed/configured? *****************************************************/
 
-    // !TODO add finding configuration outside of "/"
+    /** is Joomla! installed/configured? *****************************************************/
     // determine exactly where the REAL configuration file is, it might not be the one in the "/" folder
-    if ( $instance['cmsRELEASE'] == '1.0' ) {
+    if ( @$instance['cmsRELEASE'] == '1.0' ) {
 
         if ( file_exists( 'configuration.php' ) ) {
+// !TODO add finding configuration outside of "/"
 //          $configContent = file_get_contents( 'configuration.php' );
 
 //              if ( preg_match( '#require.*[\"|\'](.*)[\"|\']#', $configContent ) ) {
@@ -573,18 +588,22 @@
 
             }
 
-    } elseif ( $instance['cmsRELEASE'] == '1.5' ) {
+    } elseif ( @$instance['cmsRELEASE'] == '1.5' ) {
         $instance['configPATH'] = 'configuration.php';
-    } elseif ( $instance['cmsRELEASE'] >= '1.6' ) {
+
+    } elseif ( @$instance['cmsRELEASE'] >= '1.6' ) {
 
         // look for a 'defines' override file in the "/" folder.
         if ( file_exists( 'defines.php' ) ) {
             $instance['configPATH'] = 'configuration.php';
+
         } elseif ( file_exists( 'includes/defines.php' ) ) {
             $instance['configPATH'] = 'configuration.php';
+
         } else {
             $instance['configDEFINE'] = _FPA_NF;
             $instance['configPATH'] = 'configuration.php';
+
         }
 
     } else {
@@ -593,196 +612,210 @@
     }
 
 
-
-
-
-    if ( file_exists( $instance['configPATH'] ) ) {
     // find the configuration file (all versions)
+    if ( file_exists( $instance['configPATH'] ) ) {
         $instance['instanceCONFIGURED'] = _FPA_Y;
 
         // determine it's ownership and mode
         if ( is_writable( $instance['configPATH'] ) ) {
-//        if ( is_writable( 'configuration.php' ) ) {
-		  $instance['configWRITABLE']	= _FPA_Y;
+            $instance['configWRITABLE']	= _FPA_Y;
+
         } else {
-		  $instance['configWRITABLE']	= _FPA_N;
+            $instance['configWRITABLE']	= _FPA_N;
+
         }
 
+
         $instance['configMODE'] = substr( sprintf('%o', fileperms( $instance['configPATH'] ) ),-3, 3 );
-//        $instance['configMODE'] = substr( sprintf('%o', fileperms( 'configuration.php' ) ),-3, 3 );
+
 
         if ( function_exists( 'posix_getpwuid' ) AND $system['sysSHORTOS'] != 'WIN' ) { // gets the UiD and converts to 'name' on non Windows systems
             $instance['configOWNER'] = posix_getpwuid( fileowner( $instance['configPATH'] ) );
             $instance['configGROUP'] = posix_getgrgid( filegroup( $instance['configPATH'] ) );
-//            $instance['configOWNER'] = posix_getpwuid(fileowner('configuration.php'));
-//            $instance['configGROUP'] = posix_getgrgid(filegroup('configuration.php'));
+
         } else { // only get the UiD for Windows, not 'name'
             $instance['configOWNER']['name'] = fileowner( $instance['configPATH'] );
             $instance['configGROUP']['name'] = filegroup( $instance['configPATH'] );
-//            $instance['configOWNER']['name'] = fileowner( 'configuration.php' );
-//            $instance['configGROUP']['name'] = filegroup( 'configuration.php' );
+
         }
 
 
         /** if present, is the configuration file valid? *****************************************/
-        // !TODO path to configuration.php will become a variable from finding the REAL configuration, above
         $cmsCContent = file_get_contents( $instance['configPATH'] );
 
             if ( preg_match ( '#(\$mosConfig_)#', $cmsCContent ) ) {
                 $instance['configVALIDFOR'] = '1.0';
+
             } elseif ( preg_match ( '#(var)#', $cmsCContent ) ) {
                 $instance['configVALIDFOR'] = '1.5';
+
             } elseif ( preg_match ( '#(public)#', $cmsCContent ) AND $instance['platformVFILE'] == _FPA_N ) {
                 $instance['configVALIDFOR'] = '1.6';
+
             } elseif ( preg_match ( '#(public)#', $cmsCContent ) AND $instance['platformVFILE'] != _FPA_N ) {
                 $instance['configVALIDFOR'] = '1.7 and above';
+
             } else {
                 $instance['configVALIDFOR'] = _FPA_U;
+
             }
 
-
-                // fpa found a configuration.php but couldn't determine the version, is it valid?
-                if ( $instance['configVALIDFOR'] == _FPA_U ) {
+            // fpa found a configuration.php but couldn't determine the version, is it valid?
+            if ( $instance['configVALIDFOR'] == _FPA_U ) {
 
                     if ( filesize( 'configuration.php' ) < 512 ) {
                         $instance['configSIZEVALID'] = _FPA_N;
+
                     }
 
                 }
 
-    // check if the configuration.php version matches the discovered version
-    if ( $instance['configVALIDFOR'] != _FPA_U AND $instance['cmsVFILE'] != _FPA_N ) {
 
-        if ( version_compare( $instance['cmsRELEASE'], substr( $instance['configVALIDFOR'],0,3 ), '==' ) ) {
-            $instance['instanceCFGVERMATCH'] = _FPA_Y;
-        } else {
-            $instance['instanceCFGVERMATCH'] = _FPA_N;
-        }
+            // check if the configuration.php version matches the discovered version
+            if ( $instance['configVALIDFOR'] != _FPA_U AND $instance['cmsVFILE'] != _FPA_N ) {
 
+                if ( version_compare( $instance['cmsRELEASE'], substr( $instance['configVALIDFOR'],0,3 ), '==' ) ) {
+                    $instance['instanceCFGVERMATCH'] = _FPA_Y;
 
-    // set defaults for the configuration's validity and a sanity score of zero
-    $instance['configSANE'] = _FPA_N;
-    $instance['configSANITYSCORE'] = 0;
-
-        // !TODO add white-space etc checks
-        // do some configuration.php sanity/validity checks
-        if ( filesize( 'configuration.php' ) > 512 ) {
-            $instance['cfgSANITY']['configSIZEVALID'] = _FPA_Y;
-        }
-
-
-        // !TODO FINISH  white-space etc checks
-        $instance['cfgSANITY']['configNOTDIST'] = _FPA_Y; // is not the distribution example
-        $instance['cfgSANITY']['configNOWSPACE'] = _FPA_Y; // no white-space
-        $instance['cfgSANITY']['configOPTAG'] = _FPA_Y; // has php open tag
-        $instance['cfgSANITY']['configCLTAG'] = _FPA_Y; // has php close tag
-        $instance['cfgSANITY']['configJCONFIG'] = _FPA_Y; // has php close tag
-
-        // run through the sanity checks, if sane ( =Yes ) increment the score by 1 (should total 6)
-        foreach ( $instance['cfgSANITY'] as $i => $sanityCHECK ) {
-
-            if ( $instance['cfgSANITY'][$i] == _FPA_Y ) {
-                $instance['configSANITYSCORE'] = $instance['configSANITYSCORE'] +1;
-            }
-
-        }
-
-        // if the configuration file is sane, set it as valid
-        if ( $instance['configSANITYSCORE'] == '6' ) {
-            $instance['configSANE'] = _FPA_Y; // configuration appears valid?
-        }
-
-    } else {
-        $instance['instanceCFGVERMATCH'] = _FPA_U;
-    }
-
-
-    // common configuration variables for J!1.5 and above only
-    if ( $instance['configVALIDFOR'] != _FPA_U ) {
-
-        // common configuration variable across all versions
-        preg_match ( '#\$(mosConfig_offline.*|offline.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configOFFLINE );
-        preg_match ( '#\$(mosConfig_sef.*|sef.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSEF );
-        preg_match ( '#\$(mosConfig_gzip.*|gzip.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configGZIP );
-        preg_match ( '#\$(mosConfig_caching.*|caching.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configCACHING );
-        preg_match ( '#\$(mosConfig_error_reporting.*|error_reporting.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configERRORREP );
-        preg_match ( '#\$(mosConfig_debug.*|debug.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSITEDEBUG );
-        preg_match ( '#dbtype.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBTYPE );
-
-            // J!1.0 assumed 'mysql' with no variable, so we'll just add it
-            if (!array_key_exists('1', $configDBTYPE)) {
-                $configDBTYPE[1] = 'mysql';
-            }
-
-        preg_match ( '#\$(mosConfig_host.*|host.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBHOST );
-        preg_match ( '#\$(mosConfig_db.*|db\s.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBNAME );
-        preg_match ( '#\$(mosConfig_dbprefix.*|dbprefix.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBPREF );
-        preg_match ( '#\$(mosConfig_user.*|user.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBUSER );
-        preg_match ( '#\$(mosConfig_password.*|password.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBPASS );
-
-            $instance['configOFFLINE'] = $configOFFLINE[2];
-            $instance['configSEF'] = $configSEF[2];
-            $instance['configGZIP'] = $configGZIP[2];
-            $instance['configCACHING'] = $configCACHING[2];
-            $instance['configERRORREP'] = $configERRORREP[2];
-            $instance['configSITEDEBUG'] = $configSITEDEBUG[2];
-            $instance['configDBTYPE'] = $configDBTYPE[1];
-            $instance['configDBHOST'] = $configDBHOST[2];
-            $instance['configDBNAME'] = $configDBNAME[2];
-            $instance['configDBPREF'] = $configDBPREF[2];
-            $instance['configDBUSER'] = $configDBUSER[2];
-            $instance['configDBPASS'] = $configDBPASS[2];
-            // force all the configuration settings that are either depreciated or unused by the lowest support release (ie: J!1.0)
-            $instance['configLANGDEBUG'] = _FPA_NA;
-            $instance['configSEFSUFFIX'] = _FPA_NA;
-            $instance['configSEFRWRITE'] = _FPA_NA;
-            $instance['configFTP'] = _FPA_NA;
-            $instance['configSSL'] = _FPA_NA;
-            $instance['configACCESS'] = _FPA_NA;
-            $instance['configUNICODE'] = _FPA_NA;
-            // these forced settings will be over-written later by the variable supported release
-    }
-
-
-        // common configuration variables for J!1.5 and above only
-        if ( $instance['configVALIDFOR'] != '1.0' AND $instance['configVALIDFOR'] != _FPA_U ) {
-
-            preg_match ( '#sef_rewrite.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSEFREWRITE );
-            preg_match ( '#sef_suffix.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSEFSUFFIX );
-            preg_match ( '#debug_lang.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configLANGDEBUG );
-            preg_match ( '#ftp_enable.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configFTP );
-            preg_match ( '#force_ssl.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSSL );
-
-                $instance['configSEFRWRITE'] = $configSEFREWRITE[1];
-                $instance['configSEFSUFFIX'] = $configSEFSUFFIX[1];
-                $instance['configLANGDEBUG'] = $configLANGDEBUG[1];
-                $instance['configFTP'] = $configFTP[1];
-
-                if ( $configSSL ) { // 1.7 hack, 1.7.0 seems not to have this option
-                    $instance['configSSL'] = $configSSL[1];
                 } else {
-                    $instance['configSSL'] = _FPA_NA;
+                    $instance['instanceCFGVERMATCH'] = _FPA_N;
+
                 }
 
-        }
+
+                // set defaults for the configuration's validity and a sanity score of zero
+                $instance['configSANE'] = _FPA_N;
+                $instance['configSANITYSCORE'] = 0;
 
 
-        // common configuration variables for J!1.6 and above only
-        if ( $instance['configVALIDFOR'] != '1.0' AND $instance['configVALIDFOR'] != '1.5' AND $instance['configVALIDFOR'] != _FPA_U ) {
+                // !TODO add white-space etc checks
+                // do some configuration.php sanity/validity checks
+                if ( filesize( 'configuration.php' ) > 512 ) {
+                    $instance['cfgSANITY']['configSIZEVALID'] = _FPA_Y;
 
-            preg_match ( '#access.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configACCESS );
-            preg_match ( '#unicodeslugs.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configUNICODE );
+                }
 
-                $instance['configACCESS'] = $configACCESS[1];
-                $instance['configUNICODE'] = $configUNICODE[1];
-        }
+                // !TODO FINISH  white-space etc checks
+                $instance['cfgSANITY']['configNOTDIST'] = _FPA_Y; // is not the distribution example
+                $instance['cfgSANITY']['configNOWSPACE'] = _FPA_Y; // no white-space
+                $instance['cfgSANITY']['configOPTAG'] = _FPA_Y; // has php open tag
+                $instance['cfgSANITY']['configCLTAG'] = _FPA_Y; // has php close tag
+                $instance['cfgSANITY']['configJCONFIG'] = _FPA_Y; // has php close tag
 
-        // check if all the DB credentials are complete
-        if ( @$instance['configDBTYPE'] AND $instance['configDBHOST'] AND $instance['configDBNAME'] AND $instance['configDBPREF'] AND $instance['configDBUSER'] AND $instance['configDBPASS'] ) {
-            $instance['configDBCREDOK'] = _FPA_Y;
-        } else {
-            $instance['configDBCREDOK'] = _FPA_N;
-        }
+                // run through the sanity checks, if sane ( =Yes ) increment the score by 1 (should total 6)
+                foreach ( $instance['cfgSANITY'] as $i => $sanityCHECK ) {
+
+                    if ( $instance['cfgSANITY'][$i] == _FPA_Y ) {
+                        $instance['configSANITYSCORE'] = $instance['configSANITYSCORE'] +1;
+                    }
+
+                }
+
+                // if the configuration file is sane, set it as valid
+                if ( $instance['configSANITYSCORE'] == '6' ) {
+                    $instance['configSANE'] = _FPA_Y; // configuration appears valid?
+
+                }
+
+            } else {
+                $instance['instanceCFGVERMATCH'] = _FPA_U;
+
+            }
+
+            // common configuration variables for J!1.5 and above only
+            if ( $instance['configVALIDFOR'] != _FPA_U ) {
+
+                // common configuration variable across all versions
+                preg_match ( '#\$(mosConfig_offline.*|offline.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configOFFLINE );
+                preg_match ( '#\$(mosConfig_sef.*|sef.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSEF );
+                preg_match ( '#\$(mosConfig_gzip.*|gzip.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configGZIP );
+                preg_match ( '#\$(mosConfig_caching.*|caching.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configCACHING );
+                preg_match ( '#\$(mosConfig_error_reporting.*|error_reporting.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configERRORREP );
+                preg_match ( '#\$(mosConfig_debug.*|debug.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSITEDEBUG );
+                preg_match ( '#dbtype.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBTYPE );
+
+                // J!1.0 assumed 'mysql' with no variable, so we'll just add it
+                if (!array_key_exists('1', $configDBTYPE)) {
+                    $configDBTYPE[1] = 'mysql';
+
+                }
+
+                preg_match ( '#\$(mosConfig_host.*|host.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBHOST );
+                preg_match ( '#\$(mosConfig_db.*|db\s.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBNAME );
+                preg_match ( '#\$(mosConfig_dbprefix.*|dbprefix.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBPREF );
+                preg_match ( '#\$(mosConfig_user.*|user.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBUSER );
+                preg_match ( '#\$(mosConfig_password.*|password.*)=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configDBPASS );
+
+                    $instance['configOFFLINE'] = $configOFFLINE[2];
+                    $instance['configSEF'] = $configSEF[2];
+                    $instance['configGZIP'] = $configGZIP[2];
+                    $instance['configCACHING'] = $configCACHING[2];
+                    $instance['configERRORREP'] = $configERRORREP[2];
+                    $instance['configSITEDEBUG'] = $configSITEDEBUG[2];
+                    $instance['configDBTYPE'] = $configDBTYPE[1];
+                    $instance['configDBHOST'] = $configDBHOST[2];
+                    $instance['configDBNAME'] = $configDBNAME[2];
+                    $instance['configDBPREF'] = $configDBPREF[2];
+                    $instance['configDBUSER'] = $configDBUSER[2];
+                    $instance['configDBPASS'] = $configDBPASS[2];
+
+                    // force all the configuration settings that are either depreciated or unused by the lowest support release (ie: J!1.0)
+                    $instance['configLANGDEBUG'] = _FPA_NA;
+                    $instance['configSEFSUFFIX'] = _FPA_NA;
+                    $instance['configSEFRWRITE'] = _FPA_NA;
+                    $instance['configFTP'] = _FPA_NA;
+                    $instance['configSSL'] = _FPA_NA;
+                    $instance['configACCESS'] = _FPA_NA;
+                    $instance['configUNICODE'] = _FPA_NA;
+                    // these forced settings will be over-written later by the variable supported release
+
+            }
+
+
+            // common configuration variables for J!1.5 and above only
+            if ( $instance['configVALIDFOR'] != '1.0' AND $instance['configVALIDFOR'] != _FPA_U ) {
+
+                preg_match ( '#sef_rewrite.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSEFREWRITE );
+                preg_match ( '#sef_suffix.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSEFSUFFIX );
+                preg_match ( '#debug_lang.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configLANGDEBUG );
+                preg_match ( '#ftp_enable.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configFTP );
+                preg_match ( '#force_ssl.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configSSL );
+
+                    $instance['configSEFRWRITE'] = $configSEFREWRITE[1];
+                    $instance['configSEFSUFFIX'] = $configSEFSUFFIX[1];
+                    $instance['configLANGDEBUG'] = $configLANGDEBUG[1];
+                    $instance['configFTP'] = $configFTP[1];
+
+                    if ( $configSSL ) { // 1.7 hack, 1.7.0 seems not to have this option
+                        $instance['configSSL'] = $configSSL[1];
+
+                    } else {
+                        $instance['configSSL'] = _FPA_NA;
+
+                    }
+
+            }
+
+
+            // common configuration variables for J!1.6 and above only
+            if ( $instance['configVALIDFOR'] != '1.0' AND $instance['configVALIDFOR'] != '1.5' AND $instance['configVALIDFOR'] != _FPA_U ) {
+
+                preg_match ( '#access.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configACCESS );
+                preg_match ( '#unicodeslugs.*=\s[\'|\"](.*)[\'|\"];#', $cmsCContent, $configUNICODE );
+
+                    $instance['configACCESS'] = $configACCESS[1];
+                    $instance['configUNICODE'] = $configUNICODE[1];
+
+            }
+
+            // check if all the DB credentials are complete
+            if ( @$instance['configDBTYPE'] AND $instance['configDBHOST'] AND $instance['configDBNAME'] AND $instance['configDBPREF'] AND $instance['configDBUSER'] AND $instance['configDBPASS'] ) {
+                $instance['configDBCREDOK'] = _FPA_Y;
+            } else {
+                $instance['configDBCREDOK'] = _FPA_N;
+
+            }
+
 
 
         // looking for htaccess (Apache and some others) or web.config (IIS)
@@ -793,12 +826,15 @@
                 $instance['configSITEHTWC'] = _FPA_Y;
             } else {
                 $instance['configSITEHTWC'] = _FPA_N;
+
             }
 
             if ( file_exists( 'administrator/.htaccess' ) ) {
                 $instance['configADMINHTWC'] = _FPA_Y;
+
             } else {
                 $instance['configADMINHTWC'] = _FPA_N;
+
             }
 
         } else {
@@ -807,6 +843,7 @@
             if ( file_exists( 'web.config' ) ) {
                 $instance['configSITEHTWC'] = _FPA_Y;
                 $instance['configADMINHTWC'] = _FPA_NA;
+
             } else {
                 $instance['configSITEHTWC'] = _FPA_N;
                 $instance['configADMINHTWC'] = _FPA_NA;
@@ -818,14 +855,17 @@
     } else { // no configuration.php found
         $instance['instanceCONFIGURED'] = _FPA_N;
         $instance['configVALIDFOR'] = _FPA_U;
+
     }
 ?>
+
 
 
 <?php
 // TESTING ONLY HUUUUUUGE DB
 //$instance['configDBNAME'] = 'njs_bandsite';
 ?>
+
 
 
 <?php
@@ -851,51 +891,61 @@
     $system['sysCURRUSER'] = get_current_user(); // current process user
     $system['sysSERVIP'] = gethostbyname($_SERVER['SERVER_NAME']);
 
-    //!TESTME for WIN IIS7?
-    //$system['sysSERVIP'] =  $_SERVER['LOCAL_ADDR'];
-	if ( $system['sysSHORTOS'] != 'WIN' ) {
-    // !BUGID #1 $_ENV USER doesn't work on lightspeed server? maybe tie it down to apache only
-	    $system['sysEXECUSER'] = @$_ENV['USER']; // user that executed this script
-        if ( !@$_ENV['USER'] ) {
-            $system['sysEXECUSER'] = $system['sysCURRUSER'];
-        }
-	    $system['sysDOCROOT'] = $_SERVER['DOCUMENT_ROOT'];
-	} else {
-        $localpath = getenv( 'SCRIPT_NAME' );
-        $absolutepath = str_replace( '\\', '/', realpath( basename( getenv( 'SCRIPT_NAME' ) ) ) );
-            $system['sysDOCROOT'] = substr( $absolutepath, 0, strpos( $absolutepath, $localpath ) );
-            $system['sysEXECUSER'] = $system['sysCURRUSER']; // Windows work-around for not using EXEC User
-	}
+// !TESTME for WIN IIS7?
+//    $system['sysSERVIP'] =  $_SERVER['LOCAL_ADDR'];
 
+    if ( $system['sysSHORTOS'] != 'WIN' ) {
 
-        // looking for the Apache "suExec" Utility
-	    if ( function_exists( 'exec' ) AND $system['sysSHORTOS'] != 'WIN' ) { // find the owner of the current process running this script
-            $system['sysWEBOWNER'] = exec("whoami");
-        } elseif ( function_exists( 'passthru' ) AND $system['sysSHORTOS'] != 'WIN' ) {
-            $system['sysWEBOWNER'] = passthru("whoami");
-        } else {
-            $system['sysWEBOWNER'] = _FPA_NA;
-        }
+        // !BUGID #1 $_ENV USER doesn't work on lightspeed server? maybe tie it down to apache only
+        $system['sysEXECUSER'] = @$_ENV['USER']; // user that executed this script
 
+            if ( !@$_ENV['USER'] ) {
+                $system['sysEXECUSER'] = $system['sysCURRUSER'];
 
-        // find the system temp directory
-        if ( version_compare( PHP_VERSION, '5.2.1', '>=' ) ) {
-            $system['sysSYSTMPDIR'] = sys_get_temp_dir();
-
-            // is the system /tmp writable to this user?
-            if ( is_writable( sys_get_temp_dir() ) ) {
-	   	      $system['sysTMPDIRWRITABLE'] = _FPA_Y;
-            } else {
-		      $system['sysTMPDIRWRITABLE'] = _FPA_N;
             }
 
+        $system['sysDOCROOT'] = $_SERVER['DOCUMENT_ROOT'];
+
+    } else {
+        $localpath = getenv( 'SCRIPT_NAME' );
+        $absolutepath = str_replace( '\\', '/', realpath( basename( getenv( 'SCRIPT_NAME' ) ) ) );
+        $system['sysDOCROOT'] = substr( $absolutepath, 0, strpos( $absolutepath, $localpath ) );
+        $system['sysEXECUSER'] = $system['sysCURRUSER']; // Windows work-around for not using EXEC User
+
+    }
+
+
+    // looking for the Apache "suExec" Utility
+    if ( function_exists( 'exec' ) AND $system['sysSHORTOS'] != 'WIN' ) { // find the owner of the current process running this script
+        $system['sysWEBOWNER'] = exec("whoami");
+
+    } elseif ( function_exists( 'passthru' ) AND $system['sysSHORTOS'] != 'WIN' ) {
+        $system['sysWEBOWNER'] = passthru("whoami");
+
+    } else {
+        $system['sysWEBOWNER'] = _FPA_NA;
+
+    }
+
+        // find the system temp directory
+    if ( version_compare( PHP_VERSION, '5.2.1', '>=' ) ) {
+        $system['sysSYSTMPDIR'] = sys_get_temp_dir();
+
+        // is the system /tmp writable to this user?
+        if ( is_writable( sys_get_temp_dir() ) ) {
+            $system['sysTMPDIRWRITABLE'] = _FPA_Y;
+
         } else {
-            $system['sysSYSTMPDIR'] = _FPA_U;
-            $system['sysTMPDIRWRITABLE'] = _FPA_U;
+            $system['sysTMPDIRWRITABLE'] = _FPA_N;
+
         }
+
+    } else {
+        $system['sysSYSTMPDIR'] = _FPA_U;
+        $system['sysTMPDIRWRITABLE'] = _FPA_U;
+
+    }
 ?>
-
-
 
 
 
@@ -908,8 +958,6 @@
      *****************************************************************************************/
 
     /** general php related settings? *****************************************************/
-
-    // !TODO DB MySQLI not supported by PHP4
     if ( version_compare( PHP_VERSION, '5.0', '>=' ) ) {
         $phpenv['phpSUPPORTSMYSQLI'] = _FPA_Y;
 
@@ -921,52 +969,58 @@
 
     }
 
-
     // find the current php.ini file
     if ( version_compare( PHP_VERSION, '5.2.4', '>=' ) ) {
-        $phpenv['phpINIFILE'] = php_ini_loaded_file();
+        $phpenv['phpINIFILE']       = php_ini_loaded_file();
+
     } else {
         $phpenv['phpINIFILE'] = _FPA_U;
-    }
 
+    }
 
     // find the other loaded php.ini file(s)
     if (version_compare(PHP_VERSION, '4.3.0', '>=')) {
-        $phpenv['phpINIOTHER'] = php_ini_scanned_files();
+        $phpenv['phpINIOTHER']      = php_ini_scanned_files();
+
     } else {
         $phpenv['phpINIOTHER'] = _FPA_U;
+
     }
 
-    $phpenv['phpREGGLOBAL'] = ini_get( 'register_globals' );
-    $phpenv['phpMAGICQUOTES'] = ini_get( 'magic_quotes_gpc' );
-    $phpenv['phpSAFEMODE'] = ini_get( 'safe_mode' );
-    $phpenv['phpOPENBASE'] = ini_get( 'open_basedir' );
-    $phpenv['phpMAGICQUOTES'] = ini_get( 'magic_quotes_gpc' );
-    $phpenv['phpSESSIONPATH'] = session_save_path();
+    $phpenv['phpREGGLOBAL']         = ini_get( 'register_globals' );
+    $phpenv['phpMAGICQUOTES']       = ini_get( 'magic_quotes_gpc' );
+    $phpenv['phpSAFEMODE']          = ini_get( 'safe_mode' );
+    $phpenv['phpOPENBASE']          = ini_get( 'open_basedir' );
+    $phpenv['phpMAGICQUOTES']       = ini_get( 'magic_quotes_gpc' );
+    $phpenv['phpSESSIONPATH']       = session_save_path();
 
     // if open_basedir is in effect, don't bother doing session_save.path test, will error if path not in open_basedir
     if ( isset( $phpenv['phpOPENBASE'] ) ) {
+
         // is the session_save.path writable to this user?
         if ( is_writable( session_save_path() ) ) {
             $phpenv['phpSESSIONPATHWRITABLE'] = _FPA_Y;
+
         } else {
             $phpenv['phpSESSIONPATHWRITABLE'] = _FPA_N;
+
         }
+
     } else {
         $phpenv['phpSESSIONPATHWRITABLE'] = _FPA_U;
+
     }
 
     // input and upload related settings
-    $phpenv['phpUPLOADS'] = ini_get( 'file_uploads' );
-    $phpenv['phpMAXUPSIZE'] = ini_get( 'upload_max_filesize' );
-    $phpenv['phpMAXPOSTSIZE'] = ini_get( 'post_max_size' );
-    $phpenv['phpMAXINPUTTIME'] = ini_get( 'max_input_time' );
-    $phpenv['phpMAXEXECTIME'] = ini_get( 'max_execution_time' );
-    $phpenv['phpMEMLIMIT'] = ini_get( 'memory_limit' );
-
+    $phpenv['phpUPLOADS']           = ini_get( 'file_uploads' );
+    $phpenv['phpMAXUPSIZE']         = ini_get( 'upload_max_filesize' );
+    $phpenv['phpMAXPOSTSIZE']       = ini_get( 'post_max_size' );
+    $phpenv['phpMAXINPUTTIME']      = ini_get( 'max_input_time' );
+    $phpenv['phpMAXEXECTIME']       = ini_get( 'max_execution_time' );
+    $phpenv['phpMEMLIMIT']          = ini_get( 'memory_limit' );
 
     /** API and ownership related settings ***************************************************/
-    $phpenv['phpAPI'] = php_sapi_name();
+    $phpenv['phpAPI']               = php_sapi_name();
 
         // looking for php to be installed as a CGI or CGI/Fast
         if (substr($phpenv['phpAPI'], 0, 3) == 'cgi') {
@@ -976,18 +1030,22 @@
             if ( ( $system['sysCURRUSER'] === $system['sysWEBOWNER'] ) AND ( substr($phpenv['phpAPI'], 0, 3) == 'cgi' ) ) {
                 $phpenv['phpAPACHESUEXEC'] = _FPA_Y;
                 $phpenv['phpOWNERPROB'] = _FPA_N;
+
             } else {
                 $phpenv['phpAPACHESUEXEC'] = _FPA_N;
                 $phpenv['phpOWNERPROB'] = _FPA_M;
+
             }
 
             // looking for the "phpsuExec" utility
             if ( ( $system['sysCURRUSER'] === $system['sysEXECUSER'] ) AND ( substr($phpenv['phpAPI'], 0, 3) == 'cgi' ) ) {
                 $phpenv['phpPHPSUEXEC'] = _FPA_Y;
                 $phpenv['phpOWNERPROB'] = _FPA_N;
+
             } else {
                 $phpenv['phpPHPSUEXEC'] = _FPA_N;
                 $phpenv['phpOWNERPROB'] = _FPA_M;
+
             }
 
         } else {
@@ -995,8 +1053,8 @@
             $phpenv['phpAPACHESUEXEC'] = _FPA_N;
             $phpenv['phpPHPSUEXEC'] = _FPA_N;
             $phpenv['phpOWNERPROB'] = _FPA_M;
-        }
 
+        }
 
 
 
@@ -1009,27 +1067,25 @@
         if ( ( $instance['instanceCONFIGURED'] == _FPA_Y ) AND ( $system['sysCURRUSER'] != $instance['configOWNER']['name'] ) AND ( $instance['configWRITABLE'] == _FPA_Y ) AND ( ( substr( $instance['configMODE'],0 ,1 ) < '6' ) OR ( substr( $instance['configMODE'],1 ,1 ) < '6' ) OR ( substr( $instance['configMODE'],2 ,1 ) <= '6' ) ) ) {
             $phpenv['phpCUSTOMSU'] = _FPA_M;
             $phpenv['phpOWNERPROB'] = _FPA_N;
+
         } else {
             $phpenv['phpCUSTOMSU'] = _FPA_N;
             $phpenv['phpOWNERPROB'] = _FPA_M;
+
         }
         /*****************************************************************************************/
         /** THIS IS A TEST FEATURE AND AS SUCH NOT GUARANTEED TO BE 100% ACCURATE ****************/
         /*****************************************************************************************/
 
 
-
-
     // get all the Apache loaded extensions and versions
     foreach ( get_loaded_extensions() as $i => $ext ) {
-       $phpextensions[$ext] = phpversion($ext);
+        $phpextensions[$ext]    = phpversion($ext);
+
     }
 
     $phpextensions['Zend Engine'] = zend_version();
-    //!TODO find out if this shows IONCUBE and SUHOSIN
 ?>
-
-
 
 
 
@@ -1040,12 +1096,12 @@
      ** using any function, but this does mean it has grown in size quite a bit and unfortunately
      ** gets a little messy in places.
      *****************************************************************************************/
-
     /** general apache loaded modules? *******************************************************/
 	if ( function_exists( 'apache_get_version' ) ) {  // for Apache module interface
 
         foreach ( apache_get_modules() as $i => $modules ) {
            $apachemodules[$i] = ( $modules );  // show the version of loaded extensions
+
         }
 
         // include the Apache version
@@ -1053,17 +1109,12 @@
 
 	} else {  // for Apache cgi interface
 
+        //cgi-fcgi
+	    print_r( get_extension_funcs( "cgi-fcgi" ) );
 
-
-//cgi-fcgi
-print_r(get_extension_funcs("cgi-fcgi"));
-//	    $test = apache_getenv();
-//print_r ( $test );
-    }
+	}
     // !TODO see if there are IIS specific functions/modules
 ?>
-
-
 
 
 
@@ -1074,7 +1125,6 @@ print_r(get_extension_funcs("cgi-fcgi"));
      ** using any function, but this does mean it has grown in size quite a bit and unfortunately
      ** gets a little messy in places.
      *****************************************************************************************/
-
     /** build the mode-set details for each folder *******************************************/
     if ( $instance['instanceFOUND'] == _FPA_Y ) {
 
@@ -1087,17 +1137,20 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                     if ( is_writable( $show ) ) {
                         $modecheck[$show]['writable'] = _FPA_Y;
+
                     } else {
                         $modecheck[$show]['writable'] = _FPA_N;
+
                     }
 
-//                    if ( $system['sysSHORTOS'] != 'WIN' ) {
                     if ( function_exists( 'posix_getpwuid' ) AND $system['sysSHORTOS'] != 'WIN' ) {
                         $modecheck[$show]['owner'] = posix_getpwuid( fileowner( $show ) );
                         $modecheck[$show]['group'] = posix_getgrgid( filegroup( $show ) );
+
                     } else {
                         $modecheck[$show]['owner']['name'] = fileowner( $show );
                         $modecheck[$show]['group']['name'] = filegroup( $show );
+
                     }
 
                 } else {
@@ -1105,10 +1158,12 @@ print_r(get_extension_funcs("cgi-fcgi"));
                     $modecheck[$show]['writable'] = '-';
                     $modecheck[$show]['owner']['name'] = '-';
                     $modecheck[$show]['group']['name'] = _FPA_DNE;
-                }
-            }
-        }
 
+                }
+
+            }
+
+        }
 
         // !CLEANME this needs to be done a little smarter
         // here we take the folders array and unset folders that aren't relevant to a specific release
@@ -1133,13 +1188,13 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
         }
 
-        // new filtered list of folders to check permissions on, based on the installed release
         // !FIXME need to fix warning in array_filter
+        // new filtered list of folders to check permissions on, based on the installed release
         @array_filter( $folders, filter_folders( $folders, $instance ) );
+
     }
     unset ( $key, $show );
 ?>
-
 
 
 
@@ -1150,7 +1205,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
         $dirCount = 0;
 
         function getDirectory( $path = '.', $level = 0 ){
-            GLOBAL $elevated, $dirCount;
+        GLOBAL $elevated, $dirCount;
 
             // Directories to ignore when listing output. Many hosts
             $ignore = array( '.', '..' );
@@ -1176,21 +1231,24 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                                 if ( is_writable( $dirName ) ) {
                                     $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_Y;
+
                                 } else {  // custom ownership or setUiD/GiD in-effect
                                     $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_N;
-                                }
 
+                                }
                                 $dirCount++;
+
                             }
 
                             // don't waste time or resources if there are too many folders with elevated permissions
-                            if ( $dirCount == 25 ) { // 25 or more folder will cancel the processing
+                            if ( $dirCount == '25' ) { // 25 or more folder will cancel the processing
                                 $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.'] = '';
                                 $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.']['mode'] = '-';
                                 $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.']['writable'] = '-';
 
                                 // stop processing and move-on...
                                 continue;
+
                             }
 
                             // Re-call this same function but on a new directory.
@@ -1201,9 +1259,9 @@ print_r(get_extension_funcs("cgi-fcgi"));
                 }
 
             }
+            // Close the directory handle
+            closedir( $dh );
 
-        // Close the directory handle
-        closedir( $dh );
         }
 
         getDirectory( '.' );
@@ -1211,7 +1269,6 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
     } // end showElevated
 ?>
-
 
 
 
@@ -1226,12 +1283,14 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
         if ( $instance['configDBHOST'] == 'localhost' OR $instance['configDBHOST'] == '127.0.0.1' ) {
             $database['dbLOCAL'] = _FPA_Y;
+
         } else {
             $database['dbLOCAL'] = _FPA_N;
+
         }
 
-// !TODO DB PING
-/**
+        // !TODO DB PING
+        /**
             // See if the PHP Functions are available to test for connectivity
             if ( @$opSystem != 'WIN') {
 
@@ -1263,21 +1322,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
               }
 
             }
-**/
-
-// !TODO MYSQL COLLATION
-/**
-             $rs = $conn->query( "SHOW VARIABLES LIKE 'collation_database'" );
-            while ( $row = mysqli_fetch_row( $rs ) ) {
-              echo '&nbsp;'. $row[1];
-            }
-
-            $rs1 = $conn->query( "SHOW VARIABLES LIKE 'character_set_database'" );
-            while ( $row = mysqli_fetch_array( $rs1 ) ) {
-              echo '&nbsp; ( '.$row[1] .' )';
-            }
- **/
-
+        **/
 
         // try and establish if we can talk to the dBase server with a ping, then try and connect and ping with mysql_ping
         if ( $instance['configDBTYPE'] == 'mysql' ) {
@@ -1298,14 +1343,18 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                 // find the database collation
                 $coResult = mysql_query( "SHOW VARIABLES LIKE 'collation_database'" );
+
                 while ( $row = mysql_fetch_row( $coResult ) ) {
                     $database['dbCOLLATION'] =  $row[1];
+
                 }
 
                 // find the database character-set
                 $csResult = mysql_query( "SHOW VARIABLES LIKE 'character_set_database'" );
+
                 while ( $row = mysql_fetch_array( $csResult ) ) {
                     $database['dbCHARSET'] =  $row[1];
+
                 }
 
                 // find all the dB tables and calculate the size
@@ -1314,6 +1363,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                     $database['dbSIZE'] = 0;
                     $rowCount = 0;
+
                     while ( $row = mysql_fetch_array( $tblResult ) ) {
                         $rowCount++;
 
@@ -1336,6 +1386,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
                             $tables[$row['Name']]['MAXGROW'] = sprintf( '%.1f', ( $row['Max_data_length'] /1073741824 ) ) .' GiB';
                             $tables[$row['Name']]['RECORDS'] = $row['Rows'];
                             $tables[$row['Name']]['AVGLEN'] = sprintf( '%.2f', ( $row['Avg_row_length'] /1024 ) ) .' KiB';
+
                         }
 
                     }
@@ -1343,26 +1394,24 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                 if ( $database['dbSIZE'] > '1024' ) {
                     $database['dbSIZE'] = sprintf('%.2f', ( $database['dbSIZE'] /1024 ) ) .' MiB';
+
                 } else {
                     $database['dbSIZE'] = $database['dbSIZE'] .' KiB';
+
                 }
 
                 $database['dbTABLECOUNT'] = $rowCount;
                 mysql_close( $dBconn );
 
-
-
-
             } else {
                 $database['dbERROR'] = mysql_errno() .':'. mysql_error();
+
             } // end mysql if $dBconn is good
 
         } elseif ( $instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_Y ) { // mysqli
 
             $dBconn = @new mysqli( $instance['configDBHOST'], $instance['configDBUSER'], $instance['configDBPASS'], $instance['configDBNAME'] );
             $database['dbERROR'] = mysqli_connect_errno( $dBconn ) .':'. mysqli_connect_error( $dBconn );
-
-
 
             if ( $dBconn ) {
                 $database['dbHOSTSERV'] = @mysqli_get_server_info( $dBconn ); // SQL server version
@@ -1374,23 +1423,27 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                 // find the database collation
                 $coResult = @$dBconn->query( "SHOW VARIABLES LIKE 'collation_database'" );
+
                 while ( $row = @mysqli_fetch_row( $coResult ) ) {
                     $database['dbCOLLATION'] =  $row[1];
+
                 }
 
                 // find the database character-set
                 $csResult = @$dBconn->query( "SHOW VARIABLES LIKE 'character_set_database'" );
+
                 while ( $row = @mysqli_fetch_array( $csResult ) ) {
                     $database['dbCHARSET'] =  $row[1];
-                }
 
+                }
 
                 // find all the dB tables and calculate the size
                 $tblResult = @$dBconn->query( "SHOW TABLE STATUS" );
 
                     $database['dbSIZE'] = 0;
                     $rowCount = 0;
-                    while ( $row = mysqli_fetch_array( $tblResult ) ) {
+
+                    while ( $row = @mysqli_fetch_array( $tblResult ) ) {
                         $rowCount++;
 
                         $tables[$row['Name']]['TABLE'] = $row['Name'];
@@ -1412,6 +1465,7 @@ print_r(get_extension_funcs("cgi-fcgi"));
                             $tables[$row['Name']]['MAXGROW'] = sprintf( '%.1f', ( $row['Max_data_length'] /1073741824 ) ) .' GiB';
                             $tables[$row['Name']]['RECORDS'] = $row['Rows'];
                             $tables[$row['Name']]['AVGLEN'] = sprintf( '%.2f', ( $row['Avg_row_length'] /1024 ) ) .' KiB';
+
                         }
 
                     }
@@ -1419,13 +1473,16 @@ print_r(get_extension_funcs("cgi-fcgi"));
 
                 if ( $database['dbSIZE'] > '1024' ) {
                     $database['dbSIZE'] = sprintf( '%.2f', ( $database['dbSIZE'] /1024 ) ) .' MiB';
+
                 } else {
                     $database['dbSIZE'] = $database['dbSIZE'] .' KiB';
+
                 }
                 $database['dbTABLECOUNT'] = $rowCount;
 
             } else {
                // $database['dbERROR'] = mysqli_connect_errno( $dBconn ) .':'. mysqli_connect_error( $dBconn );
+
             } // end mysqli if $dBconn is good
 
         } else {
@@ -1437,503 +1494,39 @@ print_r(get_extension_funcs("cgi-fcgi"));
                 $database['dbHOSTSTATS'] = _FPA_U; // latest statistics
                 $database['dbCOLLATION'] =  _FPA_U;
                 $database['dbCHARSET'] =  _FPA_U;
+
         } // end of dataBase connection routines
 
 
-            if ( isset( $dBconn ) AND $database['dbERROR'] == '0:' ) {
-                $database['dbERROR'] = _FPA_N;
-            } elseif ( $database['dbLOCAL'] == _FPA_N AND substr($database['dbERROR'], 0, 4) == '2005' ) { // 2005 = can't access host
-                // if this is a remote host, it might be firewalled or disabled from external or non-internal network access
-                $database['dbERROR'] = $database['dbERROR'] .' ( might not be an error, this remote SQL server might be firewalled by mistake )';
-            }
 
+        if ( isset( $dBconn ) AND $database['dbERROR'] == '0:' ) {
+            $database['dbERROR'] = _FPA_N;
 
+        } elseif ( $database['dbLOCAL'] == _FPA_N AND substr($database['dbERROR'], 0, 4) == '2005' ) { // 2005 = can't access host
+            // if this is a remote host, it might be firewalled or disabled from external or non-internal network access
+            $database['dbERROR'] = $database['dbERROR'] .' ( might not be an error, this remote SQL server might be firewalled by mistake )';
 
+        }
 
     // if no configuration or if configured but dBase credentials aren't valid
     } else {
         $database['dbDOCHECKS'] = _FPA_N;
         $database['dbLOCAL'] = _FPA_U;
+
     }
-
-    /** find a MySQL instance? ***************************************************************/
 ?>
 
 
 
-
-
-
 <?php
-    /** find the SITE components ***************************************************************/
-/******
-$dir = "components/";
+    /** find the SITE/ADMIN Components, Modules, Plugins and Templates ***********************/
+    if ( $instance['instanceFOUND'] == _FPA_Y ) { // fix for IIS *shrug*
 
-    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
-
-        while ( $file = readdir( $dir_handle ) ) {
-
-            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
-                $newDir = $dir .''. $file;
-                $dir1 = opendir( $newDir );
-
-                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
-
-                    $component['SITE'][$cDir]['author'] = '-';
-                    $component['SITE'][$cDir]['authorUrl'] = '-';
-                    $component['SITE'][$cDir]['version'] = '-';
-                    $component['SITE'][$cDir]['creationDate'] = '-';
-                    $component['SITE'][$cDir]['type'] = '-';
-
-                    while ($f = readdir( $dir1 ) ) {
-
-                        $component['SITE'][$cDir]['name'] = $cDir;
-
-                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
-
-                            $content = file_get_contents($newDir.'/'.$f);
-
-                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
-                                $component['SITE'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
-                            } else {
-                                $component['SITE'][$cDir]['name'] = _FPA_U;
-                            }
-
-                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
-                                $component['SITE'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
-
-                                if ( $author[1] == 'Joomla! Project' ) {
-                                    $component['SITE'][$cDir]['type'] = 'Core';
-                                } else {
-                                    $component['SITE'][$cDir]['type'] = '3rd Party';
-                                }
-
-                            } else {
-                                $component['SITE'][$cDir]['author'] = '-';
-                                $component['SITE'][$cDir]['type'] = '-';
-                            }
-
-                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                $component['SITE'][$cDir]['version'] = $version[1];
-                            } else {
-                                $component['SITE'][$cDir]['version'] = '-';
-                            }
-
-                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
-                                $component['SITE'][$cDir]['creationDate'] = $creationDate[1];
-                            } else {
-                                $component['SITE'][$cDir]['creationDate'] = '-';
-                            }
-
-                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
-                                $component['SITE'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
-                            } else {
-                                $component['SITE'][$cDir]['authorUrl'] = '-';
-                            }
-
-                        }
-
-                    }
-
-            }
-
-        }
-        closedir( $dir_handle );
-
-///        array_multisort($component['SITE']['type'], SORT_ASC, SORT_STRING,
-//                        $component['SITE']['name'], SORT_ASC, SORT_STRING,
-///                        $component['SITE']['name'], SORT_ASC, SORT_STRING);
-******/
-
-
-    /** find the ADMIN components ***************************************************************/
-/******
-    $dir = "administrator/components/";
-
-    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
-
-        while ( $file = readdir( $dir_handle ) ) {
-
-            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
-                $newDir = $dir .''. $file;
-                $dir1 = opendir( $newDir );
-
-                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
-
-                    $component['ADMIN'][$cDir]['author'] = '-';
-                    $component['ADMIN'][$cDir]['authorUrl'] = '-';
-                    $component['ADMIN'][$cDir]['version'] = '-';
-                    $component['ADMIN'][$cDir]['creationDate'] = '-';
-                    $component['ADMIN'][$cDir]['type'] = '-';
-
-                    while ($f = readdir( $dir1 ) ) {
-
-                        $component['ADMIN'][$cDir]['name'] = $cDir;
-
-                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
-
-                            $content = file_get_contents($newDir.'/'.$f);
-
-                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
-                                $component['ADMIN'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
-                            } else {
-                                $component['ADMIN'][$cDir]['name'] = _FPA_U;
-                            }
-
-                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
-                                $component['ADMIN'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
-
-                                if ( $author[1] == 'Joomla! Project' ) {
-                                    $component['ADMIN'][$cDir]['type'] = 'Core';
-                                } else {
-                                    $component['ADMIN'][$cDir]['type'] = '3rd Party';
-                                }
-
-                            } else {
-                                $component['ADMIN'][$cDir]['author'] = '-';
-                                $component['ADMIN'][$cDir]['type'] = '-';
-                            }
-
-                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                $component['ADMIN'][$cDir]['version'] = $version[1];
-                            } else {
-                                $component['ADMIN'][$cDir]['version'] = '-';
-                            }
-
-                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
-                                $component['ADMIN'][$cDir]['creationDate'] = $creationDate[1];
-                            } else {
-                                $component['ADMIN'][$cDir]['creationDate'] = '-';
-                            }
-
-                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
-                                $component['ADMIN'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
-                            } else {
-                                $component['ADMIN'][$cDir]['authorUrl'] = '-';
-                            }
-
-                        }
-
-                    }
-
-            }
-
-        }
-        closedir( $dir_handle );
-
-//        array_multisort($component['ADMIN']['name'], SORT_ASC, SORT_STRING,
-//                        $component['ADMIN']['type'], SORT_ASC, SORT_STRING,
-//                        $component['ADMIN']['author'], SORT_ASC, SORT_STRING);
-******/
-?>
-
-
-
-
-<?php
-    /** find the SITE modules ***************************************************************/
-/******
-
-    // !FIXME doesn't work for J!1.0
-    $dir = "modules/";
-
-//    if ( $instance['cmsRELEASE'] != '1.0' ) {
-        $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
-
-            while ( $file = readdir( $dir_handle ) ) {
-//    }
-
-            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
-                $newDir = $dir .''. $file;
-                $dir1 = opendir( $newDir );
-
-                    if ( $instance['cmsRELEASE'] != '1.0' ) {
-                        $cDir = substr( strrchr( $newDir, '/' ), 1 );
-                    }
-
-                    $module['SITE'][$cDir]['author'] = '-';
-                    $module['SITE'][$cDir]['authorUrl'] = '-';
-                    $module['SITE'][$cDir]['version'] = '-';
-                    $module['SITE'][$cDir]['creationDate'] = '-';
-                    $module['SITE'][$cDir]['type'] = '-';
-
-                    while ($f = readdir( $dir1 ) ) {
-
-
-//                        if ( $instance['cmsRELEASE'] != '1.0' ) {
-                            $module['SITE'][$cDir]['name'] = $cDir;
-//                        }
-
-                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
-
-
-//                            if ( $instance['cmsRELEASE'] == '1.0' ) {
-//                                $cDir = $f;
-//                                $module['SITE'][$cDir]['name'] = $cDir;
-//                            }
-
-                            $content = file_get_contents($newDir.'/'.$f);
-
-                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
-                                $module['SITE'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
-                            } else {
-                                $module['SITE'][$cDir]['name'] = _FPA_U;
-                            }
-
-                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
-                                $module['SITE'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
-
-                                if ( $author[1] == 'Joomla! Project' ) {
-                                    $module['SITE'][$cDir]['type'] = 'Core';
-                                } else {
-                                    $module['SITE'][$cDir]['type'] = '3rd Party';
-                                }
-
-                            } else {
-                                $module['SITE'][$cDir]['author'] = '-';
-                                $module['SITE'][$cDir]['type'] = '-';
-                            }
-
-                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                $module['SITE'][$cDir]['version'] = $version[1];
-                            } else {
-                                $module['SITE'][$cDir]['version'] = '-';
-                            }
-
-                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
-                                $module['SITE'][$cDir]['creationDate'] = $creationDate[1];
-                            } else {
-                                $module['SITE'][$cDir]['creationDate'] = '-';
-                            }
-
-                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
-                                $module['SITE'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
-                            } else {
-                                $module['SITE'][$cDir]['authorUrl'] = '-';
-                            }
-
-                        }
-
-                    }
-
-            }
-
-
-        }
-        closedir( $dir_handle );
-
-///        array_multisort($component['SITE']['type'], SORT_ASC, SORT_STRING,
-//                        $component['SITE']['name'], SORT_ASC, SORT_STRING,
-///                        $component['SITE']['name'], SORT_ASC, SORT_STRING);
-******/
-
-
-    /** find the ADMIN modules ***************************************************************/
-/******
-    $dir = "administrator/modules/";
-
-    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
-
-        while ( $file = readdir( $dir_handle ) ) {
-
-            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
-                $newDir = $dir .''. $file;
-                $dir1 = opendir( $newDir );
-
-                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
-
-                    $module['ADMIN'][$cDir]['author'] = '-';
-                    $module['ADMIN'][$cDir]['authorUrl'] = '-';
-                    $module['ADMIN'][$cDir]['version'] = '-';
-                    $module['ADMIN'][$cDir]['creationDate'] = '-';
-                    $module['ADMIN'][$cDir]['type'] = '-';
-
-                    while ($f = readdir( $dir1 ) ) {
-
-                        $module['ADMIN'][$cDir]['name'] = $cDir;
-
-                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
-
-                            $content = file_get_contents($newDir.'/'.$f);
-
-                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
-                                $module['ADMIN'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
-                            } else {
-                                $module['ADMIN'][$cDir]['name'] = _FPA_U;
-                            }
-
-                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
-                                $module['ADMIN'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
-
-                                if ( $author[1] == 'Joomla! Project' ) {
-                                    $module['ADMIN'][$cDir]['type'] = 'Core';
-                                } else {
-                                    $module['ADMIN'][$cDir]['type'] = '3rd Party';
-                                }
-
-                            } else {
-                                $module['ADMIN'][$cDir]['author'] = '-';
-                                $module['ADMIN'][$cDir]['type'] = '-';
-                            }
-
-                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                $module['ADMIN'][$cDir]['version'] = $version[1];
-                            } else {
-                                $module['ADMIN'][$cDir]['version'] = '-';
-                            }
-
-                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
-                                $module['ADMIN'][$cDir]['creationDate'] = $creationDate[1];
-                            } else {
-                                $module['ADMIN'][$cDir]['creationDate'] = '-';
-                            }
-
-                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
-                                $module['ADMIN'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
-                            } else {
-                                $module['ADMIN'][$cDir]['authorUrl'] = '-';
-                            }
-
-                        }
-
-                    }
-
-            }
-
-        }
-        closedir( $dir_handle );
-
-//        array_multisort($component['ADMIN']['name'], SORT_ASC, SORT_STRING,
-//                        $component['ADMIN']['type'], SORT_ASC, SORT_STRING,
-//                        $component['ADMIN']['author'], SORT_ASC, SORT_STRING);
-******/
-?>
-
-
-
-
-
-
-<?php
-    /** find the SITE mambots/plugins ********************************************************/
-/******
-function getDirectory( $path, $level = 0 ){
-    global $plugin;
-
-    $ignore = array( '.', '..', 'index.htm', 'index.html', '.DS_Store', 'none.xml' );
-    // Directories to ignore when listing output. Many hosts
-
-    $dh = @opendir( $path );
-    // Open the directory to the handle $dh
-
-        while( false !== ( $file = readdir( $dh ) ) ){
-            // Loop through the directory
-
-            if( !in_array( $file, $ignore ) ){
-            // Check that this file is not to be ignored
-
-                if( is_dir( "$path/$file" ) ){
-                // Its a directory, so we need to keep reading down...
-
-                    getDirectory( "$path/$file", ($level+1) );
-                    // Re-call this same function but on a new directory.
-                    // this is what makes function recursive.
-
-                } else {
-
-                    if ( preg_match( "/\.xml/i", $file ) ) { #if filename matches .xml in the name
-
-                        $content = file_get_contents( $path .'/'. $file );
-
-
-                        if ( preg_match( '#(.*)type=[\'|\"]mambot|plugin[\'|\"](.*)#', $content, $isPlugin ) ) {
-
-                            $plugin['SITE'][$file] = '';
-
-                            $plugin['SITE'][$file]['author'] = '-';
-                            $plugin['SITE'][$file]['authorUrl'] = '-';
-                            $plugin['SITE'][$file]['version'] = '-';
-                            $plugin['SITE'][$file]['creationDate'] = '-';
-                            $plugin['SITE'][$file]['type'] = '-';
-
-
-                                if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
-                                    $plugin['SITE'][$file]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
-                                } else {
-                                    $plugin['SITE'][$file]['name'] = _FPA_U;
-                                }
-
-                                if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
-                                    $plugin['SITE'][$file]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
-
-                                    if ( $author[1] == 'Joomla! Project' ) {
-                                        $plugin['SITE'][$file]['type'] = 'Core';
-                                    } else {
-                                        $plugin['SITE'][$file]['type'] = '3rd Party';
-                                    }
-
-                                } else {
-                                    $plugin['SITE'][$file]['author'] = '-';
-                                    $plugin['SITE'][$file]['type'] = '-';
-                                }
-
-                                if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                    $plugin['SITE'][$file]['version'] = $version[1];
-                                } else {
-                                    $plugin['SITE'][$file]['version'] = '-';
-                                }
-
-                                if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
-                                    $plugin['SITE'][$file]['creationDate'] = $creationDate[1];
-                                } else {
-                                    $plugin['SITE'][$file]['creationDate'] = '-';
-                                }
-
-                                if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
-                                    $plugin['SITE'][$file]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
-                                } else {
-                                    $plugin['SITE'][$file]['authorUrl'] = '-';
-                                }
-
-                        } //isPlugin
-
-                    }
-
-                }
-
-            }
-
-        }
-        closedir( $dh );
-    }
-
-    // cater for Joomla! 1.0 differences
-    if ( $instance['cmsRELEASE'] == '1.0' ) {
-        getDirectory( 'mambots' );
-    } else {
-        getDirectory( 'plugins' );
-    }
-
-******/
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<?php
-    /** find the SITE mambots/plugins ********************************************************/
-    function getDetails( $path, &$arrname, $loc, $level = 0 ){
+    function getDetails( $path, &$arrname, $loc, $level = 0 ) {
     global $component, $module, $plugin, $template;
+
+    // fix for PHP5.3 pass-variable-by-reference depreciation
+    $arrname = $arrname;
 
     $ignore = array( '.', '..', 'index.htm', 'index.html', '.DS_Store', 'none.xml', 'metadata.xml', 'default.xml', 'form.xml', 'contact.xml', 'edit.xml', 'blog.xml' );
     // Directories to ignore when listing output. Many hosts
@@ -1941,27 +1534,27 @@ function getDirectory( $path, $level = 0 ){
     $dh = @opendir( $path );
     // Open the directory to the handle $dh
 
-        while( false !== ( $file = readdir( $dh ) ) ){
+        while( false !== ( $file = @readdir( $dh ) ) ) {
             // Loop through the directory
 
-            if( !in_array( $file, $ignore ) ){
+            if( !in_array( $file, $ignore ) ) {
             // Check that this file is not to be ignored
 
-                if( is_dir( "$path/$file" ) ){
+                if( is_dir( "$path/$file" ) ) {
                 // Its a directory, so we need to keep reading down...
 
-                    getDetails( "$path/$file", &$arrname, $loc, ($level+1) );
+                    getDetails( "$path/$file", $arrname, $loc, ( $level +1 ) );
                     // Re-call this same function but on a new directory.
                     // this is what makes function recursive.
 
                 } else {
 
-
                     if ( $path == 'components' ) {
                         $cDir = substr( strrchr( $path .'/'. $file, '/' ), 1 );
-//                            $cDir = $file;
+
                     } else {
                         $cDir = $path .'/'. $file;
+
                     }
 
 
@@ -1972,7 +1565,6 @@ function getDirectory( $path, $level = 0 ){
                         $content = file_get_contents( $cDir );
 
                         if ( preg_match( '#<(extension|install|mosinstall)#', $content, $isValidFile ) ) {
-
                             $arrname[$loc][$cDir] = '';
 
                             $arrname[$loc][$cDir]['author'] = '-';
@@ -1984,8 +1576,10 @@ function getDirectory( $path, $level = 0 ){
 
                                 if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
                                     $arrname[$loc][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
+
                                 } else {
                                     $arrname[$loc][$cDir]['name'] = _FPA_U;
+
                                 }
 
                                 if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
@@ -1993,31 +1587,40 @@ function getDirectory( $path, $level = 0 ){
 
                                     if ( $author[1] == 'Joomla! Project' ) {
                                         $arrname[$loc][$cDir]['type'] = 'Core';
+
                                     } else {
                                         $arrname[$loc][$cDir]['type'] = '3rd Party';
+
                                     }
 
                                 } else {
                                     $arrname[$loc][$cDir]['author'] = '-';
                                     $arrname[$loc][$cDir]['type'] = '-';
+
                                 }
 
                                 if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
                                     $arrname[$loc][$cDir]['version'] = $version[1];
+
                                 } else {
                                     $arrname[$loc][$path .'/'. $file]['version'] = '-';
+
                                 }
 
                                 if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
                                     $arrname[$loc][$cDir]['creationDate'] = $creationDate[1];
+
                                 } else {
                                     $arrname[$loc][$cDir]['creationDate'] = '-';
+
                                 }
 
                                 if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
                                     $arrname[$loc][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
+
                                 } else {
                                     $arrname[$loc][$cDir]['authorUrl'] = '-';
+
                                 }
 
                         } //isValidFile
@@ -2029,203 +1632,29 @@ function getDirectory( $path, $level = 0 ){
             }
 
         }
-        closedir( $dh );
+        @closedir( $dh );
     }
 
+    @getDetails( 'components', $component, 'SITE' );
+    @getDetails( 'administrator/components', $component, 'ADMIN' );
+
+    @getDetails( 'modules', $module, 'SITE' );
+    @getDetails( 'administrator/modules', $module, 'ADMIN' );
+
     // cater for Joomla! 1.0 differences
-//    if ( $instance['cmsRELEASE'] == '1.0' ) {
-//        getDirectory( 'mambots' );
-//    } else {
-        getDetails( 'components', $component, 'SITE' );
-        getDetails( 'administrator/components', $component, 'ADMIN' );
+    if ( @$instance['cmsRELEASE'] == '1.0' ) {
+        @getDetails( 'mambots', $plugin, 'SITE' );
+    } else {
+        @getDetails( 'plugins', $plugin, 'SITE' );
 
-        getDetails( 'modules', $module, 'SITE' );
-        getDetails( 'administrator/modules', $module, 'ADMIN' );
+    }
 
-        if ( $instance['cmsRELEASE'] == '1.0' ) {
-            getDetails( 'mambots', $plugin, 'SITE' );
-        } else {
-            getDetails( 'plugins', $plugin, 'SITE' );
-        }
+    @getDetails( 'templates', $template, 'SITE' );
+    @getDetails( 'administrator/templates', $template, 'ADMIN' );
 
-        getDetails( 'templates', $template, 'SITE' );
-        getDetails( 'administrator/templates', $template, 'ADMIN' );
-//    }
+    } // end if instanceFOUND
 ?>
 
-
-
-
-
-
-
-
-
-
-
-<?php
-    /** find the SITE components ***************************************************************/
-/****
-    $dir = "templates/";
-
-    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
-
-        while ( $file = readdir( $dir_handle ) ) {
-
-            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
-                $newDir = $dir .''. $file;
-                $dir1 = opendir( $newDir );
-
-                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
-
-                    $template['SITE'][$cDir]['author'] = '-';
-                    $template['SITE'][$cDir]['authorUrl'] = '-';
-                    $template['SITE'][$cDir]['version'] = '-';
-                    $template['SITE'][$cDir]['creationDate'] = '-';
-                    $template['SITE'][$cDir]['type'] = '-';
-
-                    while ($f = readdir( $dir1 ) ) {
-
-                        $template['SITE'][$cDir]['name'] = $cDir;
-
-                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
-
-                            $content = file_get_contents($newDir.'/'.$f);
-
-                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
-                                $template['SITE'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
-                            } else {
-                                $template['SITE'][$cDir]['name'] = _FPA_U;
-                            }
-
-                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
-                                $template['SITE'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
-
-                                if ( $author[1] == 'Joomla! Project' ) {
-                                    $template['SITE'][$cDir]['type'] = 'Core';
-                                } else {
-                                    $template['SITE'][$cDir]['type'] = '3rd Party';
-                                }
-
-                            } else {
-                                $template['SITE'][$cDir]['author'] = '-';
-                                $template['SITE'][$cDir]['type'] = '-';
-                            }
-
-                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                $template['SITE'][$cDir]['version'] = $version[1];
-                            } else {
-                                $template['SITE'][$cDir]['version'] = '-';
-                            }
-
-                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
-                                $template['SITE'][$cDir]['creationDate'] = $creationDate[1];
-                            } else {
-                                $template['SITE'][$cDir]['creationDate'] = '-';
-                            }
-
-                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
-                                $template['SITE'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
-                            } else {
-                                $template['SITE'][$cDir]['authorUrl'] = '-';
-                            }
-
-                        }
-
-                    }
-
-            }
-
-        }
-        closedir( $dir_handle );
-
-///        array_multisort($component['SITE']['type'], SORT_ASC, SORT_STRING,
-//                        $component['SITE']['name'], SORT_ASC, SORT_STRING,
-///                        $component['SITE']['name'], SORT_ASC, SORT_STRING);
-****/
-
-
-    /** find the ADMIN components ***************************************************************/
-/*****
-    $dir = "administrator/templates/";
-
-    $dir_handle = @opendir( $dir ); // or die("Unable to open $dir");
-
-        while ( $file = readdir( $dir_handle ) ) {
-
-            if ( $file != "." && $file != ".." && $file != ".DS_Store" && $file != "index.html" ) {
-                $newDir = $dir .''. $file;
-                $dir1 = opendir( $newDir );
-
-                    $cDir = substr( strrchr( $newDir, '/' ), 1 );
-
-                    $template['ADMIN'][$cDir]['author'] = '-';
-                    $template['ADMIN'][$cDir]['authorUrl'] = '-';
-                    $template['ADMIN'][$cDir]['version'] = '-';
-                    $template['ADMIN'][$cDir]['creationDate'] = '-';
-                    $template['ADMIN'][$cDir]['type'] = '-';
-
-                    while ($f = readdir( $dir1 ) ) {
-
-                        $template['ADMIN'][$cDir]['name'] = $cDir;
-
-                        if ( preg_match( "/\.xml/i", $f ) ) { #if filename matches .xml in the name
-
-                            $content = file_get_contents($newDir.'/'.$f);
-
-                            if ( preg_match( '#<name>(.*)</name>#', $content, $name ) ) {
-                                $template['ADMIN'][$cDir]['name'] = strip_tags( substr( $name[1], 0, 30 ) );
-                            } else {
-                                $template['ADMIN'][$cDir]['name'] = _FPA_U;
-                            }
-
-                            if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
-                                $template['ADMIN'][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
-
-                                if ( $author[1] == 'Joomla! Project' ) {
-                                    $template['ADMIN'][$cDir]['type'] = 'Core';
-                                } else {
-                                    $template['ADMIN'][$cDir]['type'] = '3rd Party';
-                                }
-
-                            } else {
-                                $template['ADMIN'][$cDir]['author'] = '-';
-                                $template['ADMIN'][$cDir]['type'] = '-';
-                            }
-
-                            if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                $template['ADMIN'][$cDir]['version'] = $version[1];
-                            } else {
-                                $template['ADMIN'][$cDir]['version'] = '-';
-                            }
-
-                            if ( preg_match( '#<creationDate>(.*)</creationDate>#', $content, $creationDate ) ) {
-                                $template['ADMIN'][$cDir]['creationDate'] = $creationDate[1];
-                            } else {
-                                $template['ADMIN'][$cDir]['creationDate'] = '-';
-                            }
-
-                            if ( preg_match( '#<authorUrl>(.*)</authorUrl>#', $content, $authorUrl ) ) {
-                                $template['ADMIN'][$cDir]['authorUrl'] = str_replace( array( 'http://', 'https://' ), '', $authorUrl[1] );
-                            } else {
-                                $template['ADMIN'][$cDir]['authorUrl'] = '-';
-                            }
-
-                        }
-
-                    }
-
-            }
-
-        }
-        closedir( $dir_handle );
-
-//        array_multisort($component['ADMIN']['name'], SORT_ASC, SORT_STRING,
-//                        $component['ADMIN']['type'], SORT_ASC, SORT_STRING,
-//                        $component['ADMIN']['author'], SORT_ASC, SORT_STRING);
-
-*****/
-?>
 
 
 
@@ -2257,7 +1686,6 @@ function getDirectory( $path, $level = 0 ){
                 background-color:#CAFFD8;
                 border:1px solid #4D8000;
                 /** CSS3 **/
-                /* text-shadow: 1px 1px 1px #FFF; */
                 box-shadow: 3px 3px 3px #C0C0C0;
                 -moz-box-shadow: 3px 3px 3px #C0C0C0;
                 -webkit-box-shadow: 3px 3px 3px #C0C0C0;
@@ -2282,7 +1710,6 @@ function getDirectory( $path, $level = 0 ){
                 background-color:#F3EFE0;
                 border:1px solid #999966;
                 /** CSS3 **/
-                /* text-shadow: 1px 1px 1px #FFF; */
                 box-shadow: 3px 3px 3px #C0C0C0;
                 -moz-box-shadow: 3px 3px 3px #C0C0C0;
                 -webkit-box-shadow: 3px 3px 3px #C0C0C0;
@@ -2300,7 +1727,6 @@ function getDirectory( $path, $level = 0 ){
                 background-color:#E0FFFF;
                 border:1px solid #42AEC2;
                 /** CSS3 **/
-                /* text-shadow: 1px 1px 1px #FFF; */
                 box-shadow: 3px 3px 3px #C0C0C0;
                 -moz-box-shadow: 3px 3px 3px #C0C0C0;
                 -webkit-box-shadow: 3px 3px 3px #C0C0C0;
@@ -2352,25 +1778,13 @@ function getDirectory( $path, $level = 0 ){
 
             .half-section-container {
                 margin: 0px auto;
-/*
-                margin-top:10px;
-                margin-bottom:10px;
-*/
                 padding: 5px;
                 width:750px;
-
-/*
-                background-color:#E0FFFF;
-                border:1px solid #42AEC2;
-*/
             }
 
             .half-section-information-left {
                 float:left;
                 min-height: 188px;
-/*
-                margin: 0px auto;
-*/
                 margin-top:10px;
                 margin-bottom:10px;
                 padding: 5px;
@@ -2389,9 +1803,6 @@ function getDirectory( $path, $level = 0 ){
             .half-section-information-right {
                 float:right;
                 min-height: 188px;
-/*
-                margin: 0px auto;
-*/
                 margin-top:10px;
                 margin-bottom:10px;
                 padding: 5px;
@@ -2427,7 +1838,6 @@ function getDirectory( $path, $level = 0 ){
                 width: 83px;
                 height: 75px;
                 margin: 2px;
-/*                border: 1px solid red; */
             }
 
             .mini-content-title {
@@ -2436,22 +1846,10 @@ function getDirectory( $path, $level = 0 ){
                 text-align:center;
                 margin: 0px auto;
                 margin-bottom: 4px !important;
-/*                padding: 1px;*/
-/*                background-color: #FFF; */
-/*                border-top: 1px dotted #C0C0C0; */
                 border-bottom: 1px solid #C0C0C0;
                 text-transform: uppercase;
                 /** CSS3 **/
                 text-shadow: 1px 1px 1px #FFF;
-/*
-                text-shadow: none !important;
-                border-top-left-radius: 5px;
-                -moz-border-radius-topleft: 5px;
-                -webkit-border-top-left: 5px;
-                border-top-right-radius: 5px;
-                -moz-border-radius-topright: 5px;
-                -webkit-border-top-right: 5px;
-*/
             }
 
             .mini-content-box {
@@ -2459,16 +1857,9 @@ function getDirectory( $path, $level = 0 ){
                 text-align:center;
                 margin: 0px auto;
                 padding: 4px;
-/*
-                border-left: 1px solid #808080;
-                border-right: 1px solid #808080;
-*/
                 border: 1px solid #42AEC2;
-/*                border: 1px solid #808080; */
                 height: 45px;
-/*                background-color: #FFFFF0; */
                 background-color: #FFFFFF;
-/*                border: 1px solid blue; */
                 /** CSS3 **/
                 border-radius: 5px;
                 -moz-border-radius: 5px;
@@ -2479,26 +1870,8 @@ function getDirectory( $path, $level = 0 ){
                 font-size: 9px !important;
                 text-align:center;
                 margin: 0px auto;
-/*                padding: 4px; */
                 padding-left: 2px;
                 text-align: left;
-
-/*
-                border-left: 1px solid #808080;
-                border-right: 1px solid #808080;
-*/
-/*
-                border: 1px solid #808080;
-                height: 45px;
-                background-color: #FFFFF0;
-*/
-/*                border: 1px solid blue; */
-                /** CSS3 **/
-/*
-                border-radius: 5px;
-                -moz-border-radius: 5px;
-                -webkit-border-radius: 5px;
-*/
             }
 
             .column-title-container {
@@ -2529,28 +1902,9 @@ function getDirectory( $path, $level = 0 ){
                 border-bottom: 1px dotted #C0C0C0;
                 width: 99%;
                 margin: 0px auto;
-/*
-                padding-top:1px;
-                padding-bottom: 1px;
-*/
                 clear:both;
             }
 
-/*
-            .content-box {
-                text-align:center;
-                float: left;
-                border: 1px solid #C0C0C0;
-                width: 20%;
-                height: 50px;
-                margin: 3px;
-                padding:4px;
-
-                border-radius: 5px;
-                -moz-border-radius: 5px;
-                -webkit-border-radius: 5px;
-            }
-*/
             .nothing-to-display {
                 text-align: center;
                 font-size: 11px;
@@ -2572,7 +1926,6 @@ function getDirectory( $path, $level = 0 ){
                 margin-left: 5px;
                 margin-right: 5px;
                 font-weight:normal;
-                /** CSS3 **/
                 border:1px solid #4D8000;
                 /** CSS3 **/
                 box-shadow: 2px 2px 2px #C0C0C0;
@@ -2592,10 +1945,6 @@ function getDirectory( $path, $level = 0 ){
                 background-color: #CAFFD8;
                 color: #008000;
                 border: 1px solid #4D8000;
-                /*
-                padding-left:2px;
-                padding-right:2px;
-                */
                 /** CSS3 **/
                 border-radius: 5px;
                 -moz-border-radius: 5px;
@@ -2606,10 +1955,6 @@ function getDirectory( $path, $level = 0 ){
                 background-color: #FFE4B5;
                 color: #800000;
                 border: 1px solid #FFA500;
-                /*
-                padding-left:2px;
-                padding-right:2px;
-                */
                 /** CSS3 **/
                 border-radius: 5px;
                 -moz-border-radius: 5px;
@@ -2624,10 +1969,6 @@ function getDirectory( $path, $level = 0 ){
                 background-color: #FFFF00;
                 color: #800000;
                 border: 1px solid #800000;
-                /*
-                padding-left:2px;
-                padding-right:2px;
-                */
                 /** CSS3 **/
                 border-radius: %px;
                 -moz-border-radius: 5px;
@@ -2677,20 +2018,10 @@ function getDirectory( $path, $level = 0 ){
     echo '<div class="snapshot-information">';
     echo '<div class="header-title" style="">'. _RES .'</div>';
     echo '<div class="header-column-title" style="text-align:center;">'. _FPA_VER .': v'. _RES_VERSION .'-'. _RES_RELEASE .' ('. _RES_BRANCH .')</div>';
-    echo '<div style="text-align:right;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
-    echo '<div style="clear:both;"></div>';
-    echo '</div>';
-?>
 
+    // Environment Snapshot
+    echo '<br />';
 
-
-
-
-
-
-
-
-<?php
     /** ENVIRONMENT SUPPORT NOTICE ************************************************************
      ** this section displays a message explaining if the system, mysql and php environment
      ** can support the discovered version of Joomla!
@@ -2716,427 +2047,759 @@ function getDirectory( $path, $level = 0 ){
     define ( '_FPA_BADPHP', 'Known Buggy PHP');
     define ( '_FPA_BADZND', 'Known Buggy Zend');
 
-    echo '<div class="snapshot-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
-//    echo '<div class="header-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
-//    echo '<div class="normal-note" style="width:750px;text-align:center;color:#4D8000!important;padding-top:10px;">';
-//    echo '<div style="margin: 0px auto;text-align:center;text-shadow: 1px 1px 1px #FFF; width:750px; background-color:#FEFEFE; border:1px solid #4D8000; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
-    echo '<span class="header-title">'. $snapshot['ARRNAME'] .'</span>';
+    echo '<div>';
+//    echo '<div class="normal-note" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
+//    echo '<div class="snapshot-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
+//    echo '<span class="header-title">'. $snapshot['ARRNAME'] .'</span>';
     echo '<div style="width:85%;margin:0 auto;margin-top:10px;">';
 
     /** SUPPORT SECTIONS *************************************************************/
-    if ( $instance['cmsRELEASE'] == '1.7' ) {
-        $fpa['supportENV']['minPHP'] = '5.2.4';
-        $fpa['supportENV']['minSQL'] = '5.0.4';
-        $fpa['supportENV']['maxPHP'] = '6.0.0';  // latest release?
-        $fpa['supportENV']['maxSQL'] = '5.5.0';  // latest release?
-        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
-        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+    if ( @$instance['cmsRELEASE'] == '1.7' ) {
+        $fpa['supportENV']['minPHP']        = '5.2.4';
+        $fpa['supportENV']['minSQL']        = '5.0.4';
+        $fpa['supportENV']['maxPHP']        = '6.0.0';  // latest release?
+        $fpa['supportENV']['maxSQL']        = '5.5.0';  // latest release?
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
 
-    } elseif ( $instance['cmsRELEASE'] == '1.6' ) {
-        $fpa['supportENV']['minPHP'] = '5.2.4';
-        $fpa['supportENV']['minSQL'] = '5.0.4';
-        $fpa['supportENV']['maxPHP'] = '6.0.0';  // latest release?
-        $fpa['supportENV']['maxSQL'] = '5.5.0';  // latest release?
-        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
-        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+    } elseif ( @$instance['cmsRELEASE'] == '1.6' ) {
+        $fpa['supportENV']['minPHP']        = '5.2.4';
+        $fpa['supportENV']['minSQL']        = '5.0.4';
+        $fpa['supportENV']['maxPHP']        = '6.0.0';  // latest release?
+        $fpa['supportENV']['maxSQL']        = '5.5.0';  // latest release?
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
 
-    } elseif ( $instance['cmsRELEASE'] == '1.5' ) {
+    } elseif ( @$instance['cmsRELEASE'] == '1.5' ) {
 
-        if ( $instance['cmsDEVLEVEL'] <= '14' ) {
-            $fpa['supportENV']['minPHP'] = '4.3.10';
-            $fpa['supportENV']['minSQL'] = '3.23.0';
-            $fpa['supportENV']['maxPHP'] = '5.2.17';
-            $fpa['supportENV']['maxSQL'] = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
+        if ( @$instance['cmsDEVLEVEL'] <= '14' ) {
+            $fpa['supportENV']['minPHP']        = '4.3.10';
+            $fpa['supportENV']['minSQL']        = '3.23.0';
+            $fpa['supportENV']['maxPHP']        = '5.2.17';
+            $fpa['supportENV']['maxSQL']        = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
 
         } else {
-            $fpa['supportENV']['minPHP'] = '4.3.10';
-            $fpa['supportENV']['minSQL'] = '3.23.0';
-            $fpa['supportENV']['maxPHP'] = '5.3.6';
-            $fpa['supportENV']['maxSQL'] = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
+            $fpa['supportENV']['minPHP']        = '4.3.10';
+            $fpa['supportENV']['minSQL']        = '3.23.0';
+            $fpa['supportENV']['maxPHP']        = '5.3.6';
+            $fpa['supportENV']['maxSQL']        = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
 
         }
 
-        $fpa['supportENV']['badPHP'][0] = '4.3.9';
-        $fpa['supportENV']['badPHP'][1] = '4.4.2';
-        $fpa['supportENV']['badPHP'][2] = '5.0.4';
-        $fpa['supportENV']['badZND'][0] = '2.5.10';
+        $fpa['supportENV']['badPHP'][0]     = '4.3.9';
+        $fpa['supportENV']['badPHP'][1]     = '4.4.2';
+        $fpa['supportENV']['badPHP'][2]     = '5.0.4';
+        $fpa['supportENV']['badZND'][0]     = '2.5.10';
 
-    } elseif ( $instance['cmsRELEASE'] == '1.0' ) {
-        $fpa['supportENV']['minPHP'] = '3.0.1';
-        $fpa['supportENV']['minSQL'] = '3.0.0';
-        $fpa['supportENV']['maxPHP'] = '4.4.9';
-        $fpa['supportENV']['maxSQL'] = '4.1.25';  // limited by ENGINE TYPE changes in 5.0 and install sql syntax
-        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
-        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+    } elseif ( @$instance['cmsRELEASE'] == '1.0' ) {
+        $fpa['supportENV']['minPHP']        = '3.0.1';
+        $fpa['supportENV']['minSQL']        = '3.0.0';
+        $fpa['supportENV']['maxPHP']        = '4.4.9';
+        $fpa['supportENV']['maxSQL']        = '4.1.25';  // limited by ENGINE TYPE changes in 5.0 and install sql syntax
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
 
     } else {
-        $fpa['supportENV']['minPHP'] = _FPA_NA;
-        $fpa['supportENV']['minSQL'] = _FPA_NA;
-        $fpa['supportENV']['maxPHP'] = _FPA_NA;
-        $fpa['supportENV']['maxSQL'] = _FPA_NA;
-        $fpa['supportENV']['badPHP'][0] = _FPA_NA;
-        $fpa['supportENV']['badZND'][0] = _FPA_NA;
+        $fpa['supportENV']['minPHP']        = _FPA_NA;
+        $fpa['supportENV']['minSQL']        = _FPA_NA;
+        $fpa['supportENV']['maxPHP']        = _FPA_NA;
+        $fpa['supportENV']['maxSQL']        = _FPA_NA;
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
     }
 
 
 
-            // minimum and maximum PHP support requirements met?
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' J!'. @$instance['cmsRELEASE'] .'<br />';
+    // minimum and maximum PHP support requirements met?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' J!'. @$instance['cmsRELEASE'] .'<br />';
 
-                if ( $fpa['supportENV']['minPHP'] == _FPA_NA ) {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-                    $snapshot['phpSUP4J'] = _FPA_U;
+        if ( $fpa['supportENV']['minPHP'] == _FPA_NA ) {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_U;
 
-                } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '>=' ) ) AND ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '<=' ) ) ) {
-                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
-                    $snapshot['phpSUP4J'] = _FPA_Y;
+        } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '>=' ) ) AND ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '<=' ) ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_Y;
 
-                } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '<' ) ) OR ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '>' ) ) ) {
-                    echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
-                    $snapshot['phpSUP4J'] = _FPA_N;
+        } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '<' ) ) OR ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '>' ) ) ) {
+            echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_N;
 
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-                    $snapshot['phpSUP4J'] = _FPA_U;
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_U;
+
+        }
+
+    echo '</div>';
+
+
+    // PHP API
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP API<br />';
+
+        if ( @$phpenv['phpAPI'] ) {
+
+            if ( @$phpenv['phpAPI'] == 'apache2handler' ) {
+                echo '<div class="normal-note"><span class="warn-text">'. @$phpenv['phpAPI'] .'</span></div>';
+
+            } else {
+                echo '<div class="normal-note"><span class="ok">'. @$phpenv['phpAPI'] .'</span></div>';
+
+            }
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+
+    // MySQL supported by PHP?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQL<br />';
+
+        if ( array_key_exists( 'mysql', $phpextensions ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+            $snapshot['phpSUP4MYSQL'] = _FPA_Y;
+
+        } else {
+            echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+            $snapshot['phpSUP4MYSQL'] = _FPA_N;
+
+        }
+
+    echo '</div>';
+
+
+    // MySQLi supported by PHP?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQLi<br />';
+
+        if ( array_key_exists( 'mysqli', $phpextensions ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+            $snapshot['phpSUP4MYSQL-i'] = _FPA_Y;
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
+            $snapshot['phpSUP4MYSQL-i'] = _FPA_N;
+
+        }
+
+    echo '</div>';
+
+    echo '<br style="clear:both;" /><br />';
+
+    // minimum and maximum MySQL support requirements met?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' J!'. @$instance['cmsRELEASE'] .'<br />';
+
+        if ( $fpa['supportENV']['minSQL'] == _FPA_NA OR @$database['dbERROR'] != _FPA_N ) {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['sqlSUP4J'] = _FPA_U;
+
+        } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '>=' ) ) AND ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '<=' ) ) ) {
+
+            // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
+            if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
+                echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_M;
+
+            } else {
+                echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_Y;
+
+            }
+
+        } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '<' ) ) OR ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '>' ) ) ) {
+
+            // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
+            if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
+                echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_M;
+
+            } else {
+                echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_N;
+
+            }
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['sqlSUP4J'] = _FPA_U;
+
+        }
+
+    echo '</div>';
+
+
+    // MySQLi supported by MySQL?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' MySQLi<br />';
+
+        if ( !@$database['dbHOSTSERV'] OR @$database['dbERROR'] != _FPA_N ) {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['sqlSUP4SQL-i'] = _FPA_U;
+
+        } elseif ( version_compare( @$database['dbHOSTSERV'], '5.0.7', '>=' ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
+            $snapshot['sqlSUP4SQL-i'] = _FPA_N;
+
+        }
+
+    echo '</div>';
+
+
+    // J! connection to MySQL
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Connection Type<br />';
+
+        if ( @$instance['configDBTYPE'] ) {
+
+            if ( ( @$snapshot['sqlSUP4SQL-i'] == _FPA_N OR @$snapshot['sqlSUP4SQL-i'] == _FPA_U ) AND @$instance['configDBTYPE'] == 'mysqli') {
+                echo '<div class="normal-note"><span class="alert-text">'. @$instance['configDBTYPE'] .'</span></div>';
+
+            } else {
+                echo '<div class="normal-note"><span class="ok">'. @$instance['configDBTYPE'] .'</span></div>';
+
+            }
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+
+    // MySQL default collation
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Default Collation<br />';
+
+        if ( @$database['dbHOSTDEFCHSET'] ) {
+            echo '<div class="normal-note"><span class="ok">'. @$database['dbHOSTDEFCHSET'] .'</span></div>';
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+    echo '<br style="clear:both;" /><br />';
+
+    // Unsupported PHP version
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP Version<br />';
+
+        if ( version_compare( PHP_VERSION, '5', '<' ) ) {
+            echo '<div class="normal-note"><span class="alert-text">'. PHP_VERSION .'</span></div>';
+
+        } else {
+            echo '<div class="normal-note"><span class="ok">'. PHP_VERSION .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+
+    // known buggy php releases (mainly for installation on 1.5)
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADPHP .'<br />';
+
+        foreach ( $fpa['supportENV']['badPHP'] as $badKey => $badValue ) {
+            if ( version_compare( PHP_VERSION, $badValue, '==' ) ) {
+                $badANS = _FPA_Y;
+                continue;
+
+            }
+
+        }
+
+        if ( @$badANS == _FPA_Y ) {
+            $badClass = 'alert-text';
+            $snapshot['buggyPHP'] = _FPA_N;
+
+        } else {
+            $badANS = _FPA_N;
+            $badClass = 'ok';
+            $snapshot['buggyPHP'] = _FPA_N;
+
+        }
+
+    echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
+
+    echo '</div>';
+
+
+    // known buggy zend releases (mainly for installation on 1.5)
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADZND .'<br />';
+
+        foreach ( $fpa['supportENV']['badZND'] as $badKey => $badValue ) {
+
+            if ( version_compare( $phpextensions['Zend Engine'], $badValue, '==' ) ) {
+                $badANS = _FPA_Y;
+                continue;
+
+            }
+
+        }
+
+        if ( @$badANS == _FPA_Y ) {
+            $badClass = 'alert-text';
+            $snapshot['buggyZEND'] = _FPA_Y;
+
+        } else {
+            $badANS = _FPA_N;
+            $badClass = 'ok';
+            $snapshot['buggyZEND'] = _FPA_N;
+
+        }
+
+    echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
+
+    echo '</div>';
+
+
+    // if Apache, is mod_rewrite installed (for SEF URL's)
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">Apache mod_rewrite<br />';
+
+        if ( @$apachemodules['ARRNAME'] ) {
+
+            foreach ( $apachemodules as $key => $show ) {
+
+                if ( $show == 'mod_rewrite' ) {
+                    $modANS = _FPA_Y;
+                    continue;
 
                 }
 
-            echo '</div>';
+            }
+
+            if ( @$modANS == _FPA_Y ) {
+                $modClass = 'ok';
+
+            } else {
+                $modANS = _FPA_N;
+                $modClass = 'warn-text';
+
+            }
+
+        echo '<div class="normal-note"><span class="'. $modClass .'">'. $modANS .'</span></div>';
+
+            } else {
+                echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+            }
+
+    echo '</div>';
+
+    echo '</div>';
+    echo '<div style="clear:both;"><br /></div>';
+
+    echo '</div>';
 
 
 
-            // PHP API
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP API<br />';
+    //TEST
+    echo '<div style="text-align:center;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
+    echo '<div style="clear:both;"></div>';
+    echo '</div>';
 
-                if ( @$phpenv['phpAPI'] ) {
+    showDev ( $snapshot );
+    ?>
 
-                    if ( @$phpenv['phpAPI'] == 'apache2handler' ) {
-                        echo '<div class="normal-note"><span class="warn-text">'. @$phpenv['phpAPI'] .'</span></div>';
-                    } else {
-                        echo '<div class="normal-note"><span class="ok">'. @$phpenv['phpAPI'] .'</span></div>';
-                    }
 
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+<?php
+    /** ENVIRONMENT SUPPORT NOTICE ************************************************************
+     ** this section displays a message explaining if the system, mysql and php environment
+     ** can support the discovered version of Joomla!
+     **
+     ** REQUIREMENTS: (as far as I know!)
+     **          ____________________________________________
+     **          | J1.7/6 | J!1.5.0-14 | J1.5.0-23 |  J!1.0  |
+     ** ------------------------------------------------------
+     ** MIN PHP  | 5.2.4  |   4.3.10   |  4.3.10   |  3.0.1  |
+     ** MAX PHP  | -----  |   5.2.17   |  5.3.6    |  4.4.9  | // 5.0.0 was first release to include MySQLi support
+     ** ------------------------------------------------------
+     ** MIN MYSQL| 5.0.4  |   3.23.0   |  3.23.0   |  3.0.0  |
+     ** MAX MYSQL| -----  |   5.1.43   |  5.1.43   |  4.1.25 | // only limited to 4.1.29 & 5.1 because install sql still has ENGINE TYPE statements (removed in MySQL 5.5)
+     ** ------------------------------------------------------
+     ** BAD PHP  | -----  |   4.39, 4.4.2, 5.0.5   |  -----  |
+     ** BAD SQL  | -----  |        >5.0.0          |  -----  |
+     ** BAD ZEND | -----  |         2.5.10         |  -----  |
+     *****************************************************************************************/
+
+/** MOVED
+    $fpa['supportENV'] = '';
+
+    define ( '_FPA_SUPPHP', 'PHP Supports');
+    define ( '_FPA_SUPSQL', 'MySQL Supports');
+    define ( '_FPA_BADPHP', 'Known Buggy PHP');
+    define ( '_FPA_BADZND', 'Known Buggy Zend');
+
+    echo '<div class="snapshot-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
+    echo '<span class="header-title">'. $snapshot['ARRNAME'] .'</span>';
+    echo '<div style="width:85%;margin:0 auto;margin-top:10px;">';
+MOVED **/
+    /** SUPPORT SECTIONS *************************************************************/
+/** MOVED
+    if ( @$instance['cmsRELEASE'] == '1.7' ) {
+        $fpa['supportENV']['minPHP']        = '5.2.4';
+        $fpa['supportENV']['minSQL']        = '5.0.4';
+        $fpa['supportENV']['maxPHP']        = '6.0.0';  // latest release?
+        $fpa['supportENV']['maxSQL']        = '5.5.0';  // latest release?
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
+
+    } elseif ( @$instance['cmsRELEASE'] == '1.6' ) {
+        $fpa['supportENV']['minPHP']        = '5.2.4';
+        $fpa['supportENV']['minSQL']        = '5.0.4';
+        $fpa['supportENV']['maxPHP']        = '6.0.0';  // latest release?
+        $fpa['supportENV']['maxSQL']        = '5.5.0';  // latest release?
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
+
+    } elseif ( @$instance['cmsRELEASE'] == '1.5' ) {
+
+        if ( @$instance['cmsDEVLEVEL'] <= '14' ) {
+            $fpa['supportENV']['minPHP']        = '4.3.10';
+            $fpa['supportENV']['minSQL']        = '3.23.0';
+            $fpa['supportENV']['maxPHP']        = '5.2.17';
+            $fpa['supportENV']['maxSQL']        = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
+
+        } else {
+            $fpa['supportENV']['minPHP']        = '4.3.10';
+            $fpa['supportENV']['minSQL']        = '3.23.0';
+            $fpa['supportENV']['maxPHP']        = '5.3.6';
+            $fpa['supportENV']['maxSQL']        = '5.5.0';  // limited by ENGINE TYPE changes in 5.5 and install sql syntax
+
+        }
+
+        $fpa['supportENV']['badPHP'][0]     = '4.3.9';
+        $fpa['supportENV']['badPHP'][1]     = '4.4.2';
+        $fpa['supportENV']['badPHP'][2]     = '5.0.4';
+        $fpa['supportENV']['badZND'][0]     = '2.5.10';
+
+    } elseif ( @$instance['cmsRELEASE'] == '1.0' ) {
+        $fpa['supportENV']['minPHP']        = '3.0.1';
+        $fpa['supportENV']['minSQL']        = '3.0.0';
+        $fpa['supportENV']['maxPHP']        = '4.4.9';
+        $fpa['supportENV']['maxSQL']        = '4.1.25';  // limited by ENGINE TYPE changes in 5.0 and install sql syntax
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
+
+    } else {
+        $fpa['supportENV']['minPHP']        = _FPA_NA;
+        $fpa['supportENV']['minSQL']        = _FPA_NA;
+        $fpa['supportENV']['maxPHP']        = _FPA_NA;
+        $fpa['supportENV']['maxSQL']        = _FPA_NA;
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
+    }
+
+
+
+    // minimum and maximum PHP support requirements met?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' J!'. @$instance['cmsRELEASE'] .'<br />';
+
+        if ( $fpa['supportENV']['minPHP'] == _FPA_NA ) {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_U;
+
+        } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '>=' ) ) AND ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '<=' ) ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_Y;
+
+        } elseif ( ( version_compare( PHP_VERSION, $fpa['supportENV']['minPHP'], '<' ) ) OR ( version_compare( PHP_VERSION, $fpa['supportENV']['maxPHP'], '>' ) ) ) {
+            echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_N;
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['phpSUP4J'] = _FPA_U;
+
+        }
+
+    echo '</div>';
+
+
+    // PHP API
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP API<br />';
+
+        if ( @$phpenv['phpAPI'] ) {
+
+            if ( @$phpenv['phpAPI'] == 'apache2handler' ) {
+                echo '<div class="normal-note"><span class="warn-text">'. @$phpenv['phpAPI'] .'</span></div>';
+
+            } else {
+                echo '<div class="normal-note"><span class="ok">'. @$phpenv['phpAPI'] .'</span></div>';
+
+            }
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+
+    // MySQL supported by PHP?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQL<br />';
+
+        if ( array_key_exists( 'mysql', $phpextensions ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+            $snapshot['phpSUP4MYSQL'] = _FPA_Y;
+
+        } else {
+            echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+            $snapshot['phpSUP4MYSQL'] = _FPA_N;
+
+        }
+
+    echo '</div>';
+
+
+    // MySQLi supported by PHP?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQLi<br />';
+
+        if ( array_key_exists( 'mysqli', $phpextensions ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+            $snapshot['phpSUP4MYSQL-i'] = _FPA_Y;
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
+            $snapshot['phpSUP4MYSQL-i'] = _FPA_N;
+
+        }
+
+    echo '</div>';
+
+    echo '<br style="clear:both;" /><br />';
+
+    // minimum and maximum MySQL support requirements met?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' J!'. @$instance['cmsRELEASE'] .'<br />';
+
+        if ( $fpa['supportENV']['minSQL'] == _FPA_NA OR @$database['dbERROR'] != _FPA_N ) {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['sqlSUP4J'] = _FPA_U;
+
+        } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '>=' ) ) AND ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '<=' ) ) ) {
+
+            // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
+            if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
+                echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_M;
+
+            } else {
+                echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_Y;
+
+            }
+
+        } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '<' ) ) OR ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '>' ) ) ) {
+
+            // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
+            if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
+                echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_M;
+
+            } else {
+                echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
+                $snapshot['sqlSUP4J'] = _FPA_N;
+
+            }
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['sqlSUP4J'] = _FPA_U;
+
+        }
+
+    echo '</div>';
+
+
+    // MySQLi supported by MySQL?
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' MySQLi<br />';
+
+        if ( !@$database['dbHOSTSERV'] OR @$database['dbERROR'] != _FPA_N ) {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+            $snapshot['sqlSUP4SQL-i'] = _FPA_U;
+
+        } elseif ( version_compare( @$database['dbHOSTSERV'], '5.0.7', '>=' ) ) {
+            echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
+            $snapshot['sqlSUP4SQL-i'] = _FPA_N;
+
+        }
+
+    echo '</div>';
+
+
+    // J! connection to MySQL
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Connection Type<br />';
+
+        if ( @$instance['configDBTYPE'] ) {
+
+            if ( ( @$snapshot['sqlSUP4SQL-i'] == _FPA_N OR @$snapshot['sqlSUP4SQL-i'] == _FPA_U ) AND @$instance['configDBTYPE'] == 'mysqli') {
+                echo '<div class="normal-note"><span class="alert-text">'. @$instance['configDBTYPE'] .'</span></div>';
+
+            } else {
+                echo '<div class="normal-note"><span class="ok">'. @$instance['configDBTYPE'] .'</span></div>';
+
+            }
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+
+    // MySQL default collation
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Default Collation<br />';
+
+        if ( @$database['dbHOSTDEFCHSET'] ) {
+            echo '<div class="normal-note"><span class="ok">'. @$database['dbHOSTDEFCHSET'] .'</span></div>';
+
+        } else {
+            echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+    echo '<br style="clear:both;" /><br />';
+
+    // Unsupported PHP version
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP Version<br />';
+
+        if ( version_compare( PHP_VERSION, '5', '<' ) ) {
+            echo '<div class="normal-note"><span class="alert-text">'. PHP_VERSION .'</span></div>';
+
+        } else {
+            echo '<div class="normal-note"><span class="ok">'. PHP_VERSION .'</span></div>';
+
+        }
+
+    echo '</div>';
+
+
+    // known buggy php releases (mainly for installation on 1.5)
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADPHP .'<br />';
+
+        foreach ( $fpa['supportENV']['badPHP'] as $badKey => $badValue ) {
+            if ( version_compare( PHP_VERSION, $badValue, '==' ) ) {
+                $badANS = _FPA_Y;
+                continue;
+
+            }
+
+        }
+
+        if ( @$badANS == _FPA_Y ) {
+            $badClass = 'alert-text';
+            $snapshot['buggyPHP'] = _FPA_N;
+
+        } else {
+            $badANS = _FPA_N;
+            $badClass = 'ok';
+            $snapshot['buggyPHP'] = _FPA_N;
+
+        }
+
+    echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
+
+    echo '</div>';
+
+
+    // known buggy zend releases (mainly for installation on 1.5)
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADZND .'<br />';
+
+        foreach ( $fpa['supportENV']['badZND'] as $badKey => $badValue ) {
+
+            if ( version_compare( $phpextensions['Zend Engine'], $badValue, '==' ) ) {
+                $badANS = _FPA_Y;
+                continue;
+
+            }
+
+        }
+
+        if ( @$badANS == _FPA_Y ) {
+            $badClass = 'alert-text';
+            $snapshot['buggyZEND'] = _FPA_Y;
+
+        } else {
+            $badANS = _FPA_N;
+            $badClass = 'ok';
+            $snapshot['buggyZEND'] = _FPA_N;
+
+        }
+
+    echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
+
+    echo '</div>';
+
+
+    // if Apache, is mod_rewrite installed (for SEF URL's)
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">Apache mod_rewrite<br />';
+
+        if ( @$apachemodules['ARRNAME'] ) {
+
+            foreach ( $apachemodules as $key => $show ) {
+
+                if ( $show == 'mod_rewrite' ) {
+                    $modANS = _FPA_Y;
+                    continue;
 
                 }
 
-            echo '</div>';
+            }
 
+            if ( @$modANS == _FPA_Y ) {
+                $modClass = 'ok';
 
+            } else {
+                $modANS = _FPA_N;
+                $modClass = 'warn-text';
 
-            // MySQL supported by PHP?
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQL<br />';
+            }
 
-                if ( @$phpextensions['mysql'] ) {
-                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
-                    $snapshot['phpSUP4MYSQL'] = _FPA_Y;
+        echo '<div class="normal-note"><span class="'. $modClass .'">'. $modANS .'</span></div>';
 
-                } else {
-                    echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
-                    $snapshot['phpSUP4MYSQL'] = _FPA_N;
+            } else {
+                echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
 
-                }
+            }
 
-            echo '</div>';
+    echo '</div>';
 
+    echo '</div>';
+    echo '<div style="clear:both;"><br /></div>';
 
-
-            // MySQLi supported by PHP?
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPPHP .' MySQLi<br />';
-
-                if ( @$phpextensions['mysqli'] ) {
-                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
-                    $snapshot['phpSUP4MYSQL-i'] = _FPA_Y;
-
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
-                    $snapshot['phpSUP4MYSQL-i'] = _FPA_N;
-
-                }
-
-            echo '</div>';
-
-
-
-        echo '<br style="clear:both;" /><br />';
-
-
-
-            // minimum and maximum MySQL support requirements met?
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' J!'. @$instance['cmsRELEASE'] .'<br />';
-
-                if ( $fpa['supportENV']['minSQL'] == _FPA_NA OR @$database['dbERROR'] != _FPA_N ) {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-                    $snapshot['sqlSUP4J'] = _FPA_U;
-
-                } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '>=' ) ) AND ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '<=' ) ) ) {
-
-                    // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
-                    if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
-                        echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
-                        $snapshot['sqlSUP4J'] = _FPA_M;
-
-                    } else {
-                        echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
-                        $snapshot['sqlSUP4J'] = _FPA_Y;
-
-                    }
-
-                } elseif ( ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['minSQL'], '<' ) ) OR ( version_compare( @$database['dbHOSTSERV'], $fpa['supportENV']['maxSQL'], '>' ) ) ) {
-
-                    // WARNING, will run, but ONLY after modifying install SQL to remove ENGINE TYPE statements (removed in MySQL 5.5)
-                    if ( ( $instance['cmsRELEASE'] == '1.5' ) AND ( @$database['dbHOSTSERV'] > '5.1.43' ) ) {
-                        echo '<div class="normal-note"><span class="warn-text">'. _FPA_M .' (<a href="http://forum.joomla.org/viewtopic.php?p=2297327" target="_new">SQL Updates</a>)</span></div>';
-                        $snapshot['sqlSUP4J'] = _FPA_M;
-
-                    } else {
-                        echo '<div class="normal-note"><span class="alert-text">'. _FPA_N .'</span></div>';
-                        $snapshot['sqlSUP4J'] = _FPA_N;
-
-                    }
-
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-                    $snapshot['sqlSUP4J'] = _FPA_U;
-
-                }
-
-            echo '</div>';
-
-
-
-            // MySQLi supported by MySQL?
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_SUPSQL .' MySQLi<br />';
-
-                if ( !@$database['dbHOSTSERV'] OR @$database['dbERROR'] != _FPA_N ) {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-                    $snapshot['sqlSUP4SQL-i'] = _FPA_U;
-
-                } elseif ( version_compare( @$database['dbHOSTSERV'], '5.0.7', '>=' ) ) {
-                    echo '<div class="normal-note"><span class="ok">'. _FPA_Y .'</span></div>';
-                    $snapshot['sqlSUP4SQL-i'] = _FPA_Y;
-
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_N .'</span></div>';
-                    $snapshot['sqlSUP4SQL-i'] = _FPA_N;
-
-                }
-
-            echo '</div>';
-
-
-
-            // J! connection to MySQL
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Connection Type<br />';
-
-                if ( @$instance['configDBTYPE'] ) {
-
-                    if ( $snapshot['sqlSUP4SQL-i'] == _FPA_N AND @$instance['configDBTYPE'] == 'mysqli') {
-                        echo '<div class="normal-note"><span class="alert-text">'. @$instance['configDBTYPE'] .'</span></div>';
-                    } else {
-                        echo '<div class="normal-note"><span class="ok">'. @$instance['configDBTYPE'] .'</span></div>';
-                    }
-
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-
-                }
-
-            echo '</div>';
-
-
-
-            // MySQL default collation
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Default Collation<br />';
-
-                if ( @$database['dbHOSTDEFCHSET'] ) {
-                    echo '<div class="normal-note"><span class="ok">'. @$database['dbHOSTDEFCHSET'] .'</span></div>';
-//                    $snapshot['phpSUP4MYSQL'] = _FPA_Y;
-
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-//                    $snapshot['phpSUP4MYSQL'] = _FPA_N;
-
-                }
-
-            echo '</div>';
-
-
-
-        echo '<br style="clear:both;" /><br />';
-
-
-
-            // Unsupported PHP version
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">PHP Version<br />';
-
-                if ( version_compare( PHP_VERSION, '5', '<' ) ) {
-                    echo '<div class="normal-note"><span class="alert-text">'. PHP_VERSION .'</span></div>';
-
-                } else {
-                    echo '<div class="normal-note"><span class="ok">'. PHP_VERSION .'</span></div>';
-
-                }
-
-            echo '</div>';
-
-
-
-            // known buggy php releases (mainly for installation on 1.5)
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADPHP .'<br />';
-
-                foreach ( $fpa['supportENV']['badPHP'] as $badKey => $badValue ) {
-
-                    if ( version_compare( PHP_VERSION, $badValue, '==' ) ) {
-                        $badANS = _FPA_Y;
-                        continue;
-
-                    }
-
-                }
-
-                if ( @$badANS == _FPA_Y ) {
-                    $badClass = 'alert-text';
-                    $snapshot['buggyPHP'] = _FPA_N;
-
-                } else {
-                    $badANS = _FPA_N;
-                    $badClass = 'ok';
-                    $snapshot['buggyPHP'] = _FPA_N;
-
-                }
-
-            echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
-
-            echo '</div>';
-
-
-
-            // known buggy zend releases (mainly for installation on 1.5)
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADZND .'<br />';
-
-                foreach ( $fpa['supportENV']['badZND'] as $badKey => $badValue ) {
-
-                    if ( version_compare( $phpextensions['Zend Engine'], $badValue, '==' ) ) {
-                        $badANS = _FPA_Y;
-                        continue;
-
-                    }
-
-                }
-
-                if ( @$badANS == _FPA_Y ) {
-                    $badClass = 'alert-text';
-                    $snapshot['buggyZEND'] = _FPA_Y;
-
-                } else {
-                    $badANS = _FPA_N;
-                    $badClass = 'ok';
-                    $snapshot['buggyZEND'] = _FPA_N;
-
-                }
-
-            echo '<div class="normal-note"><span class="'. $badClass .'">'. $badANS .'</span></div>';
-
-            echo '</div>';
-
-
-
-            // if Apache, is mod_rewrite installed (for SEF URL's)
-            echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">Apache mod_rewrite<br />';
-
-                if ( @$apachemodules['ARRNAME'] ) {
-
-                    foreach ( $apachemodules as $key => $show ) {
-
-                        if ( $show == 'mod_rewrite' ) {
-                            $modANS = _FPA_Y;
-                            continue;
-
-                        }
-
-                    }
-
-                    if ( @$modANS == _FPA_Y ) {
-                        $modClass = 'ok';
-
-                    } else {
-                        $modANS = _FPA_N;
-                        $modClass = 'warn-text';
-
-                    }
-
-
-                echo '<div class="normal-note"><span class="'. $modClass .'">'. $modANS .'</span></div>';
-
-                } else {
-                    echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-
-                }
-
-            echo '</div>';
-
-
-
-
-
-//            echo '</div>';
-//            echo '<div style="clear:both;"><br /></div>';
-
-//            echo '<a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a>';
-//            echo '</div>';
-
-
-            // known buggy zend releases (mainly for installation on 1.5)
-/*
-            echo '<div style="font-weight:bold;width:20%;float:left;text-align:center;">'. _FPA_BADZND .'<br />';
-
-                foreach ( $fpa['badZEND'] as $badKey => $badValue ) {
-                    if ( version_compare( @$phpextensions ['Zend Engine'], $badValue, '==' ) ) {
-                        echo '<div class="normal-note"><span class="alert-text">'. _FPA_Y .'</span></div>';
-                    } else {
-                        echo '<div class="normal-note"><span class="ok">'. _FPA_N .'</span></div>';
-                    }
-                }
-
-            echo '</div>';
-
-*/
-
-            echo '</div>';
-            echo '<div style="clear:both;"><br /></div>';
-
-            echo '</div>';
+    echo '</div>';
 
     showDev( $snapshot );
+MOVED **/
 ?>
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-<!-- POST FORM -->
-<!--     <div class="dev-mode-information"> -->
-    <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:740px; background-color:#F3EFE0;border:1px solid #999966; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
-
+    <!-- POST FORM -->
+    <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:740px; background-color:#FFF;border:1px solid #999966; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0C0;-webkit-box-shadow: 3px 3px 3px #C0C0C0;box-shadow: 3px 3px 3px #C0C0C0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
+<!-- <div style="margin: 0px auto;text-align:left;text-shadow: 1px 1px 1px #FFF; width:740px; background-color:#F3EFE0;border:1px solid #999966; color:#4D8000; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;"> -->
         <div id="headerDiv" class="">
 
             <?php
+                // someone click the "Generate Post" button, so we want to keep the form open once the page refreshes
                 if ( @$_POST['doIT'] == 1 ) {
                     $displayMode = 'block';
+
                 } else {
                     $displayMode = 'none';
+
                 }
             ?>
 
@@ -3150,14 +2813,14 @@ function getDirectory( $path, $level = 0 ){
 
 
             <?php
-                if ( defined( '_FPA_BRA' ) ) { // bug report post form
-
-                }
+                //if ( defined( '_FPA_BRA' ) ) { // bug report post form
+                // if the Bug Report is used, it might have to show different information
+                //}
             ?>
 
                 <div class="half-section-container" style="width:730px;">
 
-                    <div class="half-section-information-left" style="width:340px;padding-top:10px;padding-bottom:10px;border-color:#F3EFE0;box-shadow:none!important;-webkit-box-shadow:none!important;background-color:transparent!important;">
+                    <div class="half-section-information-left" style="width:340px;padding-top:10px;padding-bottom:10px;border-color:#CCC;box-shadow: inset 3px 3px 3px #C0C0C0;-webkit-box-shadow: inset 3px 3px 3px #C0C0C0;background-color:transparent!important;">
 
                         <div class="normal-note" style="min-height:135px;">
                         <strong><?php echo _FPA_INSTRUCTIONS;  ?></strong>
@@ -3201,7 +2864,7 @@ function getDirectory( $path, $level = 0 ){
                     </div>
 
 
-                    <div class="half-section-information-right" style="width:340px;padding-top:10px;padding-bottom:10px;border-color:#F3EFE0;box-shadow:none!important;-webkit-box-shadow:none!important;background-color:transparent!important;">
+                    <div class="half-section-information-right" style="width:340px;padding-top:10px;padding-bottom:10px;border-color:#CCC;box-shadow: inset 3px 3px 3px #C0C0C0;-webkit-box-shadow: inset 3px 3px 3px #C0C0C0;background-color:transparent!important;">
 
                         <div class="normal-note" style="min-height:135px;">
                         <strong>Run-Time Options</strong><br /><br />
@@ -3240,12 +2903,20 @@ function getDirectory( $path, $level = 0 ){
                                 }
                                 ?>
 
-                                <strong>Optional Settings:</strong><br />
-                                <input style="font-size:9px;" type="checkbox" name="showElevated" value="1" <?php echo $selectshowElevated ?> /><span class="normal">Show elevated folder permissions</span><br />
-                                <input style="font-size:9px;" type="checkbox" name="showTables" value="1" <?php echo $selectshowTables ?> /><span class="normal">Show database table statistics</span><br />
-                                <input style="font-size:9px;" type="checkbox" name="showComponents" value="1" <?php echo $selectshowComponents ?> /><span class="normal">Show Components</span><br />
-                                <input style="font-size:9px;" type="checkbox" name="showModules" value="1" <?php echo $selectshowModules ?> /><span class="normal">Show Modules</span><br />
-                                <input style="font-size:9px;" type="checkbox" name="showPlugins" value="1" <?php echo $selectshowPlugins ?> /><span class="normal">Show Plugins</span><br />
+                                <?php
+                                if ( $instance['instanceFOUND'] != _FPA_Y ) {
+                                    $dis = 'DISABLED';
+
+                                } else {
+                                    $dis = '';
+                                }
+                                ?>
+                                <strong>Optional Settings <?php echo $dis; ?>:</strong><br />
+                                <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showElevated" value="1" <?php echo $selectshowElevated ?> /><span class="normal">Show elevated folder permissions</span><br />
+                                <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showTables" value="1" <?php echo $selectshowTables ?> /><span class="normal">Show database table statistics</span><br />
+                                <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showComponents" value="1" <?php echo $selectshowComponents ?> /><span class="normal">Show Components</span><br />
+                                <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showModules" value="1" <?php echo $selectshowModules ?> /><span class="normal">Show Modules</span><br />
+                                <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showPlugins" value="1" <?php echo $selectshowPlugins ?> /><span class="normal">Show Plugins</span><br />
                             </div>
 
                             <div style="float:right; width:150px;">
@@ -3273,7 +2944,7 @@ function getDirectory( $path, $level = 0 ){
                                 }
                             ?>
 
-                                <strong>Information Privacy:</strong><br />
+                                <strong>Information Privacy :</strong><br />
                                 <input style="font-size:9px;" type="radio" name="showProtected" value="1" <?php echo $selectshowProtected_1; ?> /><span class="ok">None</span><br /><span style="line-height:8px;padding:0px;margin:0px;margin-left:15px;font-size:8px;">No elements are masked</span><br />
                                 <input style="font-size:9px;" type="radio" name="showProtected" value="2" <?php echo $selectshowProtected_2; ?> /><span class="warn-text">Partial (default)</span><br /><span style="line-height:8px;padding:0px;margin:0px;margin-left:15px;font-size:8px;">Some elements are masked</span><br />
                                 <input style="font-size:9px;" type="radio" name="showProtected" value="3" <?php echo $selectshowProtected_3; ?> /><span class="alert-text">Strict</span><br /><span style="line-height:8px;padding:0px;margin:0px;margin-left:15px;font-size:8px;">All indentifiable elements are masked</span>
@@ -3332,9 +3003,9 @@ function getDirectory( $path, $level = 0 ){
         <?php
             if ( @$_POST['doIT'] == '1' ) {
 
-                echo '<div class="normal-note" style="width:725px;text-align:center;margin: 0px auto;padding:2px;">';
+                echo '<div class="normal-note" style="width:725px;text-align:center;margin: 0px auto;padding:2px;padding-top:5px;">';
 
-                echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail:</span><br />';
+                echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail</span><br />';
 
 
                 /** LOAD UP THE SELECTED CONFIGURATION AND DIAGNOSTIC INFORMATION FOR THE POST ************
@@ -3350,21 +3021,21 @@ function getDirectory( $path, $level = 0 ){
                 echo '<textarea class="protected" style="width:700px;height:35px;font-size:9px;margin-top:5px;" type="text" rows="10" cols="100" name="postOUTPUT" id="postOUTPUT">';
 
                     // post the problem description, if any
-                    if ( $_POST['probDSC'] ) { echo '[quote="'. _FPA_PROB_DSC .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probDSC'] .'[/quote][/size]'; }
+                    if ( $_POST['probDSC'] ) { echo '[quote="'. _FPA_PROB_DSC .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probDSC'] .'[/quote][/size]'; }
 
                     // post the first error message, if any
-                    if ( $_POST['probMSG1'] ) { echo '[quote="'. _FPA_PROB_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG1'] .'[/quote][/size]'; }
+                    if ( $_POST['probMSG1'] ) { echo '[quote="'. _FPA_PROB_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG1'] .'[/quote][/size]'; }
 
                         // post the second error message, if any (remember if there is a PHP Error in the log, it will be auto-added here instead of the user adding a message
                         // show the different MSG2 header and content, if there is an existing PHP Error to display
                         if ( $phpenv['phpLASTERR'] AND $_POST['probMSG2'] ) {
-                            echo '[quote="'. _FPA_LAST .' '. _FPA_ER .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
+                            echo '[quote="'. _FPA_LAST .' '. _FPA_ER .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
                         } elseif ( !@$phpenv['phpLASTERROR'] AND $_POST['probMSG2'] ) {
-                            echo '[quote="'. _FPA_PROB_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG2'] .'[/quote][/size]';
+                            echo '[quote="'. _FPA_PROB_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG2'] .'[/quote][/size]';
                         }
 
                     // post the actions taken, if any
-                    if ( $_POST['probACT'] ) { echo '[quote="'. _FPA_PROB_ACT .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probACT'] .'[/quote][/size]'; }
+                    if ( $_POST['probACT'] ) { echo '[quote="'. _FPA_PROB_ACT .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probACT'] .'[/quote][/size]'; }
 
 //!TODO come back and finish the post details
 /**
@@ -3398,15 +3069,6 @@ function getDirectory( $path, $level = 0 ){
 
 
 
-
-
-
-
-
-
-
-
-
 <?php
     // build a full-width div to hold two 'half-width' section, side-by-side
     echo '<div class="half-section-container" style="z-index:1;">'; // start half-section container
@@ -3425,22 +3087,24 @@ function getDirectory( $path, $level = 0 ){
         echo '<div class="mini-content-title">CMS Found</div>';
 
             if ( $instance['instanceFOUND'] == _FPA_Y ) {
-                echo $instance['cmsPRODUCT'] .'<br />';
-                echo '<strong>'. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'</strong><br />';
+                echo @$instance['cmsPRODUCT'] .'<br />';
+                echo '<strong>'. @$instance['cmsRELEASE'] .'.'. @$instance['cmsDEVLEVEL'] .'</strong><br />';
 
-                if ( strtolower( $instance['cmsDEVSTATUS'] ) == 'stable' ) {
+                if ( strtolower( @$instance['cmsDEVSTATUS'] ) == 'stable' ) {
                     $statusClass = 'ok-hilite';
-                } elseif ( strtolower( substr( $instance['cmsDEVSTATUS'],0, 4 ) ) == 'alph' OR strtolower( substr( $instance['cmsDEVSTATUS'],0, 4 ) ) == 'beta' ) {
+                } elseif ( strtolower( substr( @$instance['cmsDEVSTATUS'],0, 4 ) ) == 'alph' OR strtolower( substr( @$instance['cmsDEVSTATUS'],0, 4 ) ) == 'beta' ) {
                     $statusClass = 'alert';
-                } elseif ( strtolower( substr( $instance['cmsDEVSTATUS'],0, 2 ) ) == 'rc' ) {
+                } elseif ( strtolower( substr( @$instance['cmsDEVSTATUS'],0, 2 ) ) == 'rc' ) {
+                    $statusClass = 'warn';
+                } else {
                     $statusClass = 'warn';
                 }
 
-                echo '<div class="'. $statusClass .'" style="margin: 0px auto;margin-top:1px;">'. $instance['cmsDEVSTATUS'] .'</div>';
+                echo '<div class="'. $statusClass .'" style="margin: 0px auto;margin-top:1px;">'. @$instance['cmsDEVSTATUS'] .'</div>';
                 //echo $instance['cmsCODENAME'];
 
             } else {
-                echo '<div class="warn" style="margin: 0px auto;">'. $instance['instanceFOUND'] .'</div>';
+                echo '<div class="warn" style="margin: 0px auto;">'. @$instance['instanceFOUND'] .'</div>';
             }
 
         echo '</div>';
@@ -3450,36 +3114,37 @@ function getDirectory( $path, $level = 0 ){
 
 
         // caters for the platform separation
-
-            echo '<div class="mini-content-container">';
-            echo '<div class="mini-content-box">';
-            echo '<div class="mini-content-title">Platform</div>';
+        echo '<div class="mini-content-container">';
+        echo '<div class="mini-content-box">';
+        echo '<div class="mini-content-title">Platform</div>';
 
         if ( $instance['platformVFILE'] != _FPA_N ) {
-            echo ''. $instance['platformPRODUCT'] .'<br />';
+            echo $instance['platformPRODUCT'] .'<br />';
             echo '<strong>'. $instance['platformRELEASE'] .'.'. @$instance['platformDEVLEVEL'] .'</strong><br />';
 
-//                if ( $instance['platformPRODUCT'] == 'Nooku' ) {
-//                    if ( preg_match( '#PRODUCT.*=\s[\'|\"](.*)[\'|\"];#', $platformVContent, $platformPRODUCT
 
                 if ( strtolower( $instance['platformDEVSTATUS'] ) == 'stable' ) {
                     $statusClass = 'ok-hilite';
+
                 } elseif ( strtolower( substr( $instance['platformDEVSTATUS'],0, 4 ) ) == 'alph' OR strtolower( substr( $instance['platformDEVSTATUS'],0, 4 ) ) == 'beta' ) {
                     $statusClass = 'alert';
+
                 } elseif ( strtolower( substr( $instance['platformDEVSTATUS'],0, 2 ) ) == 'rc' ) {
                     $statusClass = 'warn';
+
                 }
-                    echo '<div class="'. $statusClass .'" style="margin: 0px auto;">'. $instance['platformDEVSTATUS'] .'</div>';
-                    //echo $instance['platformCODENAME'];
+
+                echo '<div class="'. $statusClass .'" style="margin: 0px auto;">'. $instance['platformDEVSTATUS'] .'</div>';
 
         } elseif ( $instance['platformVFILE'] == _FPA_N AND $instance['cmsVFILE'] == _FPA_N) {
             echo '<div class="warn" style="margin: 0px auto;">'. _FPA_N .'</div>';
+
         } else {
             echo _FPA_NA;
         }
-            echo '</div>';
-            echo '</div>';
 
+        echo '</div>';
+        echo '</div>';
 
 
         echo '<div class="mini-content-container">';
@@ -3488,8 +3153,10 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $instance['instanceCONFIGURED'] == _FPA_N ) {
                 $configuredClass = 'warn';
+
             } else {
                 $configuredClass = 'ok';
+
             }
 
         echo '<div class="'. $configuredClass .'" style="margin: 0px auto;">'. $instance['instanceCONFIGURED'] .'</div>';
@@ -3497,20 +3164,21 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
 
 
-
         echo '<div class="mini-content-container">';
         echo '<div class="mini-content-box">';
         echo '<div class="mini-content-title">Config Version</div>';
-        //echo $instance['configVALIDFOR'];
 
-            if ( $instance['instanceCFGVERMATCH'] == _FPA_Y ) {
+            if ( @$instance['instanceCFGVERMATCH'] == _FPA_Y ) {
                 echo $instance['configVALIDFOR'];
                 echo '<div class="ok" style="width:99%;margin: 0px auto;">matches cms</div>';
-            } elseif ( $instance['instanceCFGVERMATCH'] == _FPA_N ) {
+
+            } elseif ( @$instance['instanceCFGVERMATCH'] == _FPA_N ) {
                 echo $instance['configVALIDFOR'];
                 echo '<div class="warn" style="width:99%;margin: 0px auto;">cms mis-match</div>';
-            } elseif ( $instance['configVALIDFOR'] == _FPA_U ) {
+
+            } elseif ( @$instance['configVALIDFOR'] == _FPA_U ) {
                 echo '<div class="warn" style="width:99%;margin: 0px auto;">'. $instance['configVALIDFOR'] .'</div>';
+
             }
 
         echo '</div>';
@@ -3523,24 +3191,23 @@ function getDirectory( $path, $level = 0 ){
             // force new line of mini-content-boxes
             echo '<div style="clear:both;"></div>';
 
-
-
             echo '<div class="mini-content-container">';
             echo '<div class="mini-content-box">';
             echo '<div class="mini-content-title">Config Valid</div>';
 
-                if ( $instance['configSANE'] == _FPA_Y AND @$instance['configSIZEVALID'] != _FPA_N ) {
+                if ( @$instance['configSANE'] == _FPA_Y AND @$instance['configSIZEVALID'] != _FPA_N ) {
                     $saneClass = 'ok';
                     $configVALID = _FPA_Y;
+
                 } else {
                     $saneClass = 'warn';
                     $configVALID = _FPA_N;
+
                 }
 
             echo '<div class="'. $saneClass .'" style="width:50px;margin: 0px auto;">'. $configVALID .'</div>';
             echo '</div>';
             echo '</div>';
-
 
 
             echo '<div class="mini-content-container">';
@@ -3550,14 +3217,19 @@ function getDirectory( $path, $level = 0 ){
                 // looking for --7 or -7- or -77 (default folder permissions are usually 755)
                 if ( substr( $instance['configMODE'],0 ,1 ) == '7' OR substr( $instance['configMODE'],1 ,1 ) == '7' OR substr( $instance['configMODE'],2 ,1 ) == '7' ) {
                     $modeClass = 'alert';
+
                 } elseif ( $instance['configMODE'] <= '644' ) {
                     $modeClass = 'ok';
+
                 } elseif ( substr( $instance['configMODE'],1 ,1 ) >= '5' OR substr( $instance['configMODE'],2 ,1 ) >= '5' ) {
                     $modeClass = 'warn';
+
                 } elseif ( $instance['configMODE'] == _FPA_N ) {
                     $modeClass = 'warn-text';
+
                 } else {
                     $modeClass = 'normal';
+
                 }
 
             echo '<div class="'. $modeClass .'" style="width:50px;margin: 0px auto;">'. $instance['configMODE'] .'</div>';
@@ -3566,18 +3238,20 @@ function getDirectory( $path, $level = 0 ){
                 if ( ( $instance['configWRITABLE'] == _FPA_Y ) AND ( substr( $instance['configMODE'],0 ,1 ) == '7' OR substr( $instance['configMODE'],1 ,1 ) == '7' OR substr( $instance['configMODE'],2 ,1 ) == '7' ) ) {
                     $writeClass = 'alert';
                     $canWrite = 'Writable';
+
                 } elseif ( ( $instance['configWRITABLE'] == _FPA_Y ) AND ( substr( $instance['configMODE'],0 ,1 ) <= '6' ) ) {
                     $writeClass = 'ok';
                     $canWrite = 'Writable';
+
                 } elseif ( ( $instance['configWRITABLE'] != _FPA_Y ) ) {
                     $writeClass = 'warn';
                     $canWrite = 'Read Only';
+
                 }
 
             echo '<div class="'. $writeClass .'" style="width:50px;margin: 0px auto;margin-top:1px;">'. $canWrite .'</div>';
             echo '</div>';
             echo '</div>';
-
 
 
             echo '<div class="mini-content-container">';
@@ -3586,13 +3260,14 @@ function getDirectory( $path, $level = 0 ){
 
                 if ( $showProtected <= 2 ) {
                     echo $instance['configOWNER']['name'];
+
                 } else {
                     echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
                 }
 
             echo '</div>';
             echo '</div>';
-
 
 
             echo '<div class="mini-content-container">';
@@ -3601,8 +3276,10 @@ function getDirectory( $path, $level = 0 ){
 
                 if ( $showProtected <= 2 ) {
                     echo $instance['configGROUP']['name'];
+
                 } else {
                     echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
                 }
 
             echo '</div>';
@@ -3623,16 +3300,16 @@ function getDirectory( $path, $level = 0 ){
 
                 if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
                     echo '<br />but there is a configuration.php file.';
+
                 }
 
             echo '</div>';
             echo '</div>';
+
         }
 
         echo '</div>';
         // end content left block
-
-
 
 
 
@@ -3641,156 +3318,133 @@ function getDirectory( $path, $level = 0 ){
 
         echo '<div class="section-title" style="text-align:center;">'. $instance['ARRNAME'] .' :: Configuration</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
-
-//        echo '</div>';
 
             // only do mode/permissions checks if an instance was found in the intial checks
             if ( $instance['instanceCONFIGURED'] == _FPA_Y AND $instance['configVALIDFOR'] != _FPA_U ) {
-            // this is the content area
+
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title">Site Offline</div>';
+                echo $instance['configOFFLINE'];
+                echo '</div>';
+                echo '</div>';
 
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Site Offline</div>';
-        echo $instance['configOFFLINE'];
-        echo '</div>';
-        echo '</div>';
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">SEF URL\'s</div>';
+                echo '<div class="mini-content-box-small">';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Enabled:<div style="float:right;font-size:9px;">'. $instance['configSEF'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Suffix:<div style="float:right;font-size:9px;">'. $instance['configSEFSUFFIX'] .'</div></div>';
+
+                    if ( $system['sysSHORTWEB'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITEHTWC'] != _FPA_Y ) {
+                        $sefColor = 'ff0000';
+
+                    } else {
+                        $sefColor = '404040';
+
+                    }
+
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;color:#'. $sefColor .';">ReWrite:<div style="float:right;color:#'. $sefColor .';font-size:9px;">'. $instance['configSEFRWRITE'] .'</div></div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
 
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">SEF URL\'s</div>';
-        echo '<div class="mini-content-box-small">';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Enabled:<div style="float:right;font-size:9px;">'. $instance['configSEF'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Suffix:<div style="float:right;font-size:9px;">'. $instance['configSEFSUFFIX'] .'</div></div>';
-
-            if ( $system['sysSHORTWEB'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITEHTWC'] != _FPA_Y ) {
-                $sefColor = 'ff0000';
-            } else {
-                $sefColor = '404040';
-            }
-
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;color:#'. $sefColor .';">ReWrite:<div style="float:right;color:#'. $sefColor .';font-size:9px;">'. $instance['configSEFRWRITE'] .'</div></div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Compression</div>';
+                echo '<div class="mini-content-box-small">';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">GZip:<div style="float:right;font-size:9px;">'. $instance['configGZIP'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Cache:<div style="float:right;font-size:9px;">'. $instance['configCACHING'] .'</div></div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
 
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Compression</div>';
-        echo '<div class="mini-content-box-small">';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">GZip:<div style="float:right;font-size:9px;">'. $instance['configGZIP'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Cache:<div style="float:right;font-size:9px;">'. $instance['configCACHING'] .'</div></div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Debugging</div>';
+                echo '<div class="mini-content-box-small">';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Error Rep:<div style="float:right;font-size:9px;">'. $instance['configERRORREP'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Site Debug:<div style="float:right;font-size:9px;">'. $instance['configSITEDEBUG'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Lang Debug:<div style="float:right;font-size:9px;">'. $instance['configLANGDEBUG'] .'</div></div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
 
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Debugging</div>';
-        echo '<div class="mini-content-box-small">';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Error Rep:<div style="float:right;font-size:9px;">'. $instance['configERRORREP'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Site Debug:<div style="float:right;font-size:9px;">'. $instance['configSITEDEBUG'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Lang Debug:<div style="float:right;font-size:9px;">'. $instance['configLANGDEBUG'] .'</div></div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">dataBase</div>';
+                echo '<div class="mini-content-box-small">';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Type:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">'. @$database['dbHOSTSERV'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">CharSet:<div style="float:right;font-size:9px;">'. @$database['dbCHARSET'] .'</div></div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
 
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">dataBase</div>';
-        echo '<div class="mini-content-box-small">';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Type:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">'. @$database['dbHOSTSERV'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">CharSet:<div style="float:right;font-size:9px;">'. @$database['dbCHARSET'] .'</div></div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title">DB Credentials</div>';
+
+                    if ( $instance['configDBCREDOK'] == _FPA_Y ) {
+                        echo '<div class="ok" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />complete</div>';
+                    } else {
+                        echo '<div class="warn" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />in-complete</div>';
+
+                    }
+
+                echo '</div>';
+                echo '</div>';
 
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">DB Credentials</div>';
-            if ( $instance['configDBCREDOK'] == _FPA_Y ) {
-                echo '<div class="ok" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />complete</div>';
-            } else {
-                echo '<div class="warn" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />in-complete</div>';
-            }
-        echo '</div>';
-        echo '</div>';
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Security</div>';
+                echo '<div class="mini-content-box-small">';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">SSL Enabled:<div style="float:right;font-size:9px;">'. $instance['configSSL'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Def\' Access:<div style="float:right;font-size:9px;">'. $instance['configACCESS'] .'</div></div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
 
 
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Security</div>';
-        echo '<div class="mini-content-box-small">';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">SSL Enabled:<div style="float:right;font-size:9px;">'. $instance['configSSL'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Def\' Access:<div style="float:right;font-size:9px;">'. $instance['configACCESS'] .'</div></div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-
-
-
-
-
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Features</div>';
-        echo '<div class="mini-content-box-small">';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">FTP Enabled:<div style="float:right;font-size:9px;">'. $instance['configFTP'] .'</div></div>';
-        echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Unicode Slug:<div style="float:right;font-size:9px;">'. $instance['configUNICODE'] .'</div></div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-
-
-
-        /*
-        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="font-size:9px;width:95%;border-bottom: 1px dotted #c0c0c0;font-weight:bold;">dataBase Host:<div style="float:right;font-size:9px;font-weight:normal;">';
-
-            if ( $protected == '0' ) {
-
-                if ( $instance['configDBHOST'] ) {
-                    echo $instance['configDBHOST'];
-                } else {
-                    echo '<span class="alert">&nbsp;'. _FPA_DNE .'&nbsp;</span>';
-                }
-
-            } else {
-                echo '<span class="warn-text">[**&nbsp;'. _FPA_HIDDEN .'&nbsp;**]</span>';
-            }
-        echo '</div></div>';
-        */
-
-        echo '</div>';
-
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Features</div>';
+                echo '<div class="mini-content-box-small">';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">FTP Enabled:<div style="float:right;font-size:9px;">'. $instance['configFTP'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Unicode Slug:<div style="float:right;font-size:9px;">'. $instance['configUNICODE'] .'</div></div>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
 
 
             } else { // an instance wasn't found in the initial checks, so no folders to check
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Config Version</div>';
-            echo '<div class="warn" style="width:50px;margin: 0px auto;">'. _FPA_U .'</div>';
-        echo '</div>';
-        echo '</div>';
 
-        echo '<div class="mini-content-container">';
-        echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Config Valid</div>';
-            if ( $instance['configSIZEVALID'] == _FPA_N ) {
-                echo '<div class="warn" style="width:99%;margin: 0px auto;">could be empty</div>';
-            }
-        echo '</div>';
-        echo '</div>';
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title">Config Version</div>';
+                echo '<div class="warn" style="width:50px;margin: 0px auto;">'. _FPA_U .'</div>';
+                echo '</div>';
+                echo '</div>';
+
+
+                echo '<div class="mini-content-container">';
+                echo '<div class="mini-content-box">';
+                echo '<div class="mini-content-title">Config Valid</div>';
+
+                    if ( @$instance['configSIZEVALID'] == _FPA_N ) {
+                        echo '<div class="warn" style="width:99%;margin: 0px auto;">could be empty</div>';
+
+                    }
+
+                echo '</div>';
+                echo '</div>';
 
 
                 echo '<div class="row-content-container nothing-to-display" style="">';
@@ -3804,27 +3458,9 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
         // end content right block
 
-    //echo '<div style="clear:both;"></div>';
-
-//    showDev( $instance );
-//    showDev( $system );
-
     echo '</div>'; // end half-section container
     showDev( $instance );
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3837,41 +3473,32 @@ function getDirectory( $path, $level = 0 ){
 
         echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
 
-
-
-
-
-
-//        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' '. _FPA_VER .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' '. _FPA_VER .':<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' '. _FPA_VER .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( @$database['dbHOSTSERV'] ) {
                 echo '<span class="normal">Server: '. $database['dbHOSTSERV'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="normal">Server:</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
+
             }
 
             if ( @$database['dbHOSTCLIENT'] ) {
                 echo '<span class="normal">&nbsp;&nbsp;Client: '. $database['dbHOSTCLIENT'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="normal">&nbsp;&nbsp;Client:</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
+
             }
 
         echo '</div></div>';
         echo '</div>';
 
 
-
-
-//        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Hostname:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="font-size:9px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Hostname:<div style="text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
-
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' Hostname:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $showProtected == 1 ) {
 
@@ -3885,33 +3512,37 @@ function getDirectory( $path, $level = 0 ){
 
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
             }
 
         echo '</div></div>';
         echo '</div>';
 
 
-
-//        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-//        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
         echo '<span class="normal">';
+
             if ( $database['dbLOCAL'] == _FPA_Y ) {
                 echo '('. _FPA_LOCAL .') '. $database['dbHOSTINFO'] .'&nbsp';
+
             } elseif ( $database['dbLOCAL'] == _FPA_N AND @$database['dbHOSTINFO'] ) {
 
                 if ( $showProtected <= 2 ) {
                     echo '('. _FPA_REMOTE .') '. $database['dbHOSTINFO'] .'&nbsp';
+
                 } else {
                     echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
                 }
 
             } elseif ( $database['dbLOCAL'] == _FPA_N AND !@$database['dbHOSTINFO'] ) {
                 echo '('. _FPA_REMOTE .') <span class="warn-text"> '. _FPA_U .'</span>&nbsp';
+
             } else {
                 echo '<span class="warn-text">'. _FPA_U .'</span>';
+
             }
 
             echo '</span>';
@@ -3920,33 +3551,26 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
 
 
-
-//        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-//echo '<br />';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">PHP Support:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        //        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">PHP Support :<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
-            if ( $instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_N ) {
+            if ( @$instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_N ) {
                 echo '<span class="alert-text">'. $instance['configDBTYPE'] .' '. _FPA_IS .' '. _FPA_NSUP .' '. _FPA_BY .' PHP '. $phpenv['phpVERSION'] .'&nbsp;</span>';
-            } elseif ( ( $instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_Y ) OR $instance['configDBTYPE'] == 'mysql' ) {
+
+            } elseif ( ( @$instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_Y ) OR @$instance['configDBTYPE'] == 'mysql' ) {
                 echo '<span class="ok">'. $instance['configDBTYPE'] .' '. _FPA_IS .' '. _FPA_YSUP .' '. _FPA_BY .' PHP '. $phpenv['phpVERSION'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="warn-text">PHP '. $phpenv['phpVERSION'] .' '. _FPA_SUP .' '. _FPA_IS .' '. _FPA_U .'&nbsp;</span>';
+
             }
 
         echo '</div></div>';
         echo '</div>';
 
 
-
-
-
-
-//        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connect To '. $instance['configDBTYPE'] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        //        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connect To '. $instance['configDBTYPE'] .' :<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connect To '. @$instance['configDBTYPE'] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $database['dbDOCHECKS'] == _FPA_N ) {
                 echo '<span class="warn-text">&nbsp;'. _FPA_NOA .', '. _FPA_NC .'&nbsp;</span>';
@@ -3956,7 +3580,6 @@ function getDirectory( $path, $level = 0 ){
 
             } elseif ( @$database['dbERROR'] != _FPA_N ) {
                 echo '<span class="alert-text">&nbsp;'. _FPA_N .', '. _FPA_ER .'&nbsp;</span>';
-//                echo '<div class="warn-text">'. $database['dbERROR'] .'</div>';
 
             }
 
@@ -3965,28 +3588,29 @@ function getDirectory( $path, $level = 0 ){
 
 
 
-        if ( @$database['dbERROR'] AND @$database['dbERROR'] != _FPA_N ) {
+            if ( @$database['dbERROR'] AND @$database['dbERROR'] != _FPA_N ) {
 
-            echo '<div class="mini-content-box-small" style="">';
-            echo '<div class="alert-text" style="line-height:10px;text-shadow: #fff 1px 1px 1px;border-bottom: 1px solid #ccebeb;font-size:8px;width:99%;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Error:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div class="alert-text" style="line-height:10px;text-shadow: #fff 1px 1px 1px;border-bottom: 1px solid #ccebeb;font-size:8px;width:99%;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Error:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
-            echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;">'. $database['dbERROR'] .'</div>';
+                echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;">'. $database['dbERROR'] .'</div>';
 
-            echo '</div></div>';
-            echo '</div>';
-            echo '<br style="clear:both;" />';
+                echo '</div></div>';
+                echo '</div>';
+                echo '<br style="clear:both;" />';
 
-        }
-
+            }
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $instance['configDBTYPE'] .' Character Set:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' Character Set:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
             if ( @$database['dbCHARSET'] ) {
                 echo '<span class="normal">&nbsp;'. $database['dbCHARSET'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
+
             }
 
         echo '</div></div>';
@@ -3998,15 +3622,14 @@ function getDirectory( $path, $level = 0 ){
 
             if ( @$database['dbHOSTDEFCHSET'] ) {
                 echo '<span class="normal">&nbsp;'. $database['dbHOSTDEFCHSET'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
+
             }
 
         echo '</div></div>';
         echo '</div>';
-
-
-
 
 
         echo '<div class="mini-content-box-small" style="">';
@@ -4015,7 +3638,7 @@ function getDirectory( $path, $level = 0 ){
             if ( @$database['dbCOLLATION'] ) {
                 echo '<div class="normal">&nbsp;'. $database['dbCOLLATION'] .'&nbsp;</div>';
 
-            } elseif ( $database['dbERROR'] != _FPA_N ) {
+            } elseif ( @$database['dbERROR'] != _FPA_N ) {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
 
             } else {
@@ -4027,34 +3650,24 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
 
 
-
-
-//        echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Database size:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
 
-        if ( @$database['dbSIZE'] ) {
-            echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
-        } else {
-            echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-        }
+            if ( @$database['dbSIZE'] ) {
+                echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
+
+            } else {
+                echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
+
+            }
 
         echo '</div></div>';
         echo '</div>';
 
-
-
-
-
-
         echo '<br style="clear:both;" />';
-        /** mini-content, shown in all cases *************************************************/
-
-
 
         echo '</div></div>';
         // end content left block
-
 
 
         /** display the system information *************************************************/
@@ -4062,96 +3675,89 @@ function getDirectory( $path, $level = 0 ){
 
         echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: Performance</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
-
-//        echo '</div>';
 
             // only do mode/permissions checks if an instance was found in the intial checks
             if ( $database['dbDOCHECKS'] == _FPA_Y AND @$database['dbERROR'] == _FPA_N ) {
-            // this is the content area
+
+                $pieces = explode(": ", $database['dbHOSTSTATS'][0] );
+
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .' seconds&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
-        $pieces = explode(": ", $database['dbHOSTSTATS'][0] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .' seconds&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
+                $pieces = explode(": ", $database['dbHOSTSTATS'][1] );
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
-
-        $pieces = explode(": ", $database['dbHOSTSTATS'][1] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
-
-
-        $pieces = explode(": ", $database['dbHOSTSTATS'][2] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
+                $pieces = explode(": ", $database['dbHOSTSTATS'][2] );
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
-        $pieces = explode(": ", $database['dbHOSTSTATS'][3] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
+                $pieces = explode(": ", $database['dbHOSTSTATS'][3] );
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
-        $pieces = explode(": ", $database['dbHOSTSTATS'][4] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
+                $pieces = explode(": ", $database['dbHOSTSTATS'][4] );
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
-        $pieces = explode(": ", $database['dbHOSTSTATS'][5] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
+                $pieces = explode(": ", $database['dbHOSTSTATS'][5] );
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
-
-        $pieces = explode(": ", $database['dbHOSTSTATS'][6] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
-
+                $pieces = explode(": ", $database['dbHOSTSTATS'][6] );
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
-        $pieces = explode(": ", $database['dbHOSTSTATS'][7] );
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
+                $pieces = explode(": ", $database['dbHOSTSTATS'][7] );
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. $pieces[0] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+                echo '<span class="normal">'. $pieces[1] .'&nbsp;</span>';
+                echo '</div></div>';
+                echo '</div>';
 
 
 
+                echo '<div class="mini-content-box-small" style="">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Number of Tables:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
 
-//        echo '<br style="clear:both;" />';
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Number of Tables:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+                    if ( $database['dbTABLECOUNT'] ) {
+                        echo '<span class="normal">&nbsp;'. $database['dbTABLECOUNT'] .' tables&nbsp;</span>';
 
-        if ( $database['dbTABLECOUNT'] ) {
-            echo '<span class="normal">&nbsp;'. $database['dbTABLECOUNT'] .' tables&nbsp;</span>';
-        } else {
-            echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-        }
+                    } else {
+                        echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
 
-        echo '</div></div>';
-        echo '</div>';
+                    }
+
+                echo '</div></div>';
+                echo '</div>';
 
 
             } else { // an instance wasn't found in the initial checks, so no folders to check
@@ -4159,7 +3765,9 @@ function getDirectory( $path, $level = 0 ){
                 echo '<div class="row-content-container nothing-to-display" style="">';
                 echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Unable to contact database<br />no '. $database['ARRNAME'] .' performance to display</div>';
                 echo '</div>';
+
             }
+
 
         echo '</div>';
         echo '</div>';
@@ -4170,9 +3778,9 @@ function getDirectory( $path, $level = 0 ){
     showDev( $database );
 
     echo '</div>'; // end half-section container
-
     echo '<div style="clear:both;"></div>';
-    ?>
+?>
+
 
 
 <?php
@@ -4197,65 +3805,68 @@ function getDirectory( $path, $level = 0 ){
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
-        if ( $instance['instanceFOUND'] == _FPA_Y AND @$database['dbERROR'] == _FPA_N ) {
+            if ( $instance['instanceFOUND'] == _FPA_Y AND @$database['dbERROR'] == _FPA_N ) {
 
-            foreach ( $tables as $i => $show ) {
+                foreach ( $tables as $i => $show ) {
 
-                if ( $show != $tables['ARRNAME'] ) {
+                    if ( $show != $tables['ARRNAME'] ) {
+                        // produce the output
+                        echo '<div style="font-size:9px;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
 
-                    // produce the output
-                    echo '<div style="font-size:9px;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
+                            if ( $showProtected <= 2 ) {
+                                echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;'. $show['TABLE'] .'</div>';
 
-                        if ( $showProtected <= 2 ) {
-                            echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;'. $show['TABLE'] .'</div>';
+                            } else {
+
+                                echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div>';
+
+                            }
+
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:8%;">'. $show['SIZE'] .'</div>';
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['RECORDS'] .'</div>';
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:8%;">'. $show['AVGLEN'] .'</div>';
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:10%;">'. $show['FRAGSIZE'] .'</div>';
+                        echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['ENGINE'] .'</div>';
+
+
+                        if ( $show['COLLATION'] != $database['dbCOLLATION'] ) {
+                            echo '<div style="font-size:9px;text-align:center;float:left;width:12%;"><span class="warn-text" style="font-size:9px;">*</span>'. $show['COLLATION'] .'</div>';
+
                         } else {
-                            echo '<div style="font-size:9px;text-align:left;float:left;width:20%;">&nbsp;<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div>';
+                            echo '<div style="font-size:9px;text-align:center;float:left;width:12%;">'. $show['COLLATION'] .'</div>';
+
                         }
 
-                    echo '<div style="font-size:9px;text-align:center;float:left;width:8%;">'. $show['SIZE'] .'</div>';
-                    echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['RECORDS'] .'</div>';
-                    echo '<div style="font-size:9px;text-align:center;float:left;width:8%;">'. $show['AVGLEN'] .'</div>';
-                    echo '<div style="font-size:9px;text-align:center;float:left;width:10%;">'. $show['FRAGSIZE'] .'</div>';
-                    echo '<div style="font-size:9px;text-align:center;float:left;width:7%;">'. $show['ENGINE'] .'</div>';
-
-                    if ( $show['COLLATION'] != $database['dbCOLLATION'] ) {
-                        echo '<div style="font-size:9px;text-align:center;float:left;width:12%;"><span class="warn-text" style="font-size:9px;">*</span>'. $show['COLLATION'] .'</div>';
-                    } else {
-                        echo '<div style="font-size:9px;text-align:center;float:left;width:12%;">'. $show['COLLATION'] .'</div>';
-                    }
-
-                    $pieces = explode( " ", $show['CREATED'] );
+                        $pieces = explode( " ", $show['CREATED'] );
                         echo '<div style="font-size:9px;text-align:center;float:left;width:9%;">'. $pieces['0'] .'</div>';
 
-                    $pieces = explode( " ", $show['UPDATED'] );
+                        $pieces = explode( " ", $show['UPDATED'] );
                         echo '<div style="font-size:9px;text-align:center;float:left;width:9%;">'. $pieces['0'] .'</div>';
 
-                    $pieces = explode( " ", $show['CHECKED'] );
+                        $pieces = explode( " ", $show['CHECKED'] );
                         echo '<div style="font-size:9px;text-align:center;float:left;width:9%;">'. $pieces['0'] .'</div>';
 
-                    echo '<br /></div>';
+                        echo '<br /></div>';
 
-                } // endif , dont show array name
+                    } // endif , dont show array name
 
-            } // end foreach
+                } // end foreach
 
 
-        } else { // an instance wasn't found in the initial checks, so no tables to check
-            echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Unable to contact database, no '. $tables['ARRNAME'] .' to display</div>';
-            echo '</div>';
-        }
+            } else { // an instance wasn't found in the initial checks, so no tables to check
+                echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
+                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Unable to contact database, no '. $tables['ARRNAME'] .' to display</div>';
+                echo '</div>';
+
+            }
 
 
         echo '</div>'; // end container
+        showDev( $tables );
+        unset ( $key, $show );
 
-    showDev( $tables );
-    unset ( $key, $show );
     } // end showTables
 ?>
-
-
-
 
 
 
@@ -4268,8 +3879,6 @@ function getDirectory( $path, $level = 0 ){
 
         echo '<div class="section-title" style="text-align:center;">'. $phpenv['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
-
 
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">PHP Version:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
@@ -4283,8 +3892,10 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $phpenv['phpAPI'] == 'apache2handler' ) {
                 $status = 'warn-text';
+
             } else {
                 $status = 'ok';
+
             }
 
         echo '<span class="'. $status.'">'. $phpenv['phpAPI'] .'&nbsp;</span>';
@@ -4333,6 +3944,7 @@ function getDirectory( $path, $level = 0 ){
 
             if ( @$_POST['increasePOPS'] == 1 ) { // the user set the increasePOPS setting for memory or time out errors
                 echo '<i class="warn-text">(increased by user, was '. $fpa['ORIGphpMEMLIMIT'] .')</i>&nbsp;';
+
             }
 
         echo $phpenv['phpMEMLIMIT'] .'&nbsp;</span>';
@@ -4374,19 +3986,13 @@ function getDirectory( $path, $level = 0 ){
 
             if ( @$_POST['increasePOPS'] == 1 ) { // the user set the increasePOPS setting for memory or time out errors
                 echo '<i class="warn-text">(increased by user, was '. $fpa['ORIGphpMAXEXECTIME'] .')</i>&nbsp;';
+
             }
 
         echo $phpenv['phpMAXEXECTIME'] .' seconds&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
-        /**
-        echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Date Last PHP Error:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
-        echo '<span class="normal">'. $phpenv['phpLASTERRDATE'] .'&nbsp;</span>';
-        echo '</div></div>';
-        echo '</div>';
-        **/
 
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Register Globals:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
@@ -4395,7 +4001,6 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
 
         echo "<br />";
-
 
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Open Base Path:<div style="float:right;">';
@@ -4416,10 +4021,13 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_Y ) {
                 echo '<span class="ok" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpSESSIONPATHWRITABLE'] .'&nbsp;</span>';
+
             } elseif ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_N ) {
                 echo '<span class="alert-text" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpSESSIONPATHWRITABLE'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">'. _FPA_U .'&nbsp;</span>';
+
             }
 
         echo '</div></div>';
@@ -4436,27 +4044,17 @@ function getDirectory( $path, $level = 0 ){
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Last Known PHP Error:<div style="float:right;">';
 
             if ( $phpenv['phpLASTERR'] ) {
-//                echo "<br />";
-//                echo '<div class="mini-content-box-small" style="">';
                 echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;text-transform:none;word-wrap: break-word;width:325px;">'. $phpenv['phpLASTERR'] .'</div>';
-//                echo '</div>';
+
             } else {
                 echo '<span class="ok" style="margin:5px;text-transform:none;font-weight:normal;font-size:9px;padding:2px;">None</span>';
+
             }
 
         echo '</div></div>';
         echo '</div>';
 
-        //        echo '<br style="clear:both;" />';
         echo '</div></div>';
-
-
-
-
-
-
-
-
 
 
 
@@ -4465,8 +4063,6 @@ function getDirectory( $path, $level = 0 ){
 
         echo '<div class="section-title" style="text-align:center;">'. $system['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
-
 
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">Platform:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
@@ -4494,8 +4090,10 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysPLATNAME'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
             }
 
         echo '</div></div>';
@@ -4507,9 +4105,12 @@ function getDirectory( $path, $level = 0 ){
             if ( function_exists( 'disk_free_space' ) ) {
                 $total_space = sprintf( '%.2f', disk_total_space( './' ) /1073741824 );
                 echo '<span class="normal">'. $total_space .' GiB&nbsp;</span>';
+
             } else {
                 echo '<span class="normal">'. _FPA_U .'&nbsp;</span>';
+
             }
+
         echo '</div></div>';
         echo '</div>';
 
@@ -4523,14 +4124,19 @@ function getDirectory( $path, $level = 0 ){
 
                 if ( $percent_free <= '5' ) {
                     $status = 'warn';
+
                 } else {
                     $status = 'normal';
+
                 }
 
                 echo '<span class="normal">(<span class="'. $status .'">'. $percent_free.'%</span>)  '. $free_space .' GiB&nbsp;</span>';
+
             } else {
                 echo '<span class="normal">'. _FPA_U .'&nbsp;</span>';
+
             }
+
         echo '</div></div>';
         echo '</div>';
 
@@ -4540,8 +4146,10 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysSERVNAME'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
             }
 
         echo '</div></div>';
@@ -4553,8 +4161,10 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysSERVIP'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
             }
 
         echo '</div></div>';
@@ -4596,8 +4206,10 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $showProtected <= 2 ) {
                 echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysDOCROOT'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
             }
 
         echo '</div></div>';
@@ -4609,8 +4221,10 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $showProtected <= 2 ) {
                 echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysSYSTMPDIR'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
+
             }
 
         echo '</div></div>';
@@ -4622,10 +4236,13 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $system['sysTMPDIRWRITABLE'] == _FPA_Y ) {
                 echo '<span class="ok" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysTMPDIRWRITABLE'] .'&nbsp;</span>';
+
             } elseif ( $system['sysTMPDIRWRITABLE'] == _FPA_N ) {
                 echo '<span class="alert-text" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysTMPDIRWRITABLE'] .'&nbsp;</span>';
+
             } else {
                 echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">'. _FPA_U .'&nbsp;</span>';
+
             }
 
         echo '</div></div>';
@@ -4643,12 +4260,16 @@ function getDirectory( $path, $level = 0 ){
 
             if ( $phpenv['phpOWNERPROB'] == _FPA_N ) {
                 $status = 'ok';
+
             } elseif ( $phpenv['phpOWNERPROB'] == _FPA_M ) {
                 $status = 'warn-text';
+
             } elseif ( $phpenv['phpOWNERPROB'] == _FPA_Y ) {
                 $status = 'alert-text';
+
             } else {
                 $status = 'warn-text';
+
             }
 
         echo '<span class="'. $status .'" style="font-size:8px;">'. $phpenv['phpOWNERPROB'] .'</span>';
@@ -4667,42 +4288,15 @@ function getDirectory( $path, $level = 0 ){
 
     showDev( $phpenv );
     showDev( $system );
-/**
-    showDev( $phpextensions );
-    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
-    showDev( $phpreq );
-**/
 ?>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 <?php
-
-
-
-	        // build a full-width div to hold two 'half-width' section, side-by-side
-////    echo '<div class="half-section-container" style="">'; // start half-section container
-
-        /** display the instance information *************************************************/
-////        echo '<div class="half-section-information-left">'; // start right content block
         echo '<div class="section-information">'; // start right content block
 
         echo '<div class="section-title" style="text-align:center;">'. $phpextensions['ARRNAME'] .' :: Discovery</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-        // this is the column heading area, if any
-
 
             foreach ( $phpextensions as $key => $show ) {
 
@@ -4711,6 +4305,7 @@ function getDirectory( $path, $level = 0 ){
                     if ( $key == 'exif' ) {
                         $pieces = explode( " $", $show );
                         $show = $pieces[0];
+
                     }
 
 
@@ -4738,35 +4333,36 @@ function getDirectory( $path, $level = 0 ){
                 } // endif !arrname
 
 
-
                 // look for recommended extensions that aren't installed
                 if ( !in_array( $key, $phpreq ) ) {
                     unset ( $phpreq[$key] );
+
                 }
 
             } // end foreach
 
 
-
             if ( $phpreq ) {
-            echo '<br style="clear:both;" /><br />';
+                echo '<br style="clear:both;" /><br />';
                 echo '<div class="mini-content-box-small" style="">';
-        echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing PHP Extensions:<br /><div style="float:left;text-transform:none;">';
+                echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing PHP Extensions:<br /><div style="float:left;text-transform:none;">';
 
-//        echo 'Missing Recommended Extensions';
-            echo '<br style="clear:both;" />';
+                echo '<br style="clear:both;" />';
 
-            $status = 'warn-text';
-            $border = 'FFA500';
-            $background = 'FFF';
-            $weight = 'bold';
+                $status = 'warn-text';
+                $border = 'FFA500';
+                $background = 'FFF';
+                $weight = 'bold';
 
-            foreach ( $phpreq as $missingkey => $missing ) {
-                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:82px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
-            }
 
-        echo '</div></div>';
-        echo '</div>';
+                foreach ( $phpreq as $missingkey => $missing ) {
+                    echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:82px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
+
+                }
+
+                echo '</div></div>';
+                echo '</div>';
+
             }
 
         echo '<br style="clear:both;" />';
@@ -4774,115 +4370,97 @@ function getDirectory( $path, $level = 0 ){
 
     showDev( $phpextensions );
     $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
+
     showDev( $phpreq );
     unset ( $key, $show );
 ?>
 
 
 
-
-
-
-
-
 <?php
-//    if ( function_exists( 'apache_get_version' ) ) { // don't show if not Apache
-//    if ( $system['sysSHORTWEB'] == 'APA' ) {
-
         if ( $phpenv['phpAPI'] == 'apache2handler' ) {
-        /** display the instance information *************************************************/
-/////        echo '<div class="half-section-information-right">'; // start right content block
-        echo '<div class="section-information">'; // start right content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $apachemodules['ARRNAME'] .' :: Discovery</div>';
-        echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+            /** display the instance information *************************************************/
+            echo '<div class="section-information">'; // start right content block
+            echo '<div class="section-title" style="text-align:center;">'. $apachemodules['ARRNAME'] .' :: Discovery</div>';
+            echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+
+                foreach ( $apachemodules as $key => $show ) {
+
+                    if ( $show != $apachemodules['ARRNAME'] ) {
+
+                        // find the requirements and mark them as present or missing
+                        if ( $show == 'mod_rewrite' OR $show == 'mod_cgi' OR $show == 'mod_cgid' OR $show == 'mod_expires' OR $show == 'mod_deflate' OR $show == 'mod_auth'  ) {
+                            $status = 'ok';
+                            $border = '4D8000';
+                            $background = 'CAFFD8';
+                            $weight = 'normal';
+
+                        } elseif ( $show == 'mod_php4' ) {
+                            $status = 'warn-text';
+                            $border = 'FFA500';
+                            $background = 'FFE4B5';
+                            $weight = 'bold';
+
+                        } else {
+                            $status = 'normal';
+                            $border = '42AEC2';
+                            $background = 'FFF';
+                            $weight = 'normal';
+
+                        }
 
 
-            foreach ( $apachemodules as $key => $show ) {
+                        echo '<div class="'. $status .'" style="background-color: #'. $background .';border:1px solid #'. $border .';font-weight: '. $weight .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:82px;padding:1px;float:left;font-size:8px;">'. $show .'</div>';
 
-                if ( $show != $apachemodules['ARRNAME'] ) {
 
-                    // find the requirements and mark them as present or missing
-                    if ( $show == 'mod_rewrite' OR $show == 'mod_cgi' OR $show == 'mod_cgid' OR $show == 'mod_expires' OR $show == 'mod_deflate' OR $show == 'mod_auth'  ) {
-                        $status = 'ok';
-                        $border = '4D8000';
-                        $background = 'CAFFD8';
-                        $weight = 'normal';
-                    } elseif ( $show == 'mod_php4' ) {
-                        $status = 'warn-text';
-                        $border = 'FFA500';
-                        $background = 'FFE4B5';
-                        $weight = 'bold';
-                    } else {
-                        $status = 'normal';
-                        $border = '42AEC2';
-                        $background = 'FFF';
-                        $weight = 'normal';
+                    } // endif !arrname
+
+
+                    // look for recommended extensions that aren't installed
+                    if ( !in_array( $show, $apachereq ) ) {
+                        unset ( $apachereq['ARRNAME'] );
+                        unset ( $apachereq[$show] );
+
                     }
 
-
-                    echo '<div class="'. $status .'" style="background-color: #'. $background .';border:1px solid #'. $border .';font-weight: '. $weight .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:82px;padding:1px;float:left;font-size:8px;">'. $show .'</div>';
-
-                } // endif !arrname
+                } // end foreach
 
 
-                // look for recommended extensions that aren't installed
-                if ( !in_array( $show, $apachereq ) ) {
-                    unset ( $apachereq['ARRNAME'] );
-                    unset ( $apachereq[$show] );
+
+                if ( $apachereq ) {
+                    echo '<br style="clear:both;" /><br />';
+                    echo '<div class="mini-content-box-small" style="">';
+                    echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing Apache Modules:<br /><div style="float:left;text-transform:none;">';
+
+                    echo '<br style="clear:both;" />';
+
+                    $status = 'warn-text';
+                    $border = 'FFA500';
+                    $background = 'FFF';
+                    $weight = 'bold';
+
+                    foreach ( $apachereq as $missingkey => $missing ) {
+                        echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:82px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
+
+                    }
+
+                    echo '</div></div>';
+                    echo '</div>';
+
                 }
-
-
-            } // end foreach
-
-
-            if ( $apachereq ) {
-            echo '<br style="clear:both;" /><br />';
-                echo '<div class="mini-content-box-small" style="">';
-        echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing Apache Modules:<br /><div style="float:left;text-transform:none;">';
-
-//        echo 'Missing Recommended Extensions';
-            echo '<br style="clear:both;" />';
-
-            $status = 'warn-text';
-            $border = 'FFA500';
-            $background = 'FFF';
-            $weight = 'bold';
-
-            foreach ( $apachereq as $missingkey => $missing ) {
-                echo '<div style="background-color: #'. $background .';border:1px solid #'. $border .';border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;padding:1px;min-height:10px;width:82px;float:left;font-size:8px;"><span class="'. $status .'" style="font-size:8px;font-weight:'. $weight .';text-shadow:1px 1px 1px #fff;">'. $missingkey .'</span></div>';
-            }
-
-        echo '</div></div>';
-        echo '</div>';
-            }
-
 
         echo '<br style="clear:both;" />';
         echo '</div></div>';
 
         showDev( $apachemodules );
         $apachereq['ARRNAME'] = 'Potential Missing Apache Modules';
+
         showDev( $apachereq );
         unset ( $key, $show );
+
         }
-
-        /////else { // end if Apache
-/////        echo '<br style="clear:both;" />';
-/////        echo '</div>';
-/////	}
-
-
-/**
-    showDev( $system );
-**/
-
-////    showDev( $phpextensions );
-////    $phpreq['ARRNAME'] = 'Potential Missing PHP Extensions';
-////    showDev( $phpreq );
 ?>
-
-
 
 
 
@@ -5138,6 +4716,8 @@ function getDirectory( $path, $level = 0 ){
 
 
         echo '<div class="mini-content-box-small" style="">';
+        if ( $instance['instanceFOUND'] == _FPA_Y ) { // an instance wasn't found in the initial checks, so no folders to check
+
             foreach ( $component['SITE'] as $key => $show ) {
 
                 if ( $show['type'] != '3rd Party' ) {
@@ -5158,7 +4738,8 @@ function getDirectory( $path, $level = 0 ){
                 echo '</div>';
             }
 
-        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+        } else {
+//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $component['ARRNAME'] .' checks performed</div>';
             echo '</div>';
@@ -5183,6 +4764,8 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
 
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+        if ( $instance['instanceFOUND'] == _FPA_Y ) { // an instance wasn't found in the initial checks, so no folders to check
+
             foreach ( $component['ADMIN'] as $key => $show ) {
 
                 if ( $show['type'] != '3rd Party' ) {
@@ -5204,7 +4787,8 @@ function getDirectory( $path, $level = 0 ){
             }
 
 
-        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+        } else {
+//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $component['ARRNAME'] .' checks performed</div>';
             echo '</div>';
@@ -5262,6 +4846,8 @@ function getDirectory( $path, $level = 0 ){
 
 
         echo '<div class="mini-content-box-small" style="">';
+        if ( $instance['instanceFOUND'] == _FPA_Y ) { // an instance wasn't found in the initial checks, so no folders to check
+
             foreach ( $module['SITE'] as $key => $show ) {
 
                 if ( $show['type'] != '3rd Party' ) {
@@ -5282,7 +4868,8 @@ function getDirectory( $path, $level = 0 ){
                 echo '</div>';
             }
 
-        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+        } else {
+//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $module['ARRNAME'] .' checks performed</div>';
             echo '</div>';
@@ -5307,6 +4894,8 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
 
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
+        if ( $instance['instanceFOUND'] == _FPA_Y ) { // an instance wasn't found in the initial checks, so no folders to check
+
             foreach ( $module['ADMIN'] as $key => $show ) {
 
                 if ( $show['type'] != '3rd Party' ) {
@@ -5327,7 +4916,8 @@ function getDirectory( $path, $level = 0 ){
                 echo '</div>';
             }
 
-        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+        } else {
+//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $module['ARRNAME'] .' checks performed</div>';
             echo '</div>';
@@ -5385,6 +4975,8 @@ function getDirectory( $path, $level = 0 ){
 
 
         echo '<div class="mini-content-box-small" style="">';
+        if ( $instance['instanceFOUND'] == _FPA_Y ) { // an instance wasn't found in the initial checks, so no folders to check
+
             foreach ( $plugin['SITE'] as $key => $show ) {
 
                 if ( $show['type'] != '3rd Party' ) {
@@ -5405,7 +4997,8 @@ function getDirectory( $path, $level = 0 ){
                 echo '</div>';
             }
 
-        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+        } else {
+//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $plugin['ARRNAME'] .' checks performed</div>';
             echo '</div>';
@@ -5459,6 +5052,8 @@ function getDirectory( $path, $level = 0 ){
 
 
         echo '<div class="mini-content-box-small" style="">';
+        if ( $instance['instanceFOUND'] == _FPA_Y ) { // an instance wasn't found in the initial checks, so no folders to check
+
             foreach ( $template['SITE'] as $key => $show ) {
 
                 if ( $show['type'] != '3rd Party' ) {
@@ -5479,7 +5074,8 @@ function getDirectory( $path, $level = 0 ){
                 echo '</div>';
             }
 
-        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+        } else {
+            //        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $template['ARRNAME'] .' checks performed</div>';
             echo '</div>';
@@ -5504,7 +5100,9 @@ function getDirectory( $path, $level = 0 ){
         echo '</div>';
 
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
-            foreach ( $template['ADMIN'] as $key => $show ) {
+        if ( $instance['instanceFOUND'] == _FPA_Y ) { // an instance wasn't found in the initial checks, so no folders to check
+
+            foreach ( @$template['ADMIN'] as $key => $show ) {
 
                 if ( $show['type'] != '3rd Party' ) {
                     $typeColor = '404040';
@@ -5524,7 +5122,8 @@ function getDirectory( $path, $level = 0 ){
                 echo '</div>';
             }
 
-        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
+        } else {
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $template['ARRNAME'] .' checks performed</div>';
             echo '</div>';
