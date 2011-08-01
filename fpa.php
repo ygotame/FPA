@@ -14,8 +14,8 @@
 
     /** SET THE FPA DEFAULTS *****************************************************************/
     //define ( '_FPA_BRA', TRUE );  // bug-report-mode
-    //define ( '_FPA_DEV', TRUE );   // developer-mode
-    //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
+    define ( '_FPA_DEV', TRUE );   // developer-mode
+    define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
 
     // Define some basic assistant information
@@ -313,9 +313,9 @@
 
         // display diagnostic-mode notice
         if ( defined( '_FPA_DIAG' ) ) {
-            ini_set( 'display_errors', 'On' );
+            ini_set( 'display_errors', 1 );
 
-            error_reporting( -1 );
+            ini_set ( 'error_reporting', '-1' );
             ini_set( 'error_log', $fpa['diagLOG'] );
 
             echo '<div style="text-shadow: 1px 1px 1px #FFF;float:left; text-align:center; width:'. $divwidth .'; background-color:#CAFFD8; border:1px solid #4D8000; color:#404040; font-size:10px; font-family:arial; padding:5px;-moz-box-shadow: 3px 3px 3px #C0C0c0;-webkit-box-shadow: 3px 3px 3px #C0C0c0;box-shadow: 3px 3px 3px #C0C0c0;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">';
@@ -347,7 +347,7 @@
 
 
     } else { // end developer- or diag -mode display
-        ini_set( 'display_errors', 'Off' ); // default-display
+        ini_set( 'display_errors', 0 ); // default-display
 
     }
 
@@ -1520,6 +1520,8 @@
 
 <?php
     /** find the SITE/ADMIN Components, Modules, Plugins and Templates ***********************/
+    if ( $instance['instanceFOUND'] == _FPA_Y ) { // fix for IIS *shrug*
+
     function getDetails( $path, &$arrname, $loc, $level = 0 ) {
     global $component, $module, $plugin, $template;
 
@@ -1647,8 +1649,10 @@
 
     }
 
-    getDetails( 'templates', $template, 'SITE' );
-    getDetails( 'administrator/templates', $template, 'ADMIN' );
+    @getDetails( 'templates', $template, 'SITE' );
+    @getDetails( 'administrator/templates', $template, 'ADMIN' );
+
+    } // end if instanceFOUND
 ?>
 
 
@@ -2999,9 +3003,9 @@ MOVED **/
         <?php
             if ( @$_POST['doIT'] == '1' ) {
 
-                echo '<div class="normal-note" style="width:725px;text-align:center;margin: 0px auto;padding:2px;">';
+                echo '<div class="normal-note" style="width:725px;text-align:center;margin: 0px auto;padding:2px;padding-top:5px;">';
 
-                echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail:</span><br />';
+                echo '<span class="ok" style="text-transform:uppercase;">'. _RES .' Post Detail</span><br />';
 
 
                 /** LOAD UP THE SELECTED CONFIGURATION AND DIAGNOSTIC INFORMATION FOR THE POST ************
