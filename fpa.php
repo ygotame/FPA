@@ -15,7 +15,7 @@
     /** SET THE FPA DEFAULTS *****************************************************************/
     //define ( '_FPA_BRA', TRUE );  // bug-report-mode
     define ( '_FPA_DEV', TRUE );   // developer-mode
-    define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
+    //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
 
     // Define some basic assistant information
@@ -3015,29 +3015,204 @@ MOVED **/
                  **
                  ** the user then copies and pastes this outputin to forum post
                  **
+                 ** many "if/then/else" statements have been placed in single lines for ease of management,
+                 ** this looks ugly and goes against coding practices but *shrug*, it's messy otherwise
+                 **
                  ** NOTE IF MODIFYING: carriage returns and line breaks MUST be double-quoted, not single-
                  ** quote, hence some of the weird quoting and formating
                  *****************************************************************************************/
                 echo '<textarea class="protected" style="width:700px;height:35px;font-size:9px;margin-top:5px;" type="text" rows="10" cols="100" name="postOUTPUT" id="postOUTPUT">';
 
                     // post the problem description, if any
-                    if ( $_POST['probDSC'] ) { echo '[quote="'. _FPA_PROB_DSC .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probDSC'] .'[/quote][/size]'; }
+                    if ( $_POST['probDSC'] ) { echo '[quote="'. _FPA_PROB_DSC .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probDSC'] .'[/quote][/size]'; }
 
                     // post the first error message, if any
-                    if ( $_POST['probMSG1'] ) { echo '[quote="'. _FPA_PROB_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG1'] .'[/quote][/size]'; }
+                    if ( $_POST['probMSG1'] ) { echo '[quote="'. _FPA_PROB_MSG .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probMSG1'] .'[/quote][/size]'; }
 
-                        // post the second error message, if any (remember if there is a PHP Error in the log, it will be auto-added here instead of the user adding a message
-                        // show the different MSG2 header and content, if there is an existing PHP Error to display
-                        if ( $phpenv['phpLASTERR'] AND $_POST['probMSG2'] ) {
-                            echo '[quote="'. _FPA_LAST .' '. _FPA_ER .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
-                        } elseif ( !@$phpenv['phpLASTERROR'] AND $_POST['probMSG2'] ) {
-                            echo '[quote="'. _FPA_PROB_MSG .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probMSG2'] .'[/quote][/size]';
-                        }
+                    // post the second error message, if any (remember if there is a PHP Error in the log, it will be auto-added here instead of the user adding a message
+                    // show the different MSG2 header and content, if there is an existing PHP Error to display
+                    if ( $phpenv['phpLASTERR'] AND $_POST['probMSG2'] ) { echo '[quote="'. _FPA_LAST .' '. _FPA_ER .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
+                    } elseif ( !@$phpenv['phpLASTERROR'] AND $_POST['probMSG2'] ) { echo '[quote="'. _FPA_PROB_MSG .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probMSG2'] .'[/quote][/size]'; }
 
                     // post the actions taken, if any
-                    if ( $_POST['probACT'] ) { echo '[quote="'. _FPA_PROB_ACT .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'dS F Y H:i:s.' ) .'"][size=85]'. $_POST['probACT'] .'[/quote][/size]'; }
+                    if ( $_POST['probACT'] ) { echo '[quote="'. _FPA_PROB_ACT .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probACT'] .'[/quote][/size]'; }
 
 //!TODO come back and finish the post details
+                    // do the basic information
+                    echo '[quote="Basic Environment :: '. _RES .' (v'. _RES_VERSION .') '. @date( 'jS F Y' ) .'"][size=85]';
+
+                    // Joomla! cms details
+                    echo '[color=#000000][b]Joomla! Instance :: [/b][/color]';
+                    if ( $instance['instanceFOUND'] == _FPA_Y ) { echo '[color=#000080]'. $instance['cmsPRODUCT'] .' '. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'-'. $instance['cmsDEVSTATUS'] .' ('. $instance['cmsCODENAME'] .') '. $instance['cmsRELDATE'] .'[/color]';
+                    } else { echo '[color=orange]'. _FPA_NF .'[/color]'; }
+
+                    // Joomla! platform details
+                    if ( $instance['platformPRODUCT'] ) {
+                    echo "\r\n";
+                    echo '[color=#000000][b]Joomla! Platform :: [/b][/color] [color=#000080]'. $instance['platformPRODUCT'] .' '. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'-'. $instance['platformDEVSTATUS'] .' ('. $instance['platformCODENAME'] .') '. $instance['platformRELDATE'] .'[/color]'; }
+
+                    echo "\r\n";
+
+                    echo '[color=#000000][b]Joomla! Confirgured :: [/b][/color]';
+                    if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
+                    echo '[color=#008000]'. _FPA_Y .'[/color] | ';
+
+                        if ( $instance['configWRITABLE'] == _FPA_Y ) { echo '[color=#008000]Writable[/color] ('; } else { echo 'Read-Only ('; }
+
+                        if ( substr( $instance['configMODE'],1 ,1 ) == '7' OR substr( $instance['configMODE'],2 ,1 ) >= '5' OR substr( $instance['configMODE'],3 ,1 ) >= '5' ) { echo '[color=#800000]'; } else { echo '[color=#008000]'; }
+                        echo $instance['configMODE'] .'[/color]) | ';
+                        echo '[b]Owner:[/b] '. $instance['configOWNER']['name'] .' (uid: '. $instance['configOWNER']['uid'] .'/gid: '. $instance['configOWNER']['gid'] .') | [b]Group:[/b] '. $instance['configGROUP']['name'] .' (gid: '. $instance['configGROUP']['gid'] .') | [b]Valid For:[/b] '. $instance['configVALIDFOR'];
+
+                    echo "\r\n";
+
+                    echo '[color=#000000][b]Configuration Options :: [/b][/color] [b]Offline:[/b] '. $instance['configOFFLINE'] .' | [b]SEF Enabled:[/b] '. $instance['configSEF'] .' | [b]SEF Suffix Enabled:[/b] '. $instance['configSEFSUFFIX'] .' | [b]SEF ReWrite:[/b] '. $instance['configSEFRWRITE'] .' | ';
+                    echo '[b].htaccess/web.config:[/b] ';
+
+                        if ( $instance['configSITEHTWC'] == _FPA_N AND $instance['configSEFRWRITE'] == '1' ) { echo '[color=orange]'. $instance['configSITEHTWC'] .' (ReWrite Enabled but no .htaccess?)[/color] | ';
+                        } elseif ( $instance['configSITEHTWC'] == _FPA_Y ) { echo '[color=#008000]'. $instance['configSITEHTWC'] .'[/color] | ';
+                        } elseif ( $instance['configSITEHTWC'] == _FPA_N ) { echo '[color=orange]'. $instance['configSITEHTWC'] .'[/color] | '; }
+
+                    echo '[b]GZip Enabled:[/b] '. $instance['configGZIP'] .' | [b]Cache Enabled:[/b] '. $instance['configCACHING'] .' | [b]FTP Layer:[/b] '. $instance['configFTP'] .' | [b]SSL:[/b] '. $instance['configSSL'] .' | [b]Error Reporting:[/b] '. $instance['configERRORREP'] .' | [b]Site Debug:[/b] '. $instance['configSITEDEBUG'] .' | ';
+
+                        if ( version_compare( $instance['cmsRELEASE'], '1.5', '>=' ) ) {
+                            echo '[b]Language Debug:[/b] '. $instance['configLANGDEBUG'] .' | ';
+                        }
+
+                        if ( version_compare( $instance['cmsRELEASE'], '1.6', '>=' ) ) {
+                            echo '[b]Default Access:[/b] '. $instance['configACCESS'] .' | [b]Unicode Slugs:[/b] '. $instance['configUNICODE'] .' | ';
+                        }
+
+                        echo '[b]Database Credentials Present:[/b] ';
+                            if ( $instance['configDBCREDOK'] == _FPA_Y ) { echo '[color=#008000]'; } else { echo '[color=#800000]'; }
+                            echo $instance['configDBCREDOK'] .'[/color]';
+
+                    } else { echo '[color=orange]'. _FPA_NF .'[/color]'; }
+
+                    echo "\r\n\r\n";
+
+                    echo '[color=#000000][b]PHP Configuration :: [/b][/color] [b]Version:[/b] ';
+                        if ( version_compare( $phpenv['phpVERSION'], '5.0.0', '<' ) ) { echo '[color=#800000]'. $phpenv['phpVERSION'] .'[/color] | '; } else { echo $phpenv['phpVERSION'] .' | '; }
+
+                    echo '[b]PHP API:[/b] ';
+                        if ( $phpenv['phpAPI'] == 'apache2handler' ) { echo '[color=orange]'. $phpenv['phpAPI'] .'[/color] | '; } else { echo $phpenv['phpAPI'] .' | '; }
+
+                    echo '[b]Session Path Writable:[/b] ';
+                        if ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_Y ) { echo '[color=#008000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } elseif ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_N ) { echo '[color=#800000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } else { echo '[color=orange]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; }
+
+
+                    echo '[b]Display Errors:[/b] '. $phpenv['phpERRORDISPLAY'] .' | [b]Error Reporting:[/b] '. $phpenv['phpERRORREPORT'] .' | [b]Log Errors To:[/b] '. $phpenv['phpERRLOGFILE'] .' | [b]Last Known Error:[/b] '. $phpenv['phpLASTERRDATE'] .' | [b]Register Globals:[/b] '. $phpenv['phpREGGLOBAL'] .' | [b]Magic Quotes:[/b] '. $phpenv['phpMAGICQUOTES'] .' | [b]Safe Mode:[/b] '. $phpenv['phpSAFEMODE'] .' | [b]Open Base:[/b] '. $phpenv['phpOPENBASE'] .' | [b]Uploads:[/b] '. $phpenv['phpUPLOADS'] .' | [b]Max. Upload Size:[/b] '. $phpenv['phpMAXUPSIZE'] .' | [b]Max. POST Size:[/b] '. $phpenv['phpMAXPOSTSIZE'] .' | [b]Max. Input Time:[/b] '. $phpenv['phpMAXINPUTTIME'] .' | [b]Max. Execution Time:[/b] '. $phpenv['phpMAXEXECTIME'] .' | [b]Memory Limit:[/b] '. $phpenv['phpMEMLIMIT'] .' |';
+
+
+                    echo '[/quote][/size]';
+
+
+
+
+
+
+                    // do detailed information
+                    echo '[quote="Detailed Environment :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+
+                    echo '[/quote][/size]';
+
+
+
+
+
+                    // do the Extensions information
+                    if ( $instance['instanceFOUND'] == _FPA_Y AND ( $_POST['showComponents'] == '1' OR $_POST['showModules'] == '1' OR $_POST['showPlugins'] == '1' ) ) {
+                    echo '[quote="Extensions discovered :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+
+                        if ( $_POST['showProtected'] == '3' ) {
+                            echo '[color=orange][b]Strict[/b] Information Privacy was selected.[/color] Nothing to display.';
+                            echo '[/quote][/size]';
+                        } else {
+
+
+                            if ( $_POST['showComponents'] == '1' ) {
+                                echo '[color=#000000][b]Components :: Site :: [/b][/color]';
+
+                                    foreach ( $component['SITE'] as $key => $show ) {
+                                        echo $show['name'] .' ('. $show['version'] .') | ';
+                                    }
+
+                                echo "\r\n";
+
+                                echo '[color=#000000][b]Components :: Admin :: [/b][/color]';
+
+                                    foreach ( $component['ADMIN'] as $key => $show ) {
+                                        echo $show['name'] .' ('. $show['version'] .') | ';
+                                    }
+
+                                echo "\r\n\r\n";
+                            }
+//                        }
+
+
+                            if ( $_POST['showModules'] == '1' ) {
+                                echo '[color=#000000][b]Modules :: Site :: [/b][/color]';
+
+                                    foreach ( $module['SITE'] as $key => $show ) {
+                                        echo $show['name'] .' ('. $show['version'] .') | ';
+                                    }
+
+                                echo "\r\n";
+
+                                echo '[color=#000000][b]Modules :: Admin :: [/b][/color]';
+
+                                    foreach ( $module['ADMIN'] as $key => $show ) {
+                                        echo $show['name'] .' ('. $show['version'] .') | ';
+                                    }
+
+                            echo "\r\n\r\n";
+                            }
+
+
+                            if ( $_POST['showPlugins'] == '1' ) {
+                                echo '[color=#000000][b]Plugins :: Site :: [/b][/color]';
+
+                                    foreach ( $plugin['SITE'] as $key => $show ) {
+                                        echo $show['name'] .' ('. $show['version'] .') | ';
+                                    }
+
+                            }
+
+                            echo '[/quote][/size]';
+
+                        } // end if showComponents, Modules, Plugins, if cmsFOUND
+
+                    } // end showProtected != strict
+
+
+                        // do the template information
+                        if ( $instance['instanceFOUND'] == _FPA_Y ) {
+                            echo '[quote="Template Discovered :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+
+                                if ( $_POST['showProtected'] == '3' ) {
+                                    echo '[color=orange][b]Strict[/b] Information Privacy was selected.[/color] Nothing to display.';
+                                    echo '[/quote][/size]';
+                                } else {
+
+                                    echo '[color=#000000][b]Templates :: Site :: [/b][/color]';
+
+                                        foreach ( $template['SITE'] as $key => $show ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        }
+
+                                    echo "\r\n";
+
+                                    echo '[color=#000000][b]Templates :: Admin :: [/b][/color]';
+
+                                        foreach ( $template['ADMIN'] as $key => $show ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        }
+
+                                    echo '[/quote][/size]';
+
+                                } // end if InstanceFOUND
+
+                        } // end showProtected != strict
+
 /**
                 echo '[quote="'. _RES .'"][size=85]';
                     if ( $_POST['probDSC'] ) { echo '[b][u][color=black]Problem Description:[/color][/u][/b] &nbsp;'. $_POST['probDSC']; echo "\n\n"; }
