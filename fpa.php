@@ -3040,9 +3040,9 @@ MOVED **/
                     } else { echo '[color=orange]'. _FPA_NF .'[/color]'; }
 
                     // Joomla! platform details
-                    if ( $instance['platformPRODUCT'] ) {
+                    if ( @$instance['platformPRODUCT'] ) {
                     echo "\r\n";
-                    echo '[color=#000000][b]Joomla! Platform :: [/b][/color] [color=#0000F0]'. $instance['platformPRODUCT'] .' [b]'. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'[/b]-'. $instance['platformDEVSTATUS'] .' ('. $instance['platformCODENAME'] .') '. $instance['platformRELDATE'] .'[/color]'; }
+                    echo '[color=#000000][b]Joomla! Platform :: [/b][/color] [color=#0000F0]'. @$instance['platformPRODUCT'] .' [b]'. @$instance['platformRELEASE'] .'.'. @$instance['platformDEVLEVEL'] .'[/b]-'. @$instance['platformDEVSTATUS'] .' ('. @$instance['platformCODENAME'] .') '. @$instance['platformRELDATE'] .'[/color]'; }
 
                     echo "\r\n";
 
@@ -3098,7 +3098,7 @@ MOVED **/
                     echo '[b]Session Path Writable:[/b] ';
                         if ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_Y ) { echo '[color=#008000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } elseif ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_N ) { echo '[color=#800000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } else { echo '[color=orange]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; }
 
-                    echo '[b]Display Errors:[/b] '. $phpenv['phpERRORDISPLAY'] .' | [b]Error Reporting:[/b] '. $phpenv['phpERRORREPORT'] .' | [b]Log Errors To:[/b] '. $phpenv['phpERRLOGFILE'] .' | [b]Last Known Error:[/b] '. $phpenv['phpLASTERRDATE'] .' | [b]Register Globals:[/b] '. $phpenv['phpREGGLOBAL'] .' | [b]Magic Quotes:[/b] '. $phpenv['phpMAGICQUOTES'] .' | [b]Safe Mode:[/b] '. $phpenv['phpSAFEMODE'] .' | [b]Open Base:[/b] '. $phpenv['phpOPENBASE'] .' | [b]Uploads:[/b] '. $phpenv['phpUPLOADS'] .' | [b]Max. Upload Size:[/b] '. $phpenv['phpMAXUPSIZE'] .' | [b]Max. POST Size:[/b] '. $phpenv['phpMAXPOSTSIZE'] .' | [b]Max. Input Time:[/b] '. $phpenv['phpMAXINPUTTIME'] .' | [b]Max. Execution Time:[/b] '. $phpenv['phpMAXEXECTIME'] .' | [b]Memory Limit:[/b] '. $phpenv['phpMEMLIMIT'];
+                    echo '[b]Display Errors:[/b] '. $phpenv['phpERRORDISPLAY'] .' | [b]Error Reporting:[/b] '. $phpenv['phpERRORREPORT'] .' | [b]Log Errors To:[/b] '. $phpenv['phpERRLOGFILE'] .' | [b]Last Known Error:[/b] '. @$phpenv['phpLASTERRDATE'] .' | [b]Register Globals:[/b] '. $phpenv['phpREGGLOBAL'] .' | [b]Magic Quotes:[/b] '. $phpenv['phpMAGICQUOTES'] .' | [b]Safe Mode:[/b] '. $phpenv['phpSAFEMODE'] .' | [b]Open Base:[/b] '. $phpenv['phpOPENBASE'] .' | [b]Uploads:[/b] '. $phpenv['phpUPLOADS'] .' | [b]Max. Upload Size:[/b] '. $phpenv['phpMAXUPSIZE'] .' | [b]Max. POST Size:[/b] '. $phpenv['phpMAXPOSTSIZE'] .' | [b]Max. Input Time:[/b] '. $phpenv['phpMAXINPUTTIME'] .' | [b]Max. Execution Time:[/b] '. $phpenv['phpMAXEXECTIME'] .' | [b]Memory Limit:[/b] '. $phpenv['phpMEMLIMIT'];
 
                     echo "\r\n\r\n";
 
@@ -3242,7 +3242,7 @@ MOVED **/
                                     }
 
 
-                                    if ( $_POST['showElevated'] == '1' ) {
+                                    if ( @$_POST['showElevated'] == '1' ) {
                                         echo "\r\n\r\n";
 
                                         $limitCount = '0';
@@ -3288,7 +3288,7 @@ MOVED **/
 
 
                     // do the Database Statistics and Table information
-                    if ( $database['dbDOCHECKS'] == _FPA_Y AND $database['dbERROR'] == _FPA_N AND $_POST['showTables'] == '1' ) {
+                    if ( $database['dbDOCHECKS'] == _FPA_Y AND $database['dbERROR'] == _FPA_N AND @$_POST['showTables'] == '1' ) {
                         echo '[quote="Database Information :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
 
                             echo '[color=#000000][b]Database Statistics :: [/b][/color]';
@@ -3339,7 +3339,7 @@ MOVED **/
 
 
                     // do the Extensions information
-                    if ( $instance['instanceFOUND'] == _FPA_Y AND ( $_POST['showComponents'] == '1' OR $_POST['showModules'] == '1' OR $_POST['showPlugins'] == '1' ) ) {
+                    if ( $instance['instanceFOUND'] == _FPA_Y AND ( @$_POST['showComponents'] == '1' OR @$_POST['showModules'] == '1' OR @$_POST['showPlugins'] == '1' ) ) {
                     echo '[quote="Extensions Discovered :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
 
                         if ( $_POST['showProtected'] == '3' ) {
@@ -3348,7 +3348,7 @@ MOVED **/
                         } else {
 
 
-                            if ( $_POST['showComponents'] == '1' ) {
+                            if ( @$_POST['showComponents'] == '1' ) {
                                 echo '[color=#000000][b]Components :: Site :: [/b][/color]';
 
                                     foreach ( $component['SITE'] as $key => $show ) {
@@ -3368,7 +3368,7 @@ MOVED **/
 //                        }
 
 
-                            if ( $_POST['showModules'] == '1' ) {
+                            if ( @$_POST['showModules'] == '1' ) {
                                 echo '[color=#000000][b]Modules :: Site :: [/b][/color]';
 
                                     foreach ( $module['SITE'] as $key => $show ) {
@@ -3387,7 +3387,7 @@ MOVED **/
                             }
 
 
-                            if ( $_POST['showPlugins'] == '1' ) {
+                            if ( @$_POST['showPlugins'] == '1' ) {
                                 echo '[color=#000000][b]Plugins :: Site :: [/b][/color]';
 
                                     foreach ( $plugin['SITE'] as $key => $show ) {
