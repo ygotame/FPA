@@ -1219,40 +1219,33 @@
                 // Check that this file is not to be ignored
                 if ( !in_array( $file, $ignore ) ) {
 
-                    // Its a directory, so we need to keep reading down...
-                    if ( is_dir( "$path/$file" ) ) {
+                    if ( $dirCount < '15' ) { // 15 or more folder will cancel the processing
 
-                        $dirName = $path .'/'. $file;
-                        $dirMode = substr( sprintf( '%o', fileperms( $dirName ) ),-3, 3 );
+                        // Its a directory, so we need to keep reading down...
+                        if ( is_dir( "$path/$file" ) ) {
 
-                            // looking for --7 or -7- or -77 (default folder permissions are usually 755)
-                            if ( substr( $dirMode,1 ,1 ) == '7' OR substr( $dirMode,2 ,1 ) == '7' ) {
-                                $elevated[''. str_replace( './','', $dirName ) .'']['mode'] = $dirMode;
+                            $dirName = $path .'/'. $file;
+                            $dirMode = substr( sprintf( '%o', fileperms( $dirName ) ),-3, 3 );
 
-                                if ( is_writable( $dirName ) ) {
-                                    $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_Y;
+                                // looking for --7 or -7- or -77 (default folder permissions are usually 755)
+                                if ( substr( $dirMode,1 ,1 ) == '7' OR substr( $dirMode,2 ,1 ) == '7' ) {
+                                    $elevated[''. str_replace( './','', $dirName ) .'']['mode'] = $dirMode;
 
-                                } else {  // custom ownership or setUiD/GiD in-effect
-                                    $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_N;
+                                    if ( is_writable( $dirName ) ) {
+                                        $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_Y;
+
+                                    } else {  // custom ownership or setUiD/GiD in-effect
+                                        $elevated[''. str_replace( './','', $dirName ) .'']['writable'] = _FPA_N;
+
+                                    }
+                                    $dirCount++;
 
                                 }
-                                $dirCount++;
 
-                            }
+                                // Re-call this same function but on a new directory.
+                                getDirectory ( "$path/$file", ( $level +1 ) );
 
-                            // don't waste time or resources if there are too many folders with elevated permissions
-                            if ( $dirCount == '25' ) { // 25 or more folder will cancel the processing
-                                $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.'] = '';
-                                $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.']['mode'] = '-';
-                                $elevated['*PROCESSING CANCELLED* Too many directories (above '. $dirCount .') to process reasonably.']['writable'] = '-';
-
-                                // stop processing and move-on...
-                                continue;
-
-                            }
-
-                            // Re-call this same function but on a new directory.
-                            getDirectory ( "$path/$file", ( $level +1 ) );
+                        }
 
                     }
 
@@ -3031,7 +3024,7 @@ MOVED **/
 
                     // post the second error message, if any (remember if there is a PHP Error in the log, it will be auto-added here instead of the user adding a message
                     // show the different MSG2 header and content, if there is an existing PHP Error to display
-                    if ( $phpenv['phpLASTERR'] AND $_POST['probMSG2'] ) { echo '[quote="'. _FPA_LAST .' '. _FPA_ER .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
+                    if ( $phpenv['phpLASTERR'] AND $_POST['probMSG2'] ) { echo '[quote="'. _FPA_LAST .' PHP '. _FPA_ER .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
                     } elseif ( !@$phpenv['phpLASTERROR'] AND $_POST['probMSG2'] ) { echo '[quote="'. _FPA_PROB_MSG .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probMSG2'] .'[/quote][/size]'; }
 
                     // post the actions taken, if any
@@ -3043,13 +3036,13 @@ MOVED **/
 
                     // Joomla! cms details
                     echo '[color=#000000][b]Joomla! Instance :: [/b][/color]';
-                    if ( $instance['instanceFOUND'] == _FPA_Y ) { echo '[color=#000080]'. $instance['cmsPRODUCT'] .' '. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'-'. $instance['cmsDEVSTATUS'] .' ('. $instance['cmsCODENAME'] .') '. $instance['cmsRELDATE'] .'[/color]';
+                    if ( $instance['instanceFOUND'] == _FPA_Y ) { echo '[color=#0000F0]'. $instance['cmsPRODUCT'] .' [b]'. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'[/b]-'. $instance['cmsDEVSTATUS'] .' ('. $instance['cmsCODENAME'] .') '. $instance['cmsRELDATE'] .'[/color]';
                     } else { echo '[color=orange]'. _FPA_NF .'[/color]'; }
 
                     // Joomla! platform details
                     if ( $instance['platformPRODUCT'] ) {
                     echo "\r\n";
-                    echo '[color=#000000][b]Joomla! Platform :: [/b][/color] [color=#000080]'. $instance['platformPRODUCT'] .' '. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'-'. $instance['platformDEVSTATUS'] .' ('. $instance['platformCODENAME'] .') '. $instance['platformRELDATE'] .'[/color]'; }
+                    echo '[color=#000000][b]Joomla! Platform :: [/b][/color] [color=#0000F0]'. $instance['platformPRODUCT'] .' [b]'. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'[/b]-'. $instance['platformDEVSTATUS'] .' ('. $instance['platformCODENAME'] .') '. $instance['platformRELDATE'] .'[/color]'; }
 
                     echo "\r\n";
 
@@ -3090,17 +3083,46 @@ MOVED **/
 
                     echo "\r\n\r\n";
 
+                    echo '[color=#000000][b]Host Configuration :: [/b][/color] [b]OS:[/b] '. $system['sysPLATOS'] .' |  [b]OS Version:[/b] '. $system['sysPLATREL'] .' | [b]Technology:[/b] '. $system['sysPLATTECH'] .' | [b]Web Server:[/b] '. $system['sysSERVSIG'] .' | [b]Encoding:[/b] '. $system['sysENCODING'] .' | [b]Document Root:[/b] '. $system['sysDOCROOT'] .' | [b]System TMP Writable:[/b] ';
+                        if ( $system['sysTMPDIRWRITABLE'] == _FPA_Y ) { echo '[color=#008000]'; } else { echo '[color=#800000]'; }
+                        echo $system['sysTMPDIRWRITABLE'] .'[/color]';
+
+                    echo "\r\n\r\n";
+
                     echo '[color=#000000][b]PHP Configuration :: [/b][/color] [b]Version:[/b] ';
-                        if ( version_compare( $phpenv['phpVERSION'], '5.0.0', '<' ) ) { echo '[color=#800000]'. $phpenv['phpVERSION'] .'[/color] | '; } else { echo $phpenv['phpVERSION'] .' | '; }
+                        if ( version_compare( $phpenv['phpVERSION'], '5.0.0', '<' ) ) { echo '[color=#800000]'. $phpenv['phpVERSION'] .'[/color] | '; } else { echo '[b]'. $phpenv['phpVERSION'] .'[/b] | '; }
 
                     echo '[b]PHP API:[/b] ';
-                        if ( $phpenv['phpAPI'] == 'apache2handler' ) { echo '[color=orange]'. $phpenv['phpAPI'] .'[/color] | '; } else { echo $phpenv['phpAPI'] .' | '; }
+                        if ( $phpenv['phpAPI'] == 'apache2handler' ) { echo '[color=orange]'. $phpenv['phpAPI'] .'[/color] | '; } else { echo '[b]'. $phpenv['phpAPI'] .'[/b] | '; }
 
                     echo '[b]Session Path Writable:[/b] ';
                         if ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_Y ) { echo '[color=#008000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } elseif ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_N ) { echo '[color=#800000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } else { echo '[color=orange]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; }
 
+                    echo '[b]Display Errors:[/b] '. $phpenv['phpERRORDISPLAY'] .' | [b]Error Reporting:[/b] '. $phpenv['phpERRORREPORT'] .' | [b]Log Errors To:[/b] '. $phpenv['phpERRLOGFILE'] .' | [b]Last Known Error:[/b] '. $phpenv['phpLASTERRDATE'] .' | [b]Register Globals:[/b] '. $phpenv['phpREGGLOBAL'] .' | [b]Magic Quotes:[/b] '. $phpenv['phpMAGICQUOTES'] .' | [b]Safe Mode:[/b] '. $phpenv['phpSAFEMODE'] .' | [b]Open Base:[/b] '. $phpenv['phpOPENBASE'] .' | [b]Uploads:[/b] '. $phpenv['phpUPLOADS'] .' | [b]Max. Upload Size:[/b] '. $phpenv['phpMAXUPSIZE'] .' | [b]Max. POST Size:[/b] '. $phpenv['phpMAXPOSTSIZE'] .' | [b]Max. Input Time:[/b] '. $phpenv['phpMAXINPUTTIME'] .' | [b]Max. Execution Time:[/b] '. $phpenv['phpMAXEXECTIME'] .' | [b]Memory Limit:[/b] '. $phpenv['phpMEMLIMIT'];
 
-                    echo '[b]Display Errors:[/b] '. $phpenv['phpERRORDISPLAY'] .' | [b]Error Reporting:[/b] '. $phpenv['phpERRORREPORT'] .' | [b]Log Errors To:[/b] '. $phpenv['phpERRLOGFILE'] .' | [b]Last Known Error:[/b] '. $phpenv['phpLASTERRDATE'] .' | [b]Register Globals:[/b] '. $phpenv['phpREGGLOBAL'] .' | [b]Magic Quotes:[/b] '. $phpenv['phpMAGICQUOTES'] .' | [b]Safe Mode:[/b] '. $phpenv['phpSAFEMODE'] .' | [b]Open Base:[/b] '. $phpenv['phpOPENBASE'] .' | [b]Uploads:[/b] '. $phpenv['phpUPLOADS'] .' | [b]Max. Upload Size:[/b] '. $phpenv['phpMAXUPSIZE'] .' | [b]Max. POST Size:[/b] '. $phpenv['phpMAXPOSTSIZE'] .' | [b]Max. Input Time:[/b] '. $phpenv['phpMAXINPUTTIME'] .' | [b]Max. Execution Time:[/b] '. $phpenv['phpMAXEXECTIME'] .' | [b]Memory Limit:[/b] '. $phpenv['phpMEMLIMIT'] .' |';
+                    echo "\r\n\r\n";
+
+                    echo '[color=#000000][b]MySQL Configuration :: [/b][/color] ';
+                    if ( $database['dbDOCHECKS'] == _FPA_N ) {
+                        echo '[color=orange]No database credentials available.[/color] Nothing to display.';
+                    } elseif ( $database['dbERROR'] != _FPA_N ) { echo '[b]Connection Error:[/b] ';
+
+                            if ( $_POST['showProtected'] == '3' ) {
+                                echo '[color=orange][b]Strict[/b] Information Privacy was selected[/color], but there was an [color=#800000]error[/color].';
+                            } else {
+//                                echo "\r\n";
+                                echo '[color=#800000]'. $database['dbERROR'] .'[/color] : [color=orange]check credentials in configuration...[/color]';
+                            }
+
+                    } else {
+                        echo '[b]Version:[/b] [b]'. $database['dbHOSTSERV'] .'[/b] (Client:'. $database['dbHOSTCLIENT'] .') | ';
+
+                            if ( $_POST['showProtected'] >= '1' ) { echo '[b]Hostname:[/b]  [color=orange]--'. _FPA_HIDDEN .'--[/color] ([color=orange]--'. _FPA_HIDDEN .'--[/color]) | ';
+                            } else { echo '[b]Hostname:[/b] '. $instance['configDBHOST'] .' ('. $database['dbHOSTINFO'] .') | '; }
+
+                            echo '[b]Collation:[/b] '. $database['dbCOLLATION'] .' ([b]Character Set:[/b] '. $database['dbCHARSET'] .') | [b]Database size:[/b] '. $database['dbSIZE'];
+                    }
+
 
 
                     echo '[/quote][/size]';
@@ -3113,15 +3135,212 @@ MOVED **/
                     // do detailed information
                     echo '[quote="Detailed Environment :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
 
+                    echo '[color=#000000][b]PHP Extensions :: [/b][/color]';
+
+                        foreach ( $phpextensions as $key => $show ) {
+
+                            if ( $show != $phpextensions['ARRNAME'] ) {
+
+                                // find the requirements and mark them as present or missing
+                                if ( $key == 'libxml' OR $key == 'xml' OR $key == 'zip' OR $key == 'openssl' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
+                                    echo '[color=#008000][b]'. $key .'[/b][/color] ('. $show .') | ';
+                                } elseif ( $key == 'apache2handler' ) {
+                                    echo '[color=orange]'. $key .'[/color] ('. $show .') | ';
+                                } else {
+                                    echo $key .' ('. $show .') | ';
+                                }
+
+                            } // endif !arrname
+
+                            if ( !in_array( $key, $phpreq ) ) {
+                                unset ( $phpreq[$key] );
+                            }
+
+                        }
+
+                        echo "\r\n";
+                        echo '[color=#000000][b]Potential Misisng Extensions :: [/b][/color]';
+                        foreach ( $phpreq as $missingkey => $missing ) {
+                            echo '[color=orange]'. $missingkey .'[/color] | ';
+                        }
+
+                        echo "\r\n\r\n";
+                        echo '[color=#000000][b]Switch User Environment[/b] [i](Experimental)[/i][b] :: [/b][/color] [b]PHP CGI:[/b] '. $phpenv['phpCGI'] .' | [b]Server SU:[/b] '. $phpenv['phpAPACHESUEXEC'] .' |  [b]PHP SU:[/b] '. $phpenv['phpPHPSUEXEC'] .' |   [b]Custom SU (Cloud/Grid):[/b] '. $phpenv['phpCUSTOMSU'];
+                        echo "\r\n";
+                        echo '[b]Potential Ownership Issues?:[/b] ';
+                            if ( $phpenv['phpOWNERPROB'] == _FPA_Y ) { echo '[color=#800000]'; } elseif ( $phpenv['phpOWNERPROB'] == _FPA_N ) { echo '[color=#008000]'; } else { echo '[color=orange]'; }
+                            echo $phpenv['phpOWNERPROB'] .'[/color] ';
+
+
+                        // IF APACHE with PHP in Module mode
+                        if ( $phpenv['phpAPI'] == 'apache2handler' ) {
+                        echo "\r\n\r\n";
+
+                            echo '[color=#000000][b]Apache Modules :: [/b][/color]';
+
+                            foreach ( $apachemodules as $key => $show ) {
+
+                                if ( $show != $apachemodules['ARRNAME'] ) {
+
+                                    // find the requirements and mark them as present or missing
+                                    if ( $show == 'mod_rewrite' OR $show == 'mod_cgi' OR $show == 'mod_cgid' OR $show == 'mod_expires' OR $show == 'mod_deflate' OR $show == 'mod_auth'  ) {
+                                        echo '[color=#008000][b]'. $show .'[/b][/color] | ';
+                                    } elseif ( $show == 'mod_php4' ) {
+                                        echo '[color=#800000]'. $show .'[/color] | ';
+                                    } else {
+                                        echo $show .' | ';
+                                    }
+
+                                } // endif !arrname
+
+                                if ( !in_array( $show, $apachereq ) ) {
+                                    unset ( $apachereq['ARRNAME'] );
+                                    unset ( $apachereq[$show] );
+                                }
+
+                            }
+
+                            echo "\r\n";
+                            echo '[color=#000000][b]Potential Missing Modules :: [/b][/color]';
+                            foreach ( $apachereq as $missingkey => $missing ) {
+                                echo '[color=orange]'. $missingkey .'[/color] | ';
+                            }
+
+                            echo "\r\n";
+
+                        } // end if Apache and PHP module
+
+
+
                     echo '[/quote][/size]';
 
+
+
+                        if ( $instance['instanceFOUND'] == _FPA_Y ) {
+                            echo '[quote="Folder Permissions :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+
+                                echo '[color=#000000][b]Core Folders :: [/b][/color]';
+
+                                    foreach ( $folders as $i => $show ) {
+
+                                        if ( $show != 'Core Folders' ) {
+
+                                            if ( $_POST['showProtected'] == '3' ) {
+                                                echo '[color=orange]--'. _FPA_HIDDEN .'--[/color] (';
+                                            } else {
+                                                echo $show .' (';
+                                            }
+
+                                            if ( substr( $modecheck[$show]['mode'],1 ,1 ) == '7' OR substr( $modecheck[$show]['mode'],2 ,1 ) == '7' ) {
+                                                echo '[color=#800000]'. $modecheck[$show]['mode'] .'[/color]) | ';
+                                            } else {
+                                                echo $modecheck[$show]['mode'] .') | ';
+                                            }
+
+                                        }
+
+                                    }
+
+
+                                    if ( $_POST['showElevated'] == '1' ) {
+                                        echo "\r\n\r\n";
+
+                                        $limitCount = '0';
+                                        echo '[color=#000000][b]Folders With Elevated Permissions[/b] [i](First 15)[/i][b] :: [/b] [/color]';
+
+                                            foreach ( $elevated as $key => $show ) {
+
+                                                if ( $limitCount >= '16' ) {
+                                                    unset ( $key );
+                                                } else {
+
+                                                    if ( $show != $elevated['ARRNAME'] ) {
+
+                                                        if ( $_POST['showProtected'] == '3' ) {
+                                                            echo '[color=orange]--'. _FPA_HIDDEN .'--[/color] (';
+                                                        } else {
+                                                            echo $key .'/ (';
+
+                                                        }
+
+                                                        if ( substr( $show['mode'],1 ,1 ) == '7' OR substr( $show['mode'],2 ,1 ) == '7' ) {
+                                                            echo '[color=#800000]'. $show['mode'] .'[/color]) | ';
+                                                        } else {
+                                                            echo $show['mode'] .') | ';
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                                $limitCount ++;
+                                                }
+
+                                    }
+
+                                echo '[/quote][/size]';
+
+                        } // end if InstanceFOUND
+
+
+
+
+
+                    // do the Database Statistics and Table information
+                    if ( $database['dbDOCHECKS'] == _FPA_Y AND $database['dbERROR'] == _FPA_N AND $_POST['showTables'] == '1' ) {
+                        echo '[quote="Database Information :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+
+                            echo '[color=#000000][b]Database Statistics :: [/b][/color]';
+
+                                foreach ( $database['dbHOSTSTATS'] as $show ) {
+                                    $dbPieces = explode(": ", $show );
+                                    echo '[b]'. $dbPieces[0] .':[/b] '. $dbPieces[1] .' | ';
+
+                                }
+
+                            echo "\r\n\r\n";
+
+                            echo '[color=#000000][b]Table Statistics :: [/b][/color]';
+                            echo "\r\n";
+
+                                foreach ( $tables as $i => $show ) {
+
+                                    if ( $show != $tables['ARRNAME'] ) {
+
+                                        if ( $showProtected == '3' ) {
+                                            echo '[color=orange]--'. _FPA_HIDDEN .'--[/color] ';
+                                        echo "\r\n";
+
+                                        } else {
+                                            echo '[color=#000080]'. $show['TABLE'] .'[/color] ';
+                                            echo "\r\n";
+                                        }
+
+                                        echo '[b]Size:[/b] '. $show['SIZE'] .' | [b]Records:[/b] '. $show['RECORDS'] .' | [b]Avg. Length:[/b] '. $show['AVGLEN'] .' | [b]Fragment Size[/b] (Overhead)[b]:[/b] '. $show['FRAGSIZE'] .' | [b]Engine:[/b] '. $show['ENGINE'] .' | [b]Collation:[/b] '. $show['COLLATION'];
+                                        echo "\r\n";
+                                    }
+
+                                }
+
+
+                        echo '[/quote][/size]';
+
+                    } elseif ( ( $database['dbDOCHECKS'] != _FPA_Y OR $database['dbERROR'] != _FPA_N ) AND $_POST['showTables'] == '1' ) {
+
+                                                    // only show the tables if we can connect to the database
+//                                if ( $database['dbERROR'] == _FPA_N ) {
+
+//                                }
+
+                    }
 
 
 
 
                     // do the Extensions information
                     if ( $instance['instanceFOUND'] == _FPA_Y AND ( $_POST['showComponents'] == '1' OR $_POST['showModules'] == '1' OR $_POST['showPlugins'] == '1' ) ) {
-                    echo '[quote="Extensions discovered :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+                    echo '[quote="Extensions Discovered :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
 
                         if ( $_POST['showProtected'] == '3' ) {
                             echo '[color=orange][b]Strict[/b] Information Privacy was selected.[/color] Nothing to display.';
@@ -4306,7 +4525,7 @@ MOVED **/
                 }
 
                 echo '<span class="normal">(<span class="'. $status .'">'. $percent_free.'%</span>)  '. $free_space .' GiB&nbsp;</span>';
-
+                $system['sysFREESPACE'] = $free_space .' GiB';
             } else {
                 echo '<span class="normal">'. _FPA_U .'&nbsp;</span>';
 
@@ -4485,7 +4704,7 @@ MOVED **/
 
 
                     // find the requirements and mark them as present or missing
-                    if ( $key == 'libxml' OR $key == 'xml'OR $key == 'zip' OR $key == 'openssl' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
+                    if ( $key == 'libxml' OR $key == 'xml' OR $key == 'zip' OR $key == 'openssl' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
                         $status = 'ok';
                         $border = '4D8000';
                         $background = 'CAFFD8';
@@ -4775,7 +4994,7 @@ MOVED **/
     if ( $showElevated == '1' ) {
 
         echo '<div class="section-information">';
-        echo '<div class="section-title" style="text-align:center;">'. $elevated['ARRNAME'] .'</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $elevated['ARRNAME'] .' (First 15)</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
 
