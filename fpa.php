@@ -13,7 +13,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    define ( '_FPA_BRA', TRUE );  // bug-report-mode
+    //define ( '_FPA_BRA', TRUE );  // bug-report-mode
     //define ( '_FPA_DEV', TRUE );   // developer-mode
     //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
@@ -1204,7 +1204,7 @@
 
         $dirCount = 0;
 
-        function getDirectory( $path = '.', $level = 0 ){
+        function getDirectory( $path = '.', $level = 0 ) {
         GLOBAL $elevated, $dirCount;
 
             // Directories to ignore when listing output. Many hosts
@@ -1219,7 +1219,7 @@
                 // Check that this file is not to be ignored
                 if ( !in_array( $file, $ignore ) ) {
 
-                    if ( $dirCount < '15' ) { // 15 or more folder will cancel the processing
+                    if ( $dirCount < '10' ) { // 10 or more folder will cancel the processing
 
                         // Its a directory, so we need to keep reading down...
                         if ( is_dir( "$path/$file" ) ) {
@@ -1256,6 +1256,12 @@
             closedir( $dh );
 
         }
+
+            if ( $dirCount == '0' ) {
+                $elevated['None'] = 'None';
+                $elevated['None']['mode'] = '-';
+                $elevated['None']['writable'] = '-';
+            }
 
         getDirectory( '.' );
         ksort( $elevated );
@@ -1553,8 +1559,6 @@
 
                     if ( preg_match( "/\.xml/i", $file ) ) { #if filename matches .xml in the name
 
-
-
                         $content = file_get_contents( $cDir );
 
                         if ( preg_match( '#<(extension|install|mosinstall)#', $content, $isValidFile ) ) {
@@ -1578,7 +1582,7 @@
                                 if ( preg_match( '#<author>(.*)</author>#', $content, $author ) ) {
                                     $arrname[$loc][$cDir]['author'] = strip_tags( substr( $author[1], 0, 19 ) );
 
-                                    if ( $author[1] == 'Joomla! Project' ) {
+                                    if ( $author[1] == 'Joomla! Project' OR strtolower( $name[1] ) == 'joomla admin' OR strtolower( $name[1] ) == 'rhuk_milkyway' OR strtolower( $name[1] ) == 'ja_purity' OR strtolower( $name[1] ) == 'khepri' OR strtolower( $name[1] ) == 'bluestork' OR strtolower( $name[1] ) == 'atomic' OR strtolower( $name[1] ) == 'hathor' OR strtolower( substr( $name[1], 0, 4 ) ) == 'beez' ) {
                                         $arrname[$loc][$cDir]['type'] = 'Core';
 
                                     } else {
@@ -1593,7 +1597,7 @@
                                 }
 
                                 if ( preg_match( '#<version>(.*)</version>#', $content, $version ) ) {
-                                    $arrname[$loc][$cDir]['version'] = $version[1];
+                                    $arrname[$loc][$cDir]['version'] = substr( $version[1], 0, 13 );
 
                                 } else {
                                     $arrname[$loc][$path .'/'. $file]['version'] = '-';
@@ -1644,6 +1648,8 @@
 
     @getDetails( 'templates', $template, 'SITE' );
     @getDetails( 'administrator/templates', $template, 'ADMIN' );
+
+
 
     } // end if instanceFOUND
 ?>
@@ -2027,7 +2033,7 @@
      ** MAX PHP  | -----  |   5.2.17   |  5.3.6    |  4.4.9  | // 5.0.0 was first release to include MySQLi support
      ** ------------------------------------------------------
      ** MIN MYSQL| 5.0.4  |   3.23.0   |  3.23.0   |  3.0.0  |
-     ** MAX MYSQL| -----  |   5.1.43   |  5.1.43   |  4.1.25 | // only limited to 4.1.29 & 5.1 because install sql still has ENGINE TYPE statements (removed in MySQL 5.5)
+     ** MAX MYSQL| -----  |   5.1.43   |  5.1.43   |  5.0.91 | // only limited to 4.1.29 & 5.1 because install sql still has ENGINE TYPE statements (removed in MySQL 5.5)
      ** ------------------------------------------------------
      ** BAD PHP  | -----  |   4.39, 4.4.2, 5.0.5   |  -----  |
      ** BAD SQL  | -----  |        >5.0.0          |  -----  |
@@ -2088,7 +2094,7 @@
         $fpa['supportENV']['minPHP']        = '3.0.1';
         $fpa['supportENV']['minSQL']        = '3.0.0';
         $fpa['supportENV']['maxPHP']        = '4.4.9';
-        $fpa['supportENV']['maxSQL']        = '4.1.25';  // limited by ENGINE TYPE changes in 5.0 and install sql syntax
+        $fpa['supportENV']['maxSQL']        = '5.0.91';  // limited by ENGINE TYPE changes in 5.0 and install sql syntax
         $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
         $fpa['supportENV']['badZND'][0]     = _FPA_NA;
 
@@ -2320,6 +2326,18 @@
     echo '</div>';
 
 
+    // MySQL Version
+    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">MySQL Version<br />';
+    echo '<div class="normal-note">';
+        if ( @$database['dbHOSTSERV'] ) {
+            echo @$database['dbHOSTSERV'];
+        } else {
+            echo _FPA_U;
+        }
+    echo '</div>';
+    echo '</div>';
+
+
     // known buggy zend releases (mainly for installation on 1.5)
     echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">'. _FPA_BADZND .'<br />';
 
@@ -2348,39 +2366,6 @@
 
     echo '</div>';
 
-
-    // if Apache, is mod_rewrite installed (for SEF URL's)
-    echo '<div style="font-weight:bold;font-size:9px;text-transform:uppercase;width:24%;float:left;text-align:center;">Apache mod_rewrite<br />';
-
-        if ( @$apachemodules['ARRNAME'] ) {
-
-            foreach ( $apachemodules as $key => $show ) {
-
-                if ( $show == 'mod_rewrite' ) {
-                    $modANS = _FPA_Y;
-                    continue;
-
-                }
-
-            }
-
-            if ( @$modANS == _FPA_Y ) {
-                $modClass = 'ok';
-
-            } else {
-                $modANS = _FPA_N;
-                $modClass = 'warn-text';
-
-            }
-
-        echo '<div class="normal-note"><span class="'. $modClass .'">'. $modANS .'</span></div>';
-
-            } else {
-                echo '<div class="normal-note"><span class="warn-text">'. _FPA_U .'</span></div>';
-
-            }
-
-    echo '</div>';
 
     echo '</div>';
     echo '<div style="clear:both;"><br /></div>';
@@ -3031,8 +3016,13 @@ MOVED **/
                     if ( $_POST['probACT'] ) { echo '[quote="'. _FPA_PROB_ACT .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probACT'] .'[/quote][/size]'; }
 
 //!TODO come back and finish the post details
+
+
+                    echo '[quote="'. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"]';
+
+
                     // do the basic information
-                    echo '[quote="Basic Environment :: '. _RES .' (v'. _RES_VERSION .') '. @date( 'jS F Y' ) .'"][size=85]';
+                    echo '[quote="Basic Environment ::"][size=85]';
 
                     // Joomla! cms details
                     echo '[color=#000000][b]Joomla! Instance :: [/b][/color]';
@@ -3120,12 +3110,12 @@ MOVED **/
                             if ( $_POST['showProtected'] >= '1' ) { echo '[b]Hostname:[/b]  [color=orange]--'. _FPA_HIDDEN .'--[/color] ([color=orange]--'. _FPA_HIDDEN .'--[/color]) | ';
                             } else { echo '[b]Hostname:[/b] '. $instance['configDBHOST'] .' ('. $database['dbHOSTINFO'] .') | '; }
 
-                            echo '[b]Collation:[/b] '. $database['dbCOLLATION'] .' ([b]Character Set:[/b] '. $database['dbCHARSET'] .') | [b]Database size:[/b] '. $database['dbSIZE'];
+                            echo '[b]Collation:[/b] '. $database['dbCOLLATION'] .' ([b]Character Set:[/b] '. $database['dbCHARSET'] .') | [b]Database size:[/b] '. $database['dbSIZE'] .' | [b]Number Of Tables:[/b] '. $database['dbTABLECOUNT'];
                     }
 
 
 
-                    echo '[/quote][/size]';
+                    echo '[/size][/quote]';
 
 
 
@@ -3133,7 +3123,7 @@ MOVED **/
 
 
                     // do detailed information
-                    echo '[quote="Detailed Environment :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+                    echo '[quote="Detailed Environment ::"][size=85]';
 
                     echo '[color=#000000][b]PHP Extensions :: [/b][/color]';
 
@@ -3212,12 +3202,12 @@ MOVED **/
 
 
 
-                    echo '[/quote][/size]';
+                    echo '[/size][/quote]';
 
 
 
                         if ( $instance['instanceFOUND'] == _FPA_Y ) {
-                            echo '[quote="Folder Permissions :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+                            echo '[quote="Folder Permissions ::"][size=85]';
 
                                 echo '[color=#000000][b]Core Folders :: [/b][/color]';
 
@@ -3246,11 +3236,11 @@ MOVED **/
                                         echo "\r\n\r\n";
 
                                         $limitCount = '0';
-                                        echo '[color=#000000][b]Folders With Elevated Permissions[/b] [i](First 15)[/i][b] :: [/b] [/color]';
+                                        echo '[color=#000000][b]Folders With Elevated Permissions[/b] [i](First 10)[/i][b] :: [/b] [/color]';
 
                                             foreach ( $elevated as $key => $show ) {
 
-                                                if ( $limitCount >= '16' ) {
+                                                if ( $limitCount >= '11' ) {
                                                     unset ( $key );
                                                 } else {
 
@@ -3259,14 +3249,24 @@ MOVED **/
                                                         if ( $_POST['showProtected'] == '3' ) {
                                                             echo '[color=orange]--'. _FPA_HIDDEN .'--[/color] (';
                                                         } else {
-                                                            echo $key .'/ (';
+
+                                                            if ( $key == 'None' ) {
+                                                                echo '[color=#008000][b]'. $key .'[/b][/color] ';
+                                                            } else {
+                                                                echo $key .'/ (';
+
+                                                            }
 
                                                         }
 
-                                                        if ( substr( $show['mode'],1 ,1 ) == '7' OR substr( $show['mode'],2 ,1 ) == '7' ) {
-                                                            echo '[color=#800000]'. $show['mode'] .'[/color]) | ';
-                                                        } else {
-                                                            echo $show['mode'] .') | ';
+                                                        if ( $key != 'None' ) {
+
+                                                            if ( substr( $show['mode'],1 ,1 ) == '7' OR substr( $show['mode'],2 ,1 ) == '7' ) {
+                                                                echo '[color=#800000]'. $show['mode'] .'[/color]) | ';
+                                                            } else {
+                                                                echo $show['mode'] .') | ';
+
+                                                            }
 
                                                         }
 
@@ -3279,7 +3279,7 @@ MOVED **/
 
                                     }
 
-                                echo '[/quote][/size]';
+                                echo '[/size][/quote]';
 
                         } // end if InstanceFOUND
 
@@ -3289,7 +3289,7 @@ MOVED **/
 
                     // do the Database Statistics and Table information
                     if ( $database['dbDOCHECKS'] == _FPA_Y AND $database['dbERROR'] == _FPA_N AND @$_POST['showTables'] == '1' ) {
-                        echo '[quote="Database Information :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+                        echo '[quote="Database Information ::"][size=85]';
 
                             echo '[color=#000000][b]Database Statistics :: [/b][/color]';
 
@@ -3299,6 +3299,10 @@ MOVED **/
 
                                 }
 
+                            /** REMOVED FROM POST OUTPUT ***************************************************
+                             ** TABLE STATISTICS removed from post output to reduce the post content,
+                             ** it occassionally pops the forum post character limits
+                             *******************************************************************************
                             echo "\r\n\r\n";
 
                             echo '[color=#000000][b]Table Statistics :: [/b][/color]';
@@ -3322,9 +3326,9 @@ MOVED **/
                                     }
 
                                 }
+                                ***************************************************************************/
 
-
-                        echo '[/quote][/size]';
+                        echo '[/size][/quote]';
 
                     } elseif ( ( $database['dbDOCHECKS'] != _FPA_Y OR $database['dbERROR'] != _FPA_N ) AND $_POST['showTables'] == '1' ) {
 
@@ -3340,11 +3344,11 @@ MOVED **/
 
                     // do the Extensions information
                     if ( $instance['instanceFOUND'] == _FPA_Y AND ( @$_POST['showComponents'] == '1' OR @$_POST['showModules'] == '1' OR @$_POST['showPlugins'] == '1' ) ) {
-                    echo '[quote="Extensions Discovered :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+                    echo '[quote="Extensions Discovered ::"][size=85]';
 
                         if ( $_POST['showProtected'] == '3' ) {
                             echo '[color=orange][b]Strict[/b] Information Privacy was selected.[/color] Nothing to display.';
-                            echo '[/quote][/size]';
+                            echo '[/size][/quote]';
                         } else {
 
 
@@ -3396,7 +3400,7 @@ MOVED **/
 
                             }
 
-                            echo '[/quote][/size]';
+                            echo '[/size][/quote]';
 
                         } // end if showComponents, Modules, Plugins, if cmsFOUND
 
@@ -3405,11 +3409,11 @@ MOVED **/
 
                         // do the template information
                         if ( $instance['instanceFOUND'] == _FPA_Y ) {
-                            echo '[quote="Template Discovered :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]';
+                            echo '[quote="Templates Discovered ::"][size=85]';
 
                                 if ( $_POST['showProtected'] == '3' ) {
                                     echo '[color=orange][b]Strict[/b] Information Privacy was selected.[/color] Nothing to display.';
-                                    echo '[/quote][/size]';
+                                    echo '[/size][/quote]';
                                 } else {
 
                                     echo '[color=#000000][b]Templates :: Site :: [/b][/color]';
@@ -3426,7 +3430,7 @@ MOVED **/
                                             echo $show['name'] .' ('. $show['version'] .') | ';
                                         }
 
-                                    echo '[/quote][/size]';
+                                    echo '[/size][/quote]';
 
                                 } // end if InstanceFOUND
 
@@ -3441,7 +3445,7 @@ MOVED **/
                 echo '[/size][/quote]';
 **/
 
-
+                echo '[/quote]';
                 echo '</textarea>';
                 echo '<div style="clear:both;"><br /></div>';
                 echo '<span class="ok">'. _FPA_INS_6 .'</span>';
@@ -4994,7 +4998,7 @@ MOVED **/
     if ( $showElevated == '1' ) {
 
         echo '<div class="section-information">';
-        echo '<div class="section-title" style="text-align:center;">'. $elevated['ARRNAME'] .' (First 15)</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $elevated['ARRNAME'] .' (First 10)</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
 
@@ -5029,9 +5033,9 @@ MOVED **/
                     }
 
                     // hilite the "cancelled processing" message, after 25 elevated folders (limited to save resources on a really bad site
-                    if ( substr( $key, 0, 4 ) == '*PRO' ) {
-                        $alertClass = 'alert';
-                    }
+//                    if ( substr( $key, 0, 4 ) == '*PRO' ) {
+//                        $alertClass = 'alert';
+//                    }
 
                     echo '<div style="border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;">';
 
@@ -5046,7 +5050,16 @@ MOVED **/
                     echo '<div class="column-content '. $alertClass .'" style="width:58%;float:left;padding-left:5px;">';
 
                         if ( $showProtected <= 2 ) {
-                            echo $key;  // display the folder name
+
+                            if ( $key == 'None' ) {
+                                echo '<span style="color:#008000"><b>'. $key .'</b></span>';
+                            } else {
+                                echo $key .'/ (';
+                            }
+
+//                        }
+//                            echo $key;  // display the folder name
+
                         } else {
                             echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>';
                         }
