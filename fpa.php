@@ -14,7 +14,7 @@
 
     /** SET THE FPA DEFAULTS *****************************************************************/
     //define ( '_FPA_BRA', TRUE );  // bug-report-mode
-    //define ( '_FPA_DEV', TRUE );   // developer-mode
+    define ( '_FPA_DEV', TRUE );   // developer-mode
     //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
 
@@ -97,6 +97,15 @@
 
     } else {
         $showPlugins = 0; // default (hide)
+
+    }
+
+    if ( @$_POST['postFormat'] == 1 ) {
+        $postFormat  = 1;  // GitHUB
+    } elseif ( @$_POST['postFormat'] == 2 ) {
+        $postFormat  = 2;  // JoomlaCode
+    } else {
+        $postFormat = 3;   // Forum (default)
 
     }
 
@@ -2845,7 +2854,22 @@ MOVED **/
                     <div class="half-section-information-right" style="width:340px;padding-top:10px;padding-bottom:10px;border-color:#CCC;box-shadow: inset 3px 3px 3px #C0C0C0;-webkit-box-shadow: inset 3px 3px 3px #C0C0C0;background-color:transparent!important;">
 
                         <div class="normal-note" style="min-height:135px;">
-                        <strong>Run-Time Options</strong><br /><br />
+                        <!-- <strong>Run-Time Options</strong><br /> -->
+
+                        <!-- intended Post location -->
+                        <div style="color:#4D8000;">
+                        <span style="color:#4D8000;font-weight:bold;padding-right:20px;"><strong>Run-Time Options</strong></span>
+                            <input style="font-size:9px;" type="radio" name="postFormat" value="3" <?php echo @$selectshowProtected_1; ?> /><span style="color:#4D8000;padding-right:15px;">Forum</span>
+                                <?php
+                                    //if ( defined( '_FPA_BRA' ) ) {
+                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="2" '. @$selectshowProtected_2 .' /><span style="color:#4D8000;padding-right:15px;">JoomlaCode</span>';
+                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="1" '. @$selectshowProtected_3 .' /><span style="color:#4D8000;padding-right:15px;">GitHUB</span>';
+                                    //}
+                                ?>
+                        </div>
+                        <br />
+
+
 
                             <div style="float:left; width:170px;">
 
@@ -3094,7 +3118,21 @@ MOVED **/
 
                     echo '[color=#000000][b]MySQL Configuration :: [/b][/color] ';
                     if ( $database['dbDOCHECKS'] == _FPA_N ) {
-                        echo '[color=orange]No database credentials available.[/color] Nothing to display.';
+                        echo '[color=orange]Database credentials incomplete or not available.[/color] Nothing to display.';
+                    echo "\r\n";
+
+                            if ( $instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
+                                echo '[color=#800000][b]Missing Credentials Detected: [/b][/color] ';
+
+                                if ( @$instance['configDBTYPE'] == '' ) { echo '[color=orange]Connection Type missing[/color] | '; }
+                                if ( @$instance['configDBHOST'] == '' ) { echo '[color=orange]MySQL Host missing[/color] | '; }
+                                if ( @$instance['configDBPREF'] == '' ) { echo '[color=orange]Table Prefix missing[/color] | '; }
+                                if ( @$instance['configDBUSER'] == '' ) { echo '[color=orange]Database Username missing[/color] | '; }
+                                if ( @$instance['configDBPASS'] == '' ) { echo '[color=orange]Database Password missing[/color] |'; }
+
+                            }
+
+
                     } elseif ( $database['dbERROR'] != _FPA_N ) { echo '[b]Connection Error:[/b] ';
 
                             if ( $_POST['showProtected'] == '3' ) {
@@ -4060,9 +4098,26 @@ MOVED **/
             }
 
         echo '</div></div>';
+
+
+        if ( $instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
+        echo '<br /><br />';
+        echo '<div class="mini-content-box-small" style="">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;"><span class="alert-text" style="font-size:8px;">Missing Credentials Detected:</span> ';
+
+            if ( @$instance['configDBTYPE'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Connection <b>Type</b> missing</span>'; }
+            if ( @$instance['configDBHOST'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;MySQL <b>Host</b> missing</span>'; }
+            if ( @$instance['configDBPREF'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Table <b>Prefix</b> missing</span>'; }
+            if ( @$instance['configDBUSER'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Database <b>Username</b> missing</span>'; }
+            if ( @$instance['configDBPASS'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Database <b>Password</b> missing</span>'; }
+
+            echo '</div></div>';
+        }
+
+
         echo '</div>';
 
-        echo '<br style="clear:both;" />';
+//        echo '<br style="clear:both;" />';
 
         echo '</div></div>';
         // end content left block
