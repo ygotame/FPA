@@ -2859,11 +2859,11 @@ MOVED **/
                         <!-- intended Post location -->
                         <div style="color:#4D8000;">
                         <span style="color:#4D8000;font-weight:bold;padding-right:20px;"><strong>Run-Time Options</strong></span>
-                            <input style="font-size:9px;" type="radio" name="postFormat" value="3" <?php echo $selectshowProtected_1; ?> /><span style="color:#4D8000;padding-right:15px;">Forum</span>
+                            <input style="font-size:9px;" type="radio" name="postFormat" value="3" <?php echo @$selectshowProtected_1; ?> /><span style="color:#4D8000;padding-right:15px;">Forum</span>
                                 <?php
                                     //if ( defined( '_FPA_BRA' ) ) {
-                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="2" '. $selectshowProtected_2 .' /><span style="color:#4D8000;padding-right:15px;">JoomlaCode</span>';
-                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="1" '. $selectshowProtected_3 .' /><span style="color:#4D8000;padding-right:15px;">GitHUB</span>';
+                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="2" '. @$selectshowProtected_2 .' /><span style="color:#4D8000;padding-right:15px;">JoomlaCode</span>';
+                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="1" '. @$selectshowProtected_3 .' /><span style="color:#4D8000;padding-right:15px;">GitHUB</span>';
                                     //}
                                 ?>
                         </div>
