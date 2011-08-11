@@ -13,7 +13,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    //define ( '_FPA_BRA', TRUE );  // bug-report-mode
+    define ( '_FPA_BRA', TRUE );  // bug-report-mode
     //define ( '_FPA_DEV', TRUE );   // developer-mode
     //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
@@ -395,6 +395,7 @@
     define ( '_FPA_PROB_DSC', 'Problem Description' );
     define ( '_FPA_PROB_MSG', 'Log/Error Message' );
     define ( '_FPA_PROB_ACT', 'Actions Taken To Resolve' );
+    define ( '_FPA_PROB_CRE', 'Actions To ReCreate Issue' );
 
     /** common screen and post output strings ************************************************/
     define ( '_FPA_GOOD', 'OK/GOOD' );
@@ -2845,7 +2846,7 @@ MOVED **/
                                     }
                                 ?>
 
-                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php echo _FPA_PROB_ACT; ?>:</div> <textarea class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probACT"></textarea></div>
+                                <div style="text-align:right;padding:2px;"><div class="normal" style="text-align:left;width:120px;float:left;"><?php if ( @$_POST['postFormat'] == '1' OR @$_POST['postFormat'] == '2' ) { echo _FPA_PROB_CRE; } else { echo _FPA_PROB_ACT; } ?>:</div> <textarea class="normal-note" style="background-color: #FFFFCC;width:175px;font-size:9px;" type="text" name="probACT"></textarea></div>
 
                                 <?php  echo _FPA_POST_NOTE; ?>
 
@@ -2945,9 +2946,16 @@ MOVED **/
                                     $dis = '';
                                 }
                                 ?>
+
                                 <strong>Optional Settings <?php echo $dis; ?>:</strong><br />
-                                <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showElevated" value="1" <?php echo $selectshowElevated ?> /><span class="normal">Show elevated folder permissions</span><br />
-                                <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showTables" value="1" <?php echo $selectshowTables ?> /><span class="normal">Show database table statistics</span><br />
+
+                                <?php  // don't show these options if posting to JC or GitHUB
+                                    if ( @$_POST['postFormat'] == '3' OR @$postFormat == '3' ) {
+                                        echo '<input '. $dis .' style="font-size:9px;" type="checkbox" name="showElevated" value="1" '. $selectshowElevated .' /><span class="normal">Show elevated folder permissions</span><br />';
+                                        echo '<input '. $dis .' style="font-size:9px;" type="checkbox" name="showTables" value="1" '. $selectshowTables .' /><span class="normal">Show database table statistics</span><br />';
+                                    }
+                                ?>
+
                                 <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showComponents" value="1" <?php echo $selectshowComponents ?> /><span class="normal">Show Components</span><br />
                                 <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showModules" value="1" <?php echo $selectshowModules ?> /><span class="normal">Show Modules</span><br />
                                 <input <?php echo $dis; ?> style="font-size:9px;" type="checkbox" name="showPlugins" value="1" <?php echo $selectshowPlugins ?> /><span class="normal">Show Plugins</span><br />
@@ -3057,22 +3065,530 @@ MOVED **/
                  *****************************************************************************************/
                 echo '<textarea class="protected" style="width:700px;height:35px;font-size:9px;margin-top:5px;" type="text" rows="10" cols="100" name="postOUTPUT" id="postOUTPUT">';
 
-                    // post the problem description, if any
+
+
+
+                // post the problem description, if any
+                /** FORMAT THE OUT PUT FOR EACH POST OPTION (Forum, GitHUB, JoomlaCode) *******************
+                 ** BBCode for the Joomla! Forum
+                 ** GitHUB Markdown for GitHUB
+                 ** Plain Text for JoomlaCode
+                 *****************************************************************************************/
+                if ( defined( '_FPA_BRA' ) AND $_POST['postFormat'] == '1' ) { // JoomlaCode
+
+                    if ( $_POST['probDSC'] ) {
+                        echo _FPA_PROB_DSC .' ::  ';
+                        echo "\n";
+                        echo $_POST['probDSC'];
+
+                    }
+
+                    if ( $_POST['probMSG1'] ) {
+                        echo "\n\n";
+                        echo _FPA_PROB_MSG .' ::  ';
+                        echo "\n";
+                        echo $_POST['probMSG1'];
+                    }
+
+                    if ( !@$_POST['probMSG1'] AND $_POST['probMSG2'] ) {
+                        echo "\n\n";
+                        echo _FPA_PROB_MSG .' ::  ';
+                        echo "\n";
+                    }
+
+                    if ( @$_POST['probMSG2'] ) {
+                        echo "\n";
+                        echo $_POST['probMSG2'];
+                    }
+
+                    if ( @$_POST['probACT'] ) {
+                        echo "\n\n";
+                        echo _FPA_PROB_CRE .' ::  ';
+                        echo "\n";
+                        echo $_POST['probACT'];
+                        echo "\n\n";
+                    }
+
+
+                echo "\n";
+                echo 'Basic Environment ::  ';
+                echo "\n";
+                echo 'Joomla! Instance ::  ';
+
+                    if ( $instance['instanceFOUND'] == _FPA_Y ) {
+                        echo $instance['cmsPRODUCT'] .' '. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'-'. $instance['cmsDEVSTATUS'] .' ('. $instance['cmsCODENAME'] .') '. $instance['cmsRELDATE'];
+                    } else {
+                        echo _FPA_NF;
+                    }
+
+                    if ( @$instance['platformPRODUCT'] ) {
+                        echo "\n";
+                        echo 'Platform Instance ::  ';
+                        echo $instance['platformPRODUCT'] .' '. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'-'. $instance['platformDEVSTATUS'] .' ('. $instance['platformCODENAME'] .') '. $instance['platformRELDATE'];
+                    }
+
+                echo "\n";
+
+                    if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
+                        echo "\n";
+                        echo 'Instance Configured ::  ';
+                        echo $instance['instanceCONFIGURED'] .' | ';
+
+                        if ( $instance['configWRITABLE'] == _FPA_Y ) { echo 'Writable ('; } else { echo 'Read-Only ('; }
+                            echo $instance['configMODE'] .') | ';
+                            echo 'Owner: '. $instance['configOWNER']['name'] .' (uid: '. $instance['configOWNER']['uid'] .'/gid: '. $instance['configOWNER']['gid'] .') | Group: '. $instance['configGROUP']['name'] .' (gid: '. $instance['configGROUP']['gid'] .') | **Valid For:** '. $instance['configVALIDFOR'];
+
+                            echo "\n";
+                            echo 'Configuration Options ::  ';
+                            echo 'Offline: '. $instance['configOFFLINE'] .' | SEF Enabled: '. $instance['configSEF'] .' | SEF Suffix Enabled: '. $instance['configSEFSUFFIX'] .' | SEF ReWrite: '. $instance['configSEFRWRITE'] .' | GZip Enabled: '. $instance['configGZIP'] .' | Cache Enabled: '. $instance['configCACHING'] .' | FTP Layer: '. $instance['configFTP'] .' | SSL: '. $instance['configSSL'] .' | Error Reporting: '. $instance['configERRORREP'] .' | Site Debug: '. $instance['configSITEDEBUG'] .' | Language Debug: '. $instance['configLANGDEBUG'] .' | Default Access: '. $instance['configACCESS'] .' | Unicode Slugs: '. $instance['configUNICODE'] .' | ';
+                                if ( $instance['configSITEHTWC'] == _FPA_Y ) { echo '.htaccess/web.config: '. $instance['configSITEHTWC']; }
+
+
+                            echo "\n";
+
+                            echo 'Database Credentials Present:  ';
+                            echo $instance['configDBCREDOK'];
+                            echo "\n";
+                                if ( @$_POST['showComponents'] != '1' AND @$_POST['showModules'] != '1' AND @$_POST['showPlugins'] != '1' ) {
+                                    echo "\n\n";
+                                }
+
+
+                                // IF Components Selected
+                                if ( @$_POST['showComponents'] == '1' ) {
+                                    echo "\n";
+                                    echo $component['ARRNAME'] .'  :: SITE ::  ';
+
+                                    foreach ( $component['SITE'] as $key => $show ) {
+
+                                        if ( $show != @$component['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+
+
+                                    echo '  :: ADMIN ::  ';
+
+                                    foreach ( $component['ADMIN'] as $key => $show ) {
+
+                                        if ( $show != @$component['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+                                    echo "\n";
+                                } // end components
+
+                                // IF Modules Selected
+                                if ( @$_POST['showModules'] == '1' ) {
+                                    echo "\n";
+                                    echo $module['ARRNAME'] .'  :: SITE ::  ';
+
+                                    foreach ( $module['SITE'] as $key => $show ) {
+
+                                        if ( $show != @$module['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+
+                                    echo '  :: ADMIN ::  ';
+
+                                    foreach ( $module['ADMIN'] as $key => $show ) {
+
+                                        if ( $show != @$module['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+                                    echo "\n";
+                                } // end modules
+
+                                // IF Plugins Selected
+                                if ( @$_POST['showPlugins'] == '1' ) {
+                                    echo "\n";
+                                    echo $plugin['ARRNAME'] .'  :: SITE ::  ';
+
+                                    foreach ( $plugin['SITE'] as $key => $show ) {
+
+                                        if ( $show != @$plugin['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+                                } // end plugins
+
+
+                                if ( @$_POST['showComponents'] == '1' OR @$_POST['showModules'] == '1' OR @$_POST['showPlugins'] == '1' ) {
+                                    echo "\n\n";
+                                }
+
+
+                                echo "\n";
+                                echo 'Host Configuration ::  OS: '. $system['sysPLATOS'] .' | OS Version: '. $system['sysPLATREL'] .' | Technology: '. $system['sysPLATTECH'] .' | Web Server: '. $system['sysSERVSIG'] .' | Encoding: '. $system['sysENCODING'] .' | Document Root: '. $system['sysDOCROOT'] .' | System TMP Writable: '. $system['sysTMPDIRWRITABLE'];
+                                echo "\n";
+
+                                echo "\n";
+                                echo 'MySQL Configuration ::  ';
+                                    if ( $database['dbDOCHECKS'] == _FPA_N ) {
+                                        echo '**Database credentials incomplete or not available.** Nothing to display.';
+                                    }
+
+                                    if ( @$instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
+                                        echo "\n";
+                                        echo 'Missing Credentials Detected:  ';
+
+                                        if ( @$instance['configDBTYPE'] == '' ) { echo ' * Connection Type missing * '; }
+                                        if ( @$instance['configDBHOST'] == '' ) { echo ' * MySQL Host missing * '; }
+                                        if ( @$instance['configDBPREF'] == '' ) { echo ' * Table Prefix missing * '; }
+                                        if ( @$instance['configDBUSER'] == '' ) { echo ' * Database Username missing * '; }
+                                        if ( @$instance['configDBPASS'] == '' ) { echo ' * Database Password missing * '; }
+                                    }
+
+                                    if ( @$database['dbERROR'] != _FPA_N ) {
+                                        echo "\n";
+                                        echo '**Connection Error:** '. @$database['dbERROR'];
+                                    } else {
+                                        echo 'Version: '. $database['dbHOSTSERV'] .' (Client:'. $database['dbHOSTCLIENT'] .') | Collation: '. $database['dbCOLLATION'] .' (Character Set: '. $database['dbCHARSET'] .') | Database Size: '. $database['dbSIZE'] .' | Number Of Tables: '. $database['dbTABLECOUNT'];
+                                    }
+
+                                echo "\n";
+
+                                echo "\n";
+                                echo 'PHP Configuration ::  Version: '. $phpenv['phpVERSION'] .' | PHP API: '. $phpenv['phpAPI'] .' | Session Path Writable: '. $phpenv['phpSESSIONPATHWRITABLE'] .' | Display Errors: '. $phpenv['phpERRORDISPLAY'] .' | Error Reporting: '. $phpenv['phpERRORREPORT'] .' | Log Errors To: '. $phpenv['phpERRLOGFILE'] .' | Last Known Error: '. @$phpenv['phpLASTERRDATE'] .' | Register Globals: '. $phpenv['phpREGGLOBAL'] .' | Magic Quotes: '. $phpenv['phpMAGICQUOTES'] .' | Safe Mode: '. $phpenv['phpSAFEMODE'] .' | Open Base: '. $phpenv['phpOPENBASE'] .' | Uploads: '. $phpenv['phpUPLOADS'] .' | Max. Upload Size: '. $phpenv['phpMAXUPSIZE'] .' | Max. POST Size: '. $phpenv['phpMAXPOSTSIZE'] .' | Max. Input Time: '. $phpenv['phpMAXINPUTTIME'] .' | Max. Execution Time: '. $phpenv['phpMAXEXECTIME'] .' | Memory Limit: '. $phpenv['phpMEMLIMIT'];
+
+                                // PHP modules
+                                echo "\n";
+                                echo 'PHP Modules ::  ';
+
+                                foreach ( $phpextensions as $key => $show ) {
+
+                                    if ( $show != $phpextensions['ARRNAME'] ) {
+                                        // find the requirements and mark them as present or missing
+                                        if ( $key == 'libxml' OR $key == 'xml' OR $key == 'zip' OR $key == 'openssl' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
+                                            echo '*'. $key .' ('. $show .') | ';
+                                        } elseif ( $key == 'apache2handler' ) {
+                                            echo '*'. $key .'* ('. $show .') | ';
+                                        } else {
+                                            echo $key .' ('. $show .') | ';
+                                        }
+                                    } // endif !arrname
+
+                                }
+                                echo "\n";
+
+
+                                // IF APACHE with PHP in Module mode
+                                if ( $phpenv['phpAPI'] == 'apache2handler' ) {
+                                    echo "\n";
+                                    echo 'Apache Modules ::  ';
+
+                                    foreach ( $apachemodules as $key => $show ) {
+
+                                        if ( $show != $apachemodules['ARRNAME'] ) {
+                                            // find the requirements and mark them as present or missing
+                                            if ( $show == 'mod_rewrite' OR $show == 'mod_cgi' OR $show == 'mod_cgid' OR $show == 'mod_expires' OR $show == 'mod_deflate' OR $show == 'mod_auth'  ) {
+                                                echo '*'. $show .' | ';
+                                            } elseif ( $show == 'mod_php4' ) {
+                                                echo '*'. $show .'* | ';
+                                            } else {
+                                                echo $show .' | ';
+                                            }
+
+                                        } // endif !arrname
+
+                                    }
+                                    echo "\n";
+                                }
+
+
+                    } else {
+                        echo "\n";
+                        echo 'Instance Configured ::  ';
+                        echo $instance['instanceCONFIGURED'];
+                    }
+
+
+                    // show a BRA version footer
+                    echo "\n";
+                    echo "\n";
+                    echo _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' );
+
+
+
+                } elseif ( defined( '_FPA_BRA' ) AND $_POST['postFormat'] == '2' ) { // GitHUB
+
+                    if ( $_POST['probDSC'] ) {
+                        echo '####  '. _FPA_PROB_DSC .' ::  ';
+                        echo "\n";
+                        echo "\n";
+                        echo '> <sub>'. $_POST['probDSC'] .'</sub>';
+                        echo "\n";
+                        echo "\n";
+                    }
+
+                    if ( $_POST['probMSG1'] ) {
+                        echo "\n";
+                        echo '#### '. _FPA_PROB_MSG .' ::&nbsp;&nbsp;';
+                        echo "\n";
+                        echo "\n";
+                        echo '> <sub>'. $_POST['probMSG1'] .'</sub>';
+                        echo "\n";
+                    }
+
+                    if ( !@$_POST['probMSG1'] AND $_POST['probMSG2'] ) {
+                        echo "\n";
+                        echo '#### '. _FPA_PROB_MSG .' ::&nbsp;&nbsp;';
+                        echo "\n";
+                        echo "\n";
+                    }
+
+                    if ( @$_POST['probMSG2'] ) {
+                        echo '> <sub>'. $_POST['probMSG2'] .'</sub>';
+                        echo "\n";
+                        echo "\n";
+                    }
+
+                    if ( @$_POST['probACT'] ) {
+                        echo "\n";
+                        echo '#### '. _FPA_PROB_CRE .' ::  ';
+                        echo "\n";
+                        echo '> <sub>'. $_POST['probACT'] .'</sub>';
+                        echo "\n";
+                        echo "\n";
+                    }
+
+
+                echo "\n";
+                echo '#### Basic Environment ::  ';
+                echo "\n";
+                echo '> <sub>**Joomla! Instance ::** ';
+
+                    if ( $instance['instanceFOUND'] == _FPA_Y ) {
+                        echo $instance['cmsPRODUCT'] .' **'. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'-'. $instance['cmsDEVSTATUS'] .'** ('. $instance['cmsCODENAME'] .') '. $instance['cmsRELDATE'] .'</sub>';
+                    } else {
+                        echo _FPA_NF .'</sub>';
+                    }
+
+                    if ( @$instance['platformPRODUCT'] ) {
+                        echo "\n";
+                        echo '> <sub>**Platform Instance ::** ';
+                        echo $instance['platformPRODUCT'] .' **'. $instance['platformRELEASE'] .'.'. $instance['platformDEVLEVEL'] .'-'. $instance['platformDEVSTATUS'] .'** ('. $instance['platformCODENAME'] .') '. $instance['platformRELDATE'] .'</sub>';
+                    }
+
+                echo "\n";
+
+                    if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
+                        echo "\n";
+                        echo '> <sub>**Instance Configured ::** ';
+                        echo '**'. $instance['instanceCONFIGURED'] .'** | ';
+
+                        if ( $instance['configWRITABLE'] == _FPA_Y ) { echo 'Writable ('; } else { echo 'Read-Only ('; }
+                            echo $instance['configMODE'] .') | ';
+                            echo '**Owner:** '. $instance['configOWNER']['name'] .' (uid: '. $instance['configOWNER']['uid'] .'/gid: '. $instance['configOWNER']['gid'] .') | **Group:** '. $instance['configGROUP']['name'] .' (gid: '. $instance['configGROUP']['gid'] .') | **Valid For:** '. $instance['configVALIDFOR'] .'</sub>';
+
+                            echo "\n";
+                            echo '> <sub>**Configuration Options ::** ';
+                            echo '**Offline:** '. $instance['configOFFLINE'] .' | **SEF Enabled:** '. $instance['configSEF'] .' | **SEF Suffix Enabled:** '. $instance['configSEFSUFFIX'] .' | **SEF ReWrite:** '. $instance['configSEFRWRITE'] .' | **GZip Enabled:** '. $instance['configGZIP'] .' | **Cache Enabled:** '. $instance['configCACHING'] .' | **FTP Layer:** '. $instance['configFTP'] .' | **SSL:** '. $instance['configSSL'] .' | **Error Reporting:** '. $instance['configERRORREP'] .' | **Site Debug:** '. $instance['configSITEDEBUG'] .' | **Language Debug:** '. $instance['configLANGDEBUG'] .' | **Default Access:** '. $instance['configACCESS'] .' | **Unicode Slugs:** '. $instance['configUNICODE'] .' | ';
+                                if ( $instance['configSITEHTWC'] == _FPA_Y ) { echo '**.htaccess/web.config:** '. $instance['configSITEHTWC']; }
+                            echo '</sub>';
+
+                            echo "\n";
+
+                            echo '> <sub>**Database Credentials Present:** ';
+                            echo $instance['configDBCREDOK'] .'</sub>';
+                            echo "\n";
+                                if ( @$_POST['showComponents'] != '1' AND @$_POST['showModules'] != '1' AND @$_POST['showPlugins'] != '1' ) {
+                                    echo '***';
+                                }
+
+
+                                // IF Components Selected
+                                if ( @$_POST['showComponents'] == '1' ) {
+                                    echo "\n";
+                                    echo '> <sub>**'. $component['ARRNAME'] .' ::** **SITE ::** ';
+
+                                    foreach ( $component['SITE'] as $key => $show ) {
+
+                                        if ( $show != @$component['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+
+
+                                    echo ' **:: ADMIN ::** ';
+
+                                    foreach ( $component['ADMIN'] as $key => $show ) {
+
+                                        if ( $show != @$component['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+                                    echo '</sub>';
+                                    echo "\n";
+                                } // end components
+
+                                // IF Modules Selected
+                                if ( @$_POST['showModules'] == '1' ) {
+                                    echo "\n";
+                                    echo '> <sub>**'. $module['ARRNAME'] .' ::** **SITE ::** ';
+
+                                    foreach ( $module['SITE'] as $key => $show ) {
+
+                                        if ( $show != @$module['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+
+                                    echo ' **:: ADMIN ::** ';
+
+                                    foreach ( $module['ADMIN'] as $key => $show ) {
+
+                                        if ( $show != @$module['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+                                    echo '</sub>';
+                                    echo "\n";
+                                } // end modules
+
+                                // IF Plugins Selected
+                                if ( @$_POST['showPlugins'] == '1' ) {
+                                    echo "\n";
+                                    echo '> <sub>**'. $plugin['ARRNAME'] .' ::** **SITE ::** ';
+
+                                    foreach ( $plugin['SITE'] as $key => $show ) {
+
+                                        if ( $show != @$plugin['ARRNAME'] ) {
+                                            echo $show['name'] .' ('. $show['version'] .') | ';
+                                        } // endif !arrname
+
+                                    }
+                                    echo '</sub>';
+                                } // end plugins
+
+
+                                if ( @$_POST['showComponents'] == '1' OR @$_POST['showModules'] == '1' OR @$_POST['showPlugins'] == '1' ) {
+                                    echo "\n";
+                                    echo '***';
+                                }
+
+
+                                echo "\n";
+                                echo '> <sub>**Host Configuration ::** **OS:** '. $system['sysPLATOS'] .' | **OS Version:** '. $system['sysPLATREL'] .' | **Technology:** '. $system['sysPLATTECH'] .' | **Web Server:** '. $system['sysSERVSIG'] .' | **Encoding:** '. $system['sysENCODING'] .' | **Document Root:** '. $system['sysDOCROOT'] .' | **System TMP Writable:** '. $system['sysTMPDIRWRITABLE'];
+                                echo "\n";
+                                echo '***';
+
+                                echo "\n";
+                                echo '> <sub>**MySQL Configuration ::** ';
+                                    if ( $database['dbDOCHECKS'] == _FPA_N ) {
+                                        echo '**Database credentials incomplete or not available.** Nothing to display.</sub>';
+                                    }
+
+                                    if ( @$instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
+                                        echo "\n";
+                                        echo '>> <sub>**Missing Credentials Detected:** ';
+
+                                        if ( @$instance['configDBTYPE'] == '' ) { echo '**Connection Type** missing | '; }
+                                        if ( @$instance['configDBHOST'] == '' ) { echo '**MySQL Host** missing | '; }
+                                        if ( @$instance['configDBPREF'] == '' ) { echo '**Table Prefix** missing | '; }
+                                        if ( @$instance['configDBUSER'] == '' ) { echo '**Database Username** missing | '; }
+                                        if ( @$instance['configDBPASS'] == '' ) { echo '**Database Password** missing'; }
+                                    echo '</sub>';
+                                    }
+
+                                    if ( @$database['dbERROR'] != _FPA_N ) {
+                                        echo "\n";
+                                        echo '> **Connection Error:** '. @$database['dbERROR'] .'</sub>';
+                                    } else {
+                                        echo '**Version:** '. $database['dbHOSTSERV'] .' (Client:'. $database['dbHOSTCLIENT'] .') | **Collation:** '. $database['dbCOLLATION'] .' (**Character Set:** '. $database['dbCHARSET'] .') | **Database size:** '. $database['dbSIZE'] .' | **Number Of Tables:** '. $database['dbTABLECOUNT'] .'</sub>';
+                                    }
+
+                                echo "\n";
+                                echo '***';
+
+                                echo "\n";
+                                echo '> <sub>**PHP Configuration ::** **Version:** '. $phpenv['phpVERSION'] .' | **PHP API:** '. $phpenv['phpAPI'] .' | **Session Path Writable:** '. $phpenv['phpSESSIONPATHWRITABLE'] .' | **Display Errors:** '. $phpenv['phpERRORDISPLAY'] .' | **Error Reporting:** '. $phpenv['phpERRORREPORT'] .' | **Log Errors To:** '. $phpenv['phpERRLOGFILE'] .' | **Last Known Error:** '. @$phpenv['phpLASTERRDATE'] .' | **Register Globals:** '. $phpenv['phpREGGLOBAL'] .' | **Magic Quotes:** '. $phpenv['phpMAGICQUOTES'] .' | **Safe Mode:** '. $phpenv['phpSAFEMODE'] .' | **Open Base:** '. $phpenv['phpOPENBASE'] .' | **Uploads:** '. $phpenv['phpUPLOADS'] .' | **Max. Upload Size:** '. $phpenv['phpMAXUPSIZE'] .' | **Max. POST Size:** '. $phpenv['phpMAXPOSTSIZE'] .' | **Max. Input Time:** '. $phpenv['phpMAXINPUTTIME'] .' | **Max. Execution Time:** '. $phpenv['phpMAXEXECTIME'] .' | **Memory Limit:** '. $phpenv['phpMEMLIMIT'] .'</sub>';
+
+                                // PHP modules
+                                echo "\n";
+                                echo '> <sub>**PHP Modules ::** ';
+
+                                foreach ( $phpextensions as $key => $show ) {
+
+                                    if ( $show != $phpextensions['ARRNAME'] ) {
+                                        // find the requirements and mark them as present or missing
+                                        if ( $key == 'libxml' OR $key == 'xml' OR $key == 'zip' OR $key == 'openssl' OR $key == 'zlib' OR $key == 'curl' OR $key == 'iconv' OR $key == 'mbstring' OR $key == 'mysql' OR $key == 'mysqli' OR $key == 'mcrypt' OR $key == 'suhosin' OR $key == 'cgi' OR $key == 'cgi-fcgi' ) {
+                                            echo '**'. $key .'** ('. $show .') | ';
+                                        } elseif ( $key == 'apache2handler' ) {
+                                            echo '***'. $key .'*** ('. $show .') | ';
+                                        } else {
+                                            echo $key .' ('. $show .') | ';
+                                        }
+                                    } // endif !arrname
+
+                                }
+                                echo '</sub>';
+                                echo "\n";
+                                echo '***';
+
+                                // IF APACHE with PHP in Module mode
+                                if ( $phpenv['phpAPI'] == 'apache2handler' ) {
+                                    echo "\n";
+                                    echo '> <sub>**Apache Modules ::** ';
+
+                                    foreach ( $apachemodules as $key => $show ) {
+
+                                        if ( $show != $apachemodules['ARRNAME'] ) {
+                                            // find the requirements and mark them as present or missing
+                                            if ( $show == 'mod_rewrite' OR $show == 'mod_cgi' OR $show == 'mod_cgid' OR $show == 'mod_expires' OR $show == 'mod_deflate' OR $show == 'mod_auth'  ) {
+                                                echo '**'. $show .'** | ';
+                                            } elseif ( $show == 'mod_php4' ) {
+                                                echo '***'. $show .'*** | ';
+                                            } else {
+                                                echo $show .' | ';
+                                            }
+
+                                        } // endif !arrname
+
+                                    }
+                                    echo '</sub>';
+                                    echo "\n";
+                                    echo '***';
+                                }
+
+
+                    } else {
+                        echo "\n";
+                        echo '> <sub>**Instance Configured ::** ';
+                        echo $instance['instanceCONFIGURED'] .'</sub>';
+                    }
+
+
+                    // show a BRA version footer
+                    echo "\n";
+                    echo "\n";
+                    echo '#####  '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' );
+
+
+
+                } elseif ( $_POST['postFormat'] == '3' ) { // Forum
+
+
+
                     if ( $_POST['probDSC'] ) { echo '[quote="'. _FPA_PROB_DSC .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probDSC'] .'[/quote][/size]'; }
 
-                    // post the first error message, if any
                     if ( $_POST['probMSG1'] ) { echo '[quote="'. _FPA_PROB_MSG .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probMSG1'] .'[/quote][/size]'; }
 
-                    // post the second error message, if any (remember if there is a PHP Error in the log, it will be auto-added here instead of the user adding a message
-                    // show the different MSG2 header and content, if there is an existing PHP Error to display
                     if ( $phpenv['phpLASTERR'] AND $_POST['probMSG2'] ) { echo '[quote="'. _FPA_LAST .' PHP '. _FPA_ER .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85][color=#800000]'. $_POST['probMSG2'] .'[/color][/quote][/size]';
                     } elseif ( !@$phpenv['phpLASTERROR'] AND $_POST['probMSG2'] ) { echo '[quote="'. _FPA_PROB_MSG .' :: '. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probMSG2'] .'[/quote][/size]'; }
 
-                    // post the actions taken, if any
                     if ( $_POST['probACT'] ) { echo '[quote="'. _FPA_PROB_ACT .' '. _FPA_BY .' '. _RES .' (v'. _RES_VERSION .') '. @date( 'jS F Y' ) .'"][size=85]'. $_POST['probACT'] .'[/quote][/size]'; }
-
-//!TODO come back and finish the post details
-
 
                     echo '[quote="'. _RES .' (v'. _RES_VERSION .') : '. @date( 'jS F Y' ) .'"]';
 
@@ -3092,7 +3608,7 @@ MOVED **/
 
                     echo "\r\n";
 
-                    echo '[color=#000000][b]Joomla! Confirgured :: [/b][/color]';
+                    echo '[color=#000000][b]Joomla! Configured :: [/b][/color]';
                     if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
                     echo '[color=#008000]'. _FPA_Y .'[/color] | ';
 
@@ -3165,13 +3681,13 @@ MOVED **/
                             }
 
 
-                    } elseif ( $database['dbERROR'] != _FPA_N ) { echo '[b]Connection Error:[/b] ';
+                    } elseif ( @$database['dbERROR'] != _FPA_N ) { echo '[b]Connection Error:[/b] ';
 
                             if ( $_POST['showProtected'] == '3' ) {
                                 echo '[color=orange][b]Strict[/b] Information Privacy was selected[/color], but there was an [color=#800000]error[/color].';
                             } else {
 //                                echo "\r\n";
-                                echo '[color=#800000]'. $database['dbERROR'] .'[/color] : [color=orange]check credentials in configuration...[/color]';
+                                echo '[color=#800000]'. @$database['dbERROR'] .'[/color] : [color=orange]check credentials in configuration...[/color]';
                             }
 
                     } else {
@@ -3358,7 +3874,7 @@ MOVED **/
 
 
                     // do the Database Statistics and Table information
-                    if ( $database['dbDOCHECKS'] == _FPA_Y AND $database['dbERROR'] == _FPA_N AND @$_POST['showTables'] == '1' ) {
+                    if ( $database['dbDOCHECKS'] == _FPA_Y AND @$database['dbERROR'] == _FPA_N AND @$_POST['showTables'] == '1' ) {
                         echo '[quote="Database Information ::"][size=85]';
 
                             echo '[color=#000000][b]Database Statistics :: [/b][/color]';
@@ -3516,6 +4032,9 @@ MOVED **/
 **/
 
                 echo '[/quote]';
+
+                } // end forum post
+
                 echo '</textarea>';
                 echo '<div style="clear:both;"><br /></div>';
                 echo '<span class="ok">'. _FPA_INS_6 .'</span>';
