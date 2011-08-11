@@ -14,7 +14,7 @@
 
     /** SET THE FPA DEFAULTS *****************************************************************/
     //define ( '_FPA_BRA', TRUE );  // bug-report-mode
-    define ( '_FPA_DEV', TRUE );   // developer-mode
+    //define ( '_FPA_DEV', TRUE );   // developer-mode
     //define ( '_FPA_DIAG', TRUE );  // diagnostic-mode
 
 
@@ -100,13 +100,16 @@
 
     }
 
-    if ( @$_POST['postFormat'] == 1 ) {
-        $postFormat  = 1;  // GitHUB
-    } elseif ( @$_POST['postFormat'] == 2 ) {
-        $postFormat  = 2;  // JoomlaCode
+    if ( @$_POST['postFormat'] == 1 AND defined( '_FPA_BRA' ) ) {
+        $postFormat  = 1;  // JoomlaCode
+    } elseif ( @$_POST['postFormat'] == 2 AND defined( '_FPA_BRA' ) ) {
+        $postFormat  = 2;  // GitHUB
+    } elseif ( @$_POST['postFormat'] == 3 ) {
+        $postFormat  = 3;   // Forum
+    } elseif ( defined( '_FPA_BRA' ) ) {
+        $postFormat  = 2;  // GitHUB (default if BRA defined)
     } else {
-        $postFormat = 3;   // Forum (default)
-
+        $postFormat  = 3;   // Forum (default if BRA not defined)
     }
 
 
@@ -2857,14 +2860,43 @@ MOVED **/
                         <!-- <strong>Run-Time Options</strong><br /> -->
 
                         <!-- intended Post location -->
+                        <?php
+
+                            if ( $postFormat == '1' AND defined( '_FPA_BRA' ) ) {  // JoomlaCode
+                                $selectpostFormat_1 = 'CHECKED';
+                                $selectColor_1 = '4D8000';
+                                $selectColor_2 = '808080';
+                                $selectColor_3 = '808080';
+
+                            } elseif ( $postFormat == '2' AND defined( '_FPA_BRA' ) ) {  // GitHUB
+                                $selectpostFormat_2 = 'CHECKED';
+                                $selectColor_1 = '808080';
+                                $selectColor_2 = '4D8000';
+                                $selectColor_3 = '808080';
+
+                            } elseif ( $postFormat == '3' AND !defined( '_FPA_BRA' ) ) {  // Forum
+                                $selectpostFormat_3 = 'CHECKED';
+                                $selectColor_1 = '808080';
+                                $selectColor_2 = '808080';
+                                $selectColor_3 = '4D8000';
+
+                            } else {
+                                $selectpostFormat_3 = 'CHECKED';
+                                $selectColor_1 = '808080';
+                                $selectColor_2 = '808080';
+                                $selectColor_3 = '4D8000';
+
+                            }
+                        ?>
+
                         <div style="color:#4D8000;">
                         <span style="color:#4D8000;font-weight:bold;padding-right:20px;"><strong>Run-Time Options</strong></span>
-                            <input style="font-size:9px;" type="radio" name="postFormat" value="3" <?php echo @$selectshowProtected_1; ?> /><span style="color:#4D8000;padding-right:15px;">Forum</span>
+                            <input style="font-size:9px;" type="radio" name="postFormat" value="3" <?php echo @$selectpostFormat_3; ?> /><span style="color:#<?php echo $selectColor_3; ?>;padding-right:15px;">Forum</span>
                                 <?php
-                                    //if ( defined( '_FPA_BRA' ) ) {
-                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="2" '. @$selectshowProtected_2 .' /><span style="color:#4D8000;padding-right:15px;">JoomlaCode</span>';
-                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="1" '. @$selectshowProtected_3 .' /><span style="color:#4D8000;padding-right:15px;">GitHUB</span>';
-                                    //}
+                                    if ( defined( '_FPA_BRA' ) ) {
+                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="2" '. @$selectpostFormat_2 .' /><span style="color:#'. $selectColor_2 .';padding-right:15px;">GitHUB</span>';
+                                        echo '<input style="font-size:9px;" type="radio" name="postFormat" value="1" '. @$selectpostFormat_1 .' /><span style="color:#'. $selectColor_1 .';padding-right:15px;">JoomlaCode</span>';
+                                    }
                                 ?>
                         </div>
                         <br />
@@ -3121,7 +3153,7 @@ MOVED **/
                         echo '[color=orange]Database credentials incomplete or not available.[/color] Nothing to display.';
                     echo "\r\n";
 
-                            if ( $instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
+                            if ( @$instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
                                 echo '[color=#800000][b]Missing Credentials Detected: [/b][/color] ';
 
                                 if ( @$instance['configDBTYPE'] == '' ) { echo '[color=orange]Connection Type missing[/color] | '; }
@@ -4100,7 +4132,7 @@ MOVED **/
         echo '</div></div>';
 
 
-        if ( $instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
+        if ( @$instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
         echo '<br /><br />';
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;"><span class="alert-text" style="font-size:8px;">Missing Credentials Detected:</span> ';
