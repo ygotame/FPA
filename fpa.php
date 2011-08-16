@@ -115,8 +115,7 @@
     define ( '_FPA_OUTTIM', 'Execution Time-Outs' );
     define ( '_FPA_INCPOPS', 'Temporarily increase PHP Memory and Execution Time' );
     define ( '_FPA_POSTD', 'Post Detail' );
-    define ( '_FPA_BASIC', 'Basic' );
-    define ( '_FPA_ENVIRO', 'Environment' );
+
 
     /** common screen and post output strings ************************************************/
     // v1.2.0
@@ -125,7 +124,11 @@
     define ( '_FPA_PLATFORM', 'Platform' );
     define ( '_FPA_DB', 'Database');
     define ( '_FPA_SYS', 'System' );
-    define ( '_FPA_LEGEND', 'Legend' );
+    define ( '_FPA_SERV', 'Server' );
+    define ( '_FPA_CLNT', 'Client' );
+    define ( '_FPA_HNAME', 'Hostname' );
+    define ( '_FPA_DISC', 'Discovery' );
+    define ( '_FPA_LEGEND', 'Legends and Settings' );
     define ( '_FPA_GOOD', 'OK/GOOD' );
     define ( '_FPA_WARNINGS', 'WARNINGS' );
     define ( '_FPA_ALERTS', 'ALERTS' );
@@ -133,30 +136,38 @@
     define ( '_FPA_ADMIN', 'ADMIN' );
     define ( '_FPA_BY', 'by' );
     define ( '_FPA_OR', 'or' );
+    define ( '_FPA_OF', 'of' );
+    define ( '_FPA_TO', 'to' );
     define ( '_FPA_FOR', 'for' );
     define ( '_FPA_IS', 'is' );
     define ( '_FPA_AT', 'at' );
     define ( '_FPA_IN', 'in' );
+    define ( '_FPA_BUT', 'but' );
     define ( '_FPA_LAST', 'Last' );
     define ( '_FPA_NONE', 'None' );
     define ( '_FPA_DEF', 'default' );
     define ( '_FPA_Y', 'Yes' );
     define ( '_FPA_N', 'No' );
+    define ( '_FPA_FIRST', 'First' );
     define ( '_FPA_M', 'Maybe' );
     define ( '_FPA_U', 'Unknown' );
     define ( '_FPA_K', 'Known' );
     define ( '_FPA_E', 'Exists' );
     define ( '_FPA_JCORE', 'Core' );
     define ( '_FPA_3PD', '3rd Party' );
+    define ( '_FPA_TESTP', 'tests performed' );
     define ( '_FPA_DNE', 'Does Not Exist' );
     define ( '_FPA_F', 'Found' );
     define ( '_FPA_NF', 'Not Found' );
     define ( '_FPA_OPTS', 'Options' );
+    define ( '_FPA_CF', 'Config' );
     define ( '_FPA_CFG', 'Configuration' );
     define ( '_FPA_YC', 'Configured' );
     define ( '_FPA_NC', 'Not Configured' );
     define ( '_FPA_ECON', 'Connection Error' );
+    define ( '_FPA_CON', 'Connect' );
     define ( '_FPA_YCON', 'Connected' );
+    define ( '_FPA_CONT', 'Connection Type' );
     define ( '_FPA_NCON', 'Not Connected' );
     define ( '_FPA_SUP', 'support' );
     define ( '_FPA_YSUP', 'supported' );
@@ -167,12 +178,23 @@
     define ( '_FPA_ER', 'Error(s) Reported' );
     define ( '_FPA_ERR', 'error' );
     define ( '_FPA_ERRS', 'errors' );
+    define ( '_FPA_YMATCH', 'matches' );
+    define ( '_FPA_NMATCH', 'mis-match' );
+    define ( '_FPA_NACOMP', 'appear complete' );
+    define ( '_FPA_YACOMP', 'appear in-complete' );
+    define ( '_FPA_SEC', 'Security' );
+    define ( '_FPA_FEAT', 'Features' );
+    define ( '_FPA_PERF', 'Performance' );
     define ( '_FPA_NA', 'N/A' );
+    define ( '_FPA_CRED', 'Credentials' );
     define ( '_FPA_CREDPRES', 'Credentials Present' );
     define ( '_FPA_HOST', 'Host' );
     define ( '_FPA_TEC', 'Technology' );
     define ( '_FPA_WSVR', 'Web Server' );
     define ( '_FPA_HIDDEN', 'protected' );
+    define ( '_FPA_PASS', 'Password' );
+    define ( '_FPA_USER', 'Username' );
+    define ( '_FPA_USR', 'User' );
     define ( '_FPA_TNAM', 'Name' );
     define ( '_FPA_TSIZ', 'Size' );
     define ( '_FPA_TENG', 'Engine' );
@@ -182,6 +204,9 @@
     define ( '_FPA_TCOL', 'Collation' );
     define ( '_FPA_CHARS', 'Character Set' );
     define ( '_FPA_TFRA', 'Fragment Size' );
+    define ( '_FPA_AUTH', 'Author' );
+    define ( '_FPA_ADDR', 'Address' );
+    define ( '_FPA_STATUS', 'Status' );
     define ( '_FPA_TREC', 'Rcds' );  // Number of table records
     define ( '_FPA_TAVL', 'Avg. Length' );
     define ( '_FPA_MODE', 'Mode' );
@@ -196,11 +221,28 @@
     define ( '_FPA_REMOTE', 'Remote' );
     define ( '_FPA_SECONDS', 'seconds' );
     define ( '_FPA_TBL', 'Table' );
+    define ( '_FPA_STAT', 'Statistics' );
+    define ( '_FPA_BASIC', 'Basic' );
+    define ( '_FPA_DETAILED', 'Detailed' );
+    define ( '_FPA_ENVIRO', 'Environment' );
+    define ( '_FPA_VALID', 'Valid' );
+    define ( '_FPA_NVALID', 'Not Valid' );
+    define ( '_FPA_EN', 'Enabled' );
+    define ( '_FPA_DI', 'Disabled' );
+    define ( '_FPA_NO', 'No' );
+
+    define ( '_FPA_POTOI', 'Potential Ownership Issues' );
+    define ( '_FPA_POTME', 'Potential Missing Extensions' );
+    define ( '_FPA_POTMM', 'Potential Missing Modules' );
     define ( '_FPA_DBCONNNOTE', 'may not be an error, check with host for remote access requirements.' );
     define ( '_FPA_DBCREDINC', 'Credentials incomplete or not available');
     define ( '_FPA_MISSINGCRED', 'Missing credentials detected' );
     define ( '_FPA_NODISPLAY', 'Nothing to display.' );
+    define ( '_FPA_EMPTY', 'could be empty' );
+    define ( '_FPA_UINC', 'increased by user, was' );
     define ( '_PHP_VERLOW', 'PHP version too low' );
+    define ( '_FPA_SHOW', 'Show' );
+    define ( '_FPA_HIDE', 'Hide' );
     /** END LANGUAGE STRINGS *****************************************************************/
 
 
@@ -3218,40 +3260,40 @@
 
 
                     // do the basic information
-                    echo '[quote="Basic Environment ::"][size=85]';
+                    echo '[quote="'. _FPA_BASIC .' '. _FPA_ENVIRO .' ::"][size=85]';
 
                     // Joomla! cms details
-                    echo '[color=#000000][b]Joomla! Instance :: [/b][/color]';
+                    echo '[color=#000000][b]'. _FPA_APP .' '. _FPA_INSTANCE.' :: [/b][/color]';
                     if ( $instance['instanceFOUND'] == _FPA_Y ) { echo '[color=#0000F0]'. $instance['cmsPRODUCT'] .' [b]'. $instance['cmsRELEASE'] .'.'. $instance['cmsDEVLEVEL'] .'[/b]-'. $instance['cmsDEVSTATUS'] .' ('. $instance['cmsCODENAME'] .') '. $instance['cmsRELDATE'] .'[/color]';
                     } else { echo '[color=orange]'. _FPA_NF .'[/color]'; }
 
                     // Joomla! platform details
                     if ( @$instance['platformPRODUCT'] ) {
                     echo "\r\n";
-                    echo '[color=#000000][b]Joomla! Platform :: [/b][/color] [color=#0000F0]'. @$instance['platformPRODUCT'] .' [b]'. @$instance['platformRELEASE'] .'.'. @$instance['platformDEVLEVEL'] .'[/b]-'. @$instance['platformDEVSTATUS'] .' ('. @$instance['platformCODENAME'] .') '. @$instance['platformRELDATE'] .'[/color]'; }
+                    echo '[color=#000000][b]'. _FPA_APP .' '. _FPA_PLATFORM .' :: [/b][/color] [color=#0000F0]'. @$instance['platformPRODUCT'] .' [b]'. @$instance['platformRELEASE'] .'.'. @$instance['platformDEVLEVEL'] .'[/b]-'. @$instance['platformDEVSTATUS'] .' ('. @$instance['platformCODENAME'] .') '. @$instance['platformRELDATE'] .'[/color]'; }
 
                     echo "\r\n";
 
-                    echo '[color=#000000][b]Joomla! Configured :: [/b][/color]';
+                    echo '[color=#000000][b]'. _FPA_APP .' '. _FPA_YC .' :: [/b][/color]';
                     if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
                     echo '[color=#008000]'. _FPA_Y .'[/color] | ';
 
-                        if ( $instance['configWRITABLE'] == _FPA_Y ) { echo '[color=#008000]Writable[/color] ('; } else { echo 'Read-Only ('; }
+                        if ( $instance['configWRITABLE'] == _FPA_Y ) { echo '[color=#008000]'. _FPA_WRITABLE .'[/color] ('; } else { echo _FPA_RO .' ('; }
 
                         if ( substr( $instance['configMODE'],1 ,1 ) == '7' OR substr( $instance['configMODE'],2 ,1 ) >= '5' OR substr( $instance['configMODE'],3 ,1 ) >= '5' ) { echo '[color=#800000]'; } else { echo '[color=#008000]'; }
                         echo $instance['configMODE'] .'[/color]) | ';
-                        echo '[b]Owner:[/b] '. $instance['configOWNER']['name'] .' (uid: '. $instance['configOWNER']['uid'] .'/gid: '. $instance['configOWNER']['gid'] .') | [b]Group:[/b] '. $instance['configGROUP']['name'] .' (gid: '. $instance['configGROUP']['gid'] .') | [b]Valid For:[/b] '. $instance['configVALIDFOR'];
+                        echo '[b]'. _FPA_OWNER .':[/b] '. $instance['configOWNER']['name'] .' (uid: '. $instance['configOWNER']['uid'] .'/gid: '. $instance['configOWNER']['gid'] .') | [b]'. _FPA_GROUP .':[/b] '. $instance['configGROUP']['name'] .' (gid: '. $instance['configGROUP']['gid'] .') | [b]Valid For:[/b] '. $instance['configVALIDFOR'];
 
                     echo "\r\n";
 
-                    echo '[color=#000000][b]Configuration Options :: [/b][/color] [b]Offline:[/b] '. $instance['configOFFLINE'] .' | [b]SEF Enabled:[/b] '. $instance['configSEF'] .' | [b]SEF Suffix Enabled:[/b] '. $instance['configSEFSUFFIX'] .' | [b]SEF ReWrite:[/b] '. $instance['configSEFRWRITE'] .' | ';
+                    echo '[color=#000000][b]'. _FPA_CFG .' '. _FPA_OPTS .' :: [/b][/color] [b]Offline:[/b] '. $instance['configOFFLINE'] .' | [b]SEF:[/b] '. $instance['configSEF'] .' | [b]SEF Suffix:[/b] '. $instance['configSEFSUFFIX'] .' | [b]SEF ReWrite:[/b] '. $instance['configSEFRWRITE'] .' | ';
                     echo '[b].htaccess/web.config:[/b] ';
 
                         if ( $instance['configSITEHTWC'] == _FPA_N AND $instance['configSEFRWRITE'] == '1' ) { echo '[color=orange]'. $instance['configSITEHTWC'] .' (ReWrite Enabled but no .htaccess?)[/color] | ';
                         } elseif ( $instance['configSITEHTWC'] == _FPA_Y ) { echo '[color=#008000]'. $instance['configSITEHTWC'] .'[/color] | ';
                         } elseif ( $instance['configSITEHTWC'] == _FPA_N ) { echo '[color=orange]'. $instance['configSITEHTWC'] .'[/color] | '; }
 
-                    echo '[b]GZip Enabled:[/b] '. $instance['configGZIP'] .' | [b]Cache Enabled:[/b] '. $instance['configCACHING'] .' | [b]FTP Layer:[/b] '. $instance['configFTP'] .' | [b]SSL:[/b] '. $instance['configSSL'] .' | [b]Error Reporting:[/b] '. $instance['configERRORREP'] .' | [b]Site Debug:[/b] '. $instance['configSITEDEBUG'] .' | ';
+                    echo '[b]GZip:[/b] '. $instance['configGZIP'] .' | [b]Cache:[/b] '. $instance['configCACHING'] .' | [b]FTP Layer:[/b] '. $instance['configFTP'] .' | [b]SSL:[/b] '. $instance['configSSL'] .' | [b]Error Reporting:[/b] '. $instance['configERRORREP'] .' | [b]Site Debug:[/b] '. $instance['configSITEDEBUG'] .' | ';
 
                         if ( version_compare( $instance['cmsRELEASE'], '1.5', '>=' ) ) {
                             echo '[b]Language Debug:[/b] '. $instance['configLANGDEBUG'] .' | ';
@@ -3261,7 +3303,7 @@
                             echo '[b]Default Access:[/b] '. $instance['configACCESS'] .' | [b]Unicode Slugs:[/b] '. $instance['configUNICODE'] .' | ';
                         }
 
-                        echo '[b]Database Credentials Present:[/b] ';
+                        echo '[b]'. _FPA_DB .' '. _FPA_CREDPRES .':[/b] ';
                             if ( $instance['configDBCREDOK'] == _FPA_Y ) { echo '[color=#008000]'; } else { echo '[color=#800000]'; }
                             echo $instance['configDBCREDOK'] .'[/color]';
 
@@ -3269,58 +3311,58 @@
 
                     echo "\r\n\r\n";
 
-                    echo '[color=#000000][b]Host Configuration :: [/b][/color] [b]OS:[/b] '. $system['sysPLATOS'] .' |  [b]OS Version:[/b] '. $system['sysPLATREL'] .' | [b]Technology:[/b] '. $system['sysPLATTECH'] .' | [b]Web Server:[/b] '. $system['sysSERVSIG'] .' | [b]Encoding:[/b] '. $system['sysENCODING'] .' | [b]Document Root:[/b] '. $system['sysDOCROOT'] .' | [b]System TMP Writable:[/b] ';
+                    echo '[color=#000000][b]'. _FPA_HOST .' '. _FPA_CFG .' :: [/b][/color] [b]OS:[/b] '. $system['sysPLATOS'] .' |  [b]OS '._FPA_VER.':[/b] '. $system['sysPLATREL'] .' | [b]'. _FPA_TEC .':[/b] '. $system['sysPLATTECH'] .' | [b]'. _FPA_WSVR .':[/b] '. $system['sysSERVSIG'] .' | [b]Encoding:[/b] '. $system['sysENCODING'] .' | [b]'. _FPA_DROOT .':[/b] '. $system['sysDOCROOT'] .' | [b]'. _FPA_SYS .' TMP '. _FPA_WRITABLE .':[/b] ';
                         if ( $system['sysTMPDIRWRITABLE'] == _FPA_Y ) { echo '[color=#008000]'; } else { echo '[color=#800000]'; }
                         echo $system['sysTMPDIRWRITABLE'] .'[/color]';
 
                     echo "\r\n\r\n";
 
-                    echo '[color=#000000][b]PHP Configuration :: [/b][/color] [b]Version:[/b] ';
+                    echo '[color=#000000][b]PHP '. _FPA_CFG .' :: [/b][/color] [b]'. _FPA_VER .':[/b] ';
                         if ( version_compare( $phpenv['phpVERSION'], '5.0.0', '<' ) ) { echo '[color=#800000]'. $phpenv['phpVERSION'] .'[/color] | '; } else { echo '[b]'. $phpenv['phpVERSION'] .'[/b] | '; }
 
                     echo '[b]PHP API:[/b] ';
                         if ( $phpenv['phpAPI'] == 'apache2handler' ) { echo '[color=orange]'. $phpenv['phpAPI'] .'[/color] | '; } else { echo '[b]'. $phpenv['phpAPI'] .'[/b] | '; }
 
-                    echo '[b]Session Path Writable:[/b] ';
+                    echo '[b]Session Path '. _FPA_WRITABLE .':[/b] ';
                         if ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_Y ) { echo '[color=#008000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } elseif ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_N ) { echo '[color=#800000]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; } else { echo '[color=orange]'. $phpenv['phpSESSIONPATHWRITABLE'] .'[/color] | '; }
 
                     echo '[b]Display Errors:[/b] '. $phpenv['phpERRORDISPLAY'] .' | [b]Error Reporting:[/b] '. $phpenv['phpERRORREPORT'] .' | [b]Log Errors To:[/b] '. $phpenv['phpERRLOGFILE'] .' | [b]Last Known Error:[/b] '. @$phpenv['phpLASTERRDATE'] .' | [b]Register Globals:[/b] '. $phpenv['phpREGGLOBAL'] .' | [b]Magic Quotes:[/b] '. $phpenv['phpMAGICQUOTES'] .' | [b]Safe Mode:[/b] '. $phpenv['phpSAFEMODE'] .' | [b]Open Base:[/b] '. $phpenv['phpOPENBASE'] .' | [b]Uploads:[/b] '. $phpenv['phpUPLOADS'] .' | [b]Max. Upload Size:[/b] '. $phpenv['phpMAXUPSIZE'] .' | [b]Max. POST Size:[/b] '. $phpenv['phpMAXPOSTSIZE'] .' | [b]Max. Input Time:[/b] '. $phpenv['phpMAXINPUTTIME'] .' | [b]Max. Execution Time:[/b] '. $phpenv['phpMAXEXECTIME'] .' | [b]Memory Limit:[/b] '. $phpenv['phpMEMLIMIT'];
 
                     echo "\r\n\r\n";
 
-                    echo '[color=#000000][b]MySQL Configuration :: [/b][/color] ';
+                    echo '[color=#000000][b]MySQL '. _FPA_CFG .' :: [/b][/color] ';
                     if ( $database['dbDOCHECKS'] == _FPA_N ) {
-                        echo '[color=orange]Database credentials incomplete or not available.[/color] Nothing to display.';
+                        echo '[color=orange]'. _FPA_DB .' '. _FPA_DBCREDINC .'[/color] '. _FPA_NODISPLAY;
                     echo "\r\n";
 
                             if ( @$instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
-                                echo '[color=#800000][b]Missing Credentials Detected: [/b][/color] ';
+                                echo '[color=#800000][b]'. _FPA_MISSINGCRED .': [/b][/color] ';
 
-                                if ( @$instance['configDBTYPE'] == '' ) { echo '[color=orange]Connection Type missing[/color] | '; }
-                                if ( @$instance['configDBHOST'] == '' ) { echo '[color=orange]MySQL Host missing[/color] | '; }
-                                if ( @$instance['configDBPREF'] == '' ) { echo '[color=orange]Table Prefix missing[/color] | '; }
-                                if ( @$instance['configDBUSER'] == '' ) { echo '[color=orange]Database Username missing[/color] | '; }
-                                if ( @$instance['configDBPASS'] == '' ) { echo '[color=orange]Database Password missing[/color] |'; }
+                                if ( @$instance['configDBTYPE'] == '' ) { echo '[color=orange][b]Connection Type[/b] missing[/color] | '; }
+                                if ( @$instance['configDBHOST'] == '' ) { echo '[color=orange][b]MySQL Host[/b] missing[/color] | '; }
+                                if ( @$instance['configDBPREF'] == '' ) { echo '[color=orange][b]Table Prefix[/b] missing[/color] | '; }
+                                if ( @$instance['configDBUSER'] == '' ) { echo '[color=orange][b]Database Username[/b] missing[/color] | '; }
+                                if ( @$instance['configDBPASS'] == '' ) { echo '[color=orange][b]Database Password[/b] missing[/color] |'; }
 
                             }
 
 
-                    } elseif ( @$database['dbERROR'] != _FPA_N ) { echo '[b]Connection Error:[/b] ';
+                    } elseif ( @$database['dbERROR'] != _FPA_N ) { echo '[b]'. _FPA_ECON .':[/b] ';
 
                             if ( $_POST['showProtected'] == '3' ) {
-                                echo '[color=orange][b]Strict[/b] Information Privacy was selected[/color], but there was an [color=#800000]error[/color].';
+                                echo '[color=orange][b]'. _FPA_PRIVSTR .'[/b] '. _FPA_INFOPRI .'[/color], '. _FPA_BUT .' [color=#800000]'. _FPA_ER .'[/color].';
                             } else {
 //                                echo "\r\n";
-                                echo '[color=#800000]'. @$database['dbERROR'] .'[/color] : [color=orange]check credentials in configuration...[/color]';
+                                echo '[color=#800000]'. @$database['dbERROR'] .'[/color] : [color=orange]'. _FPA_DB .' '. _FPA_CREDPRES .'? '. _FPA_IN .' '. _FPA_CFG .'...[/color]';
                             }
 
                     } else {
-                        echo '[b]Version:[/b] [b]'. $database['dbHOSTSERV'] .'[/b] (Client:'. $database['dbHOSTCLIENT'] .') | ';
+                        echo '[b]'. _FPA_VER .':[/b] [b]'. $database['dbHOSTSERV'] .'[/b] (Client:'. $database['dbHOSTCLIENT'] .') | ';
 
-                            if ( $_POST['showProtected'] >= '1' ) { echo '[b]Hostname:[/b]  [color=orange]--'. _FPA_HIDDEN .'--[/color] ([color=orange]--'. _FPA_HIDDEN .'--[/color]) | ';
-                            } else { echo '[b]Hostname:[/b] '. $instance['configDBHOST'] .' ('. $database['dbHOSTINFO'] .') | '; }
+                            if ( $_POST['showProtected'] >= '1' ) { echo '[b]'. _FPA_HOST .':[/b]  [color=orange]--'. _FPA_HIDDEN .'--[/color] ([color=orange]--'. _FPA_HIDDEN .'--[/color]) | ';
+                            } else { echo '[b]'. _FPA_HOST .':[/b] '. $instance['configDBHOST'] .' ('. $database['dbHOSTINFO'] .') | '; }
 
-                            echo '[b]Collation:[/b] '. $database['dbCOLLATION'] .' ([b]Character Set:[/b] '. $database['dbCHARSET'] .') | [b]Database size:[/b] '. $database['dbSIZE'] .' | [b]Number Of Tables:[/b] '. $database['dbTABLECOUNT'];
+                            echo '[b]'. _FPA_TCOL .':[/b] '. $database['dbCOLLATION'] .' ([b]'. _FPA_CHARS .':[/b] '. $database['dbCHARSET'] .') | [b]'. _FPA_DB .' '. _FPA_TSIZ .':[/b] '. $database['dbSIZE'] .' | [b]#'. _FPA_OF .' '. _FPA_TABLE .':[/b] '. $database['dbTABLECOUNT'];
                     }
 
 
@@ -3333,9 +3375,9 @@
 
 
                     // do detailed information
-                    echo '[quote="Detailed Environment ::"][size=85]';
+                    echo '[quote="'. _FPA_DETAILED .' '. _FPA_ENVIRO .' ::"][size=85]';
 
-                    echo '[color=#000000][b]PHP Extensions :: [/b][/color]';
+                    echo '[color=#000000][b]'. _FPA_PHPEXT_TITLE .' :: [/b][/color]';
 
                         foreach ( $phpextensions as $key => $show ) {
 
@@ -3359,15 +3401,15 @@
                         }
 
                         echo "\r\n";
-                        echo '[color=#000000][b]Potential Misisng Extensions :: [/b][/color]';
+                        echo '[color=#000000][b]'. _FPA_POTME .' :: [/b][/color]';
                         foreach ( $phpreq as $missingkey => $missing ) {
                             echo '[color=orange]'. $missingkey .'[/color] | ';
                         }
 
                         echo "\r\n\r\n";
-                        echo '[color=#000000][b]Switch User Environment[/b] [i](Experimental)[/i][b] :: [/b][/color] [b]PHP CGI:[/b] '. $phpenv['phpCGI'] .' | [b]Server SU:[/b] '. $phpenv['phpAPACHESUEXEC'] .' |  [b]PHP SU:[/b] '. $phpenv['phpPHPSUEXEC'] .' |   [b]Custom SU (Cloud/Grid):[/b] '. $phpenv['phpCUSTOMSU'];
+                        echo '[color=#000000][b]Switch User '. _FPA_ENVIRO .'[/b] [i](Experimental)[/i][b] :: [/b][/color] [b]PHP CGI:[/b] '. $phpenv['phpCGI'] .' | [b]Server SU:[/b] '. $phpenv['phpAPACHESUEXEC'] .' |  [b]PHP SU:[/b] '. $phpenv['phpPHPSUEXEC'] .' |   [b]Custom SU (Cloud/Grid):[/b] '. $phpenv['phpCUSTOMSU'];
                         echo "\r\n";
-                        echo '[b]Potential Ownership Issues?:[/b] ';
+                        echo '[b]'. _FPA_POTOI .':[/b] ';
                             if ( $phpenv['phpOWNERPROB'] == _FPA_Y ) { echo '[color=#800000]'; } elseif ( $phpenv['phpOWNERPROB'] == _FPA_N ) { echo '[color=#008000]'; } else { echo '[color=orange]'; }
                             echo $phpenv['phpOWNERPROB'] .'[/color] ';
 
@@ -3376,7 +3418,7 @@
                         if ( $phpenv['phpAPI'] == 'apache2handler' ) {
                         echo "\r\n\r\n";
 
-                            echo '[color=#000000][b]Apache Modules :: [/b][/color]';
+                            echo '[color=#000000][b]'. _FPA_APAMOD_TITLE .' :: [/b][/color]';
 
                             foreach ( $apachemodules as $key => $show ) {
 
@@ -3401,7 +3443,7 @@
                             }
 
                             echo "\r\n";
-                            echo '[color=#000000][b]Potential Missing Modules :: [/b][/color]';
+                            echo '[color=#000000][b]'. _FPA_POTMM .' :: [/b][/color]';
                             foreach ( $apachereq as $missingkey => $missing ) {
                                 echo '[color=orange]'. $missingkey .'[/color] | ';
                             }
@@ -3419,11 +3461,11 @@
                         if ( $instance['instanceFOUND'] == _FPA_Y ) {
                             echo '[quote="Folder Permissions ::"][size=85]';
 
-                                echo '[color=#000000][b]Core Folders :: [/b][/color]';
+                                echo '[color=#000000][b]'. _FPA_COREDIR_TITLE .' :: [/b][/color]';
 
                                     foreach ( $folders as $i => $show ) {
 
-                                        if ( $show != 'Core Folders' ) {
+                                        if ( $show != $folders['ARRNAME'] ) {
 
                                             if ( $_POST['showProtected'] == '3' ) {
                                                 echo '[color=orange]--'. _FPA_HIDDEN .'--[/color] (';
@@ -3446,7 +3488,7 @@
                                         echo "\r\n\r\n";
 
                                         $limitCount = '0';
-                                        echo '[color=#000000][b]Folders With Elevated Permissions[/b] [i](First 10)[/i][b] :: [/b] [/color]';
+                                        echo '[color=#000000][b]'. _FPA_ELEVPERM_TITLE .'[/b] [i]('. _FPA_FIRST .' 10)[/i][b] :: [/b] [/color]';
 
                                             foreach ( $elevated as $key => $show ) {
 
@@ -3501,7 +3543,7 @@
                     if ( $database['dbDOCHECKS'] == _FPA_Y AND @$database['dbERROR'] == _FPA_N AND @$_POST['showTables'] == '1' ) {
                         echo '[quote="Database Information ::"][size=85]';
 
-                            echo '[color=#000000][b]Database Statistics :: [/b][/color]';
+                            echo '[color=#000000][b]'. _FPA_DB .' '. _FPA_STATS .' :: [/b][/color]';
 
                                 foreach ( $database['dbHOSTSTATS'] as $show ) {
                                     $dbPieces = explode(": ", $show );
@@ -3563,7 +3605,7 @@
 
 
                             if ( @$_POST['showComponents'] == '1' ) {
-                                echo '[color=#000000][b]Components :: Site :: [/b][/color]';
+                                echo '[color=#000000][b]'. _FPA_EXTCOM_TITLE .' :: '. _FPA_SITE .' :: [/b][/color]';
 
                                     foreach ( $component['SITE'] as $key => $show ) {
                                         echo $show['name'] .' ('. $show['version'] .') | ';
@@ -3571,7 +3613,7 @@
 
                                 echo "\r\n";
 
-                                echo '[color=#000000][b]Components :: Admin :: [/b][/color]';
+                                echo '[color=#000000][b]'. _FPA_EXTCOM_TITLE .' :: '. _FPA_ADMIN .' :: [/b][/color]';
 
                                     foreach ( $component['ADMIN'] as $key => $show ) {
                                         echo $show['name'] .' ('. $show['version'] .') | ';
@@ -3583,7 +3625,7 @@
 
 
                             if ( @$_POST['showModules'] == '1' ) {
-                                echo '[color=#000000][b]Modules :: Site :: [/b][/color]';
+                                echo '[color=#000000][b]'. _FPA_EXTMOD_TITLE .' :: '. _FPA_SITE .' :: [/b][/color]';
 
                                     foreach ( $module['SITE'] as $key => $show ) {
                                         echo $show['name'] .' ('. $show['version'] .') | ';
@@ -3591,7 +3633,7 @@
 
                                 echo "\r\n";
 
-                                echo '[color=#000000][b]Modules :: Admin :: [/b][/color]';
+                                echo '[color=#000000][b]'. _FPA_EXTMOD_TITLE .' :: '. _FPA_ADMIN .' :: [/b][/color]';
 
                                     foreach ( $module['ADMIN'] as $key => $show ) {
                                         echo $show['name'] .' ('. $show['version'] .') | ';
@@ -3602,7 +3644,7 @@
 
 
                             if ( @$_POST['showPlugins'] == '1' ) {
-                                echo '[color=#000000][b]Plugins :: Site :: [/b][/color]';
+                                echo '[color=#000000][b]'. _FPA_EXTPLG_TITLE .' :: '. _FPA_SITE .' :: [/b][/color]';
 
                                     foreach ( $plugin['SITE'] as $key => $show ) {
                                         echo $show['name'] .' ('. $show['version'] .') | ';
@@ -3619,14 +3661,14 @@
 
                         // do the template information
                         if ( $instance['instanceFOUND'] == _FPA_Y ) {
-                            echo '[quote="Templates Discovered ::"][size=85]';
+                            echo '[quote="'. _FPA_TMPL_TITLE .' Discovered ::"][size=85]';
 
                                 if ( $_POST['showProtected'] == '3' ) {
-                                    echo '[color=orange][b]Strict[/b] Information Privacy was selected.[/color] Nothing to display.';
+                                    echo '[color=orange][b]'. _FPA_STRICT .'[/b] '. _FPA_INFOPRI .'[/color] '. _FPA_NODISPLAY;
                                     echo '[/size][/quote]';
                                 } else {
 
-                                    echo '[color=#000000][b]Templates :: Site :: [/b][/color]';
+                                    echo '[color=#000000][b]'. _FPA_TMPL_TITLE .' :: '. _FPA_SITE .' :: [/b][/color]';
 
                                         foreach ( $template['SITE'] as $key => $show ) {
                                             echo $show['name'] .' ('. $show['version'] .') | ';
@@ -3634,7 +3676,7 @@
 
                                     echo "\r\n";
 
-                                    echo '[color=#000000][b]Templates :: Admin :: [/b][/color]';
+                                    echo '[color=#000000][b]'. _FPA_TMPL_TITLE .' :: '. _FPA_ADMIN .' :: [/b][/color]';
 
                                         foreach ( $template['ADMIN'] as $key => $show ) {
                                             echo $show['name'] .' ('. $show['version'] .') | ';
@@ -3695,7 +3737,7 @@
         /** mini-content, shown in all cases *************************************************/
         echo '<div class="mini-content-container">';
         echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">CMS Found</div>';
+        echo '<div class="mini-content-title">CMS '. _FPA_F .'</div>';
 
             if ( $instance['instanceFOUND'] == _FPA_Y ) {
                 echo @$instance['cmsPRODUCT'] .'<br />';
@@ -3727,7 +3769,7 @@
         // caters for the platform separation
         echo '<div class="mini-content-container">';
         echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Platform</div>';
+        echo '<div class="mini-content-title">'. _FPA_PLATFORM .'</div>';
 
         if ( $instance['platformVFILE'] != _FPA_N ) {
             echo $instance['platformPRODUCT'] .'<br />';
@@ -3760,7 +3802,7 @@
 
         echo '<div class="mini-content-container">';
         echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Config Exists</div>';
+        echo '<div class="mini-content-title">'. _FPA_CF .' '. _FPA_E .'</div>';
 
             if ( $instance['instanceCONFIGURED'] == _FPA_N ) {
                 $configuredClass = 'warn';
@@ -3777,15 +3819,15 @@
 
         echo '<div class="mini-content-container">';
         echo '<div class="mini-content-box">';
-        echo '<div class="mini-content-title">Config Version</div>';
+        echo '<div class="mini-content-title">'. _FPA_CF .' '. _FPA_VER .'</div>';
 
             if ( @$instance['instanceCFGVERMATCH'] == _FPA_Y ) {
                 echo $instance['configVALIDFOR'];
-                echo '<div class="ok" style="width:99%;margin: 0px auto;">matches cms</div>';
+                echo '<div class="ok" style="width:99%;margin: 0px auto;">'. _FPA_YMATCH .' cms</div>';
 
             } elseif ( @$instance['instanceCFGVERMATCH'] == _FPA_N ) {
                 echo $instance['configVALIDFOR'];
-                echo '<div class="warn" style="width:99%;margin: 0px auto;">cms mis-match</div>';
+                echo '<div class="warn" style="width:99%;margin: 0px auto;">cms '. _FPA_NMATCH .'</div>';
 
             } elseif ( @$instance['configVALIDFOR'] == _FPA_U ) {
                 echo '<div class="warn" style="width:99%;margin: 0px auto;">'. $instance['configVALIDFOR'] .'</div>';
@@ -3804,7 +3846,7 @@
 
             echo '<div class="mini-content-container">';
             echo '<div class="mini-content-box">';
-            echo '<div class="mini-content-title">Config Valid</div>';
+            echo '<div class="mini-content-title">'. _FPA_CF .' '. _FPA_VALID .'</div>';
 
                 if ( @$instance['configSANE'] == _FPA_Y AND @$instance['configSIZEVALID'] != _FPA_N ) {
                     $saneClass = 'ok';
@@ -3823,7 +3865,7 @@
 
             echo '<div class="mini-content-container">';
             echo '<div class="mini-content-box">';
-            echo '<div class="mini-content-title">Config Mode</div>';
+            echo '<div class="mini-content-title">'. _FPA_CF .' '. _FPA_MODE .'</div>';
 
                 // looking for --7 or -7- or -77 (default folder permissions are usually 755)
                 if ( substr( $instance['configMODE'],0 ,1 ) == '7' OR substr( $instance['configMODE'],1 ,1 ) == '7' OR substr( $instance['configMODE'],2 ,1 ) == '7' ) {
@@ -3852,11 +3894,11 @@
 
                 } elseif ( ( $instance['configWRITABLE'] == _FPA_Y ) AND ( substr( $instance['configMODE'],0 ,1 ) <= '6' ) ) {
                     $writeClass = 'ok';
-                    $canWrite = 'Writable';
+                    $canWrite = _FPA_WRITABLE;
 
                 } elseif ( ( $instance['configWRITABLE'] != _FPA_Y ) ) {
                     $writeClass = 'warn';
-                    $canWrite = 'Read Only';
+                    $canWrite = _FPA_RO;
 
                 }
 
@@ -3867,7 +3909,7 @@
 
             echo '<div class="mini-content-container">';
             echo '<div class="mini-content-box">';
-            echo '<div class="mini-content-title">Config Owner</div>';
+            echo '<div class="mini-content-title">'. _FPA_CF .' '. _FPA_OWNER .'</div>';
 
                 if ( $showProtected <= 2 ) {
                     echo $instance['configOWNER']['name'];
@@ -3883,7 +3925,7 @@
 
             echo '<div class="mini-content-container">';
             echo '<div class="mini-content-box">';
-            echo '<div class="mini-content-title">Config Group</div>';
+            echo '<div class="mini-content-title">'. _FPA_CF .' '. _FPA_GROUP .'</div>';
 
                 if ( $showProtected <= 2 ) {
                     echo $instance['configGROUP']['name'];
@@ -3907,10 +3949,10 @@
             // this is the content area
             echo '<div class="row-content-container nothing-to-display" style="">';
             echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">';
-            echo 'Instance not found, no '. $instance['ARRNAME'] .' tests performed';
+            echo _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $instance['ARRNAME'].' '. _FPA_TESTP;
 
                 if ( $instance['instanceCONFIGURED'] == _FPA_Y ) {
-                    echo '<br />but there is a configuration.php file.';
+                    echo '<br />'. _FPA_BUT .' '. _FPA_CFG .' '. _FPA_F;
 
                 }
 
@@ -3927,7 +3969,7 @@
         /** display the system information *************************************************/
         echo '<div class="half-section-information-right">'; // start right content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $instance['ARRNAME'] .' :: Configuration</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $instance['ARRNAME'] .' :: '. _FPA_CFG .'</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
 
             // only do mode/permissions checks if an instance was found in the intial checks
@@ -3935,7 +3977,7 @@
 
                 echo '<div class="mini-content-container">';
                 echo '<div class="mini-content-box">';
-                echo '<div class="mini-content-title">Site Offline</div>';
+                echo '<div class="mini-content-title">Offline</div>';
                 echo $instance['configOFFLINE'];
                 echo '</div>';
                 echo '</div>';
@@ -3945,7 +3987,7 @@
                 echo '<div class="mini-content-box">';
                 echo '<div class="mini-content-title" style="margin-bottom:0px!important;">SEF URL\'s</div>';
                 echo '<div class="mini-content-box-small">';
-                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Enabled:<div style="float:right;font-size:9px;">'. $instance['configSEF'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">'. _FPA_EN .':<div style="float:right;font-size:9px;">'. $instance['configSEF'] .'</div></div>';
                 echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Suffix:<div style="float:right;font-size:9px;">'. $instance['configSEFSUFFIX'] .'</div></div>';
 
                     if ( $system['sysSHORTWEB'] != 'MIC' AND $instance['configSEFRWRITE'] == '1' AND $instance['configSITEHTWC'] != _FPA_Y ) {
@@ -3987,10 +4029,10 @@
 
                 echo '<div class="mini-content-container">';
                 echo '<div class="mini-content-box">';
-                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">dataBase</div>';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">'. _FPA_DB .'</div>';
                 echo '<div class="mini-content-box-small">';
                 echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Type:<div style="float:right;font-size:9px;">'. $instance['configDBTYPE'] .'</div></div>';
-                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Version:<div style="float:right;font-size:9px;">'. @$database['dbHOSTSERV'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">'. _FPA_VER .':<div style="float:right;font-size:9px;">'. @$database['dbHOSTSERV'] .'</div></div>';
                 echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">CharSet:<div style="float:right;font-size:9px;">'. @$database['dbCHARSET'] .'</div></div>';
                 echo '</div>';
                 echo '</div>';
@@ -3999,13 +4041,12 @@
 
                 echo '<div class="mini-content-container">';
                 echo '<div class="mini-content-box">';
-                echo '<div class="mini-content-title">DB Credentials</div>';
+                echo '<div class="mini-content-title">'. _FPA_DB .' '. _FPA_CRED .'</div>';
 
                     if ( $instance['configDBCREDOK'] == _FPA_Y ) {
-                        echo '<div class="ok" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />complete</div>';
+                        echo '<div class="ok" style="width:99%;margin: 0px auto;font-size:9px;">'. _FPA_YACOMP .'</div>';
                     } else {
-                        echo '<div class="warn" style="width:99%;margin: 0px auto;font-size:9px;">appears<br />in-complete</div>';
-
+                        echo '<div class="warn" style="width:99%;margin: 0px auto;font-size:9px;">'. _FPA_NACOMP .'</div>';
                     }
 
                 echo '</div>';
@@ -4014,9 +4055,9 @@
 
                 echo '<div class="mini-content-container">';
                 echo '<div class="mini-content-box">';
-                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Security</div>';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">'. _FPA_SEC .'</div>';
                 echo '<div class="mini-content-box-small">';
-                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">SSL Enabled:<div style="float:right;font-size:9px;">'. $instance['configSSL'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">SSL:<div style="float:right;font-size:9px;">'. $instance['configSSL'] .'</div></div>';
                 echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Def\' Access:<div style="float:right;font-size:9px;">'. $instance['configACCESS'] .'</div></div>';
                 echo '</div>';
                 echo '</div>';
@@ -4025,9 +4066,9 @@
 
                 echo '<div class="mini-content-container">';
                 echo '<div class="mini-content-box">';
-                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">Features</div>';
+                echo '<div class="mini-content-title" style="margin-bottom:0px!important;">'. _FPA_FEAT .'</div>';
                 echo '<div class="mini-content-box-small">';
-                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">FTP Enabled:<div style="float:right;font-size:9px;">'. $instance['configFTP'] .'</div></div>';
+                echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">FTP:<div style="float:right;font-size:9px;">'. $instance['configFTP'] .'</div></div>';
                 echo '<div style="font-size:9px;width:99%;border-bottom: 1px dotted #c0c0c0;">Unicode Slug:<div style="float:right;font-size:9px;">'. $instance['configUNICODE'] .'</div></div>';
                 echo '</div>';
                 echo '</div>';
@@ -4039,7 +4080,7 @@
 
                 echo '<div class="mini-content-container">';
                 echo '<div class="mini-content-box">';
-                echo '<div class="mini-content-title">Config Version</div>';
+                echo '<div class="mini-content-title">'. _FPA_CF .' '. _VER .'</div>';
                 echo '<div class="warn" style="width:50px;margin: 0px auto;">'. _FPA_U .'</div>';
                 echo '</div>';
                 echo '</div>';
@@ -4047,11 +4088,10 @@
 
                 echo '<div class="mini-content-container">';
                 echo '<div class="mini-content-box">';
-                echo '<div class="mini-content-title">Config Valid</div>';
+                echo '<div class="mini-content-title">'. _FPA_CF .' '. _FPA_VALID .'</div>';
 
                     if ( @$instance['configSIZEVALID'] == _FPA_N ) {
-                        echo '<div class="warn" style="width:99%;margin: 0px auto;">could be empty</div>';
-
+                        echo '<div class="warn" style="width:99%;margin: 0px auto;">'. _FPA_EMPTY .'</div>';
                     }
 
                 echo '</div>';
@@ -4060,7 +4100,7 @@
 
                 echo '<div class="row-content-container nothing-to-display" style="">';
                 echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">';
-                echo 'configuration not found or appears not to be valid<br />no '. $instance['ARRNAME'] .' checks performed';
+                echo _FPA_CFG .' '. _FPA_NF .' '. _FPA_OR .' '. _FPA_NVALID .'<br /> '. _FPA_NO .' '. $instance['ARRNAME'] .' '. _FPA_TESTP;
                 echo '</div>';
                 echo '</div>';
             }
@@ -4082,26 +4122,24 @@
         /** display the instance information *************************************************/
         echo '<div class="half-section-information-left">'; // start left content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: Discovery</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: '. _FPA_DISC .'</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
 
         echo '<div class="mini-content-box-small" style="">';
         echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' '. _FPA_VER .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( @$database['dbHOSTSERV'] ) {
-                echo '<span class="normal">Server: '. $database['dbHOSTSERV'] .'&nbsp;</span>';
+                echo '<span class="normal">'. _FPA_SERV .': '. $database['dbHOSTSERV'] .'&nbsp;</span>';
 
             } else {
-                echo '<span class="normal">Server:</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
-
+                echo '<span class="normal">'. _FPA_SERV .':</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
             }
 
             if ( @$database['dbHOSTCLIENT'] ) {
-                echo '<span class="normal">&nbsp;&nbsp;Client: '. $database['dbHOSTCLIENT'] .'&nbsp;</span>';
+                echo '<span class="normal">&nbsp;&nbsp;'. _FPA_CLNT .': '. $database['dbHOSTCLIENT'] .'&nbsp;</span>';
 
             } else {
-                echo '<span class="normal">&nbsp;&nbsp;Client:</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
-
+                echo '<span class="normal">&nbsp;&nbsp;'. _FPA_CLNT .':</span> <span class="warn-text">'. _FPA_U .'&nbsp;</span>';
             }
 
         echo '</div></div>';
@@ -4109,7 +4147,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' Hostname:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' '. _FPA_HNAME .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $showProtected == 1 ) {
 
@@ -4118,12 +4156,10 @@
 
                 } else {
                     echo '<span class="alert-text">&nbsp;'. _FPA_NC .'&nbsp;</span>';
-
                 }
 
             } else {
                 echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
-
             }
 
         echo '</div></div>';
@@ -4131,7 +4167,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Type:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_CONT .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
         echo '<span class="normal">';
 
@@ -4145,7 +4181,6 @@
 
                 } else {
                     echo '<span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span>&nbsp;';
-
                 }
 
             } elseif ( $database['dbLOCAL'] == _FPA_N AND !@$database['dbHOSTINFO'] ) {
@@ -4153,7 +4188,6 @@
 
             } else {
                 echo '<span class="warn-text">'. _FPA_U .'</span>';
-
             }
 
             echo '</span>';
@@ -4163,7 +4197,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">PHP Support:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">PHP '. _FPA_SUP .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( @$instance['configDBTYPE'] == 'mysqli' AND $phpenv['phpSUPPORTSMYSQLI'] == _FPA_N ) {
                 echo '<span class="alert-text">'. $instance['configDBTYPE'] .' '. _FPA_IS .' '. _FPA_NSUP .' '. _FPA_BY .' PHP '. $phpenv['phpVERSION'] .'&nbsp;</span>';
@@ -4173,7 +4207,6 @@
 
             } else {
                 echo '<span class="warn-text">PHP '. $phpenv['phpVERSION'] .' '. _FPA_SUP .' '. _FPA_IS .' '. _FPA_U .'&nbsp;</span>';
-
             }
 
         echo '</div></div>';
@@ -4181,7 +4214,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connect To '. @$instance['configDBTYPE'] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_CON .' '. _FPA_TO .' '. @$instance['configDBTYPE'] .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $database['dbDOCHECKS'] == _FPA_N ) {
                 echo '<span class="warn-text">&nbsp;'. _FPA_NOA .', '. _FPA_NC .'&nbsp;</span>';
@@ -4191,7 +4224,6 @@
 
             } elseif ( @$database['dbERROR'] != _FPA_N ) {
                 echo '<span class="alert-text">&nbsp;'. _FPA_N .', '. _FPA_ER .'&nbsp;</span>';
-
             }
 
         echo '</div></div>';
@@ -4202,26 +4234,24 @@
             if ( @$database['dbERROR'] AND @$database['dbERROR'] != _FPA_N ) {
 
                 echo '<div class="mini-content-box-small" style="">';
-                echo '<div class="alert-text" style="line-height:10px;text-shadow: #fff 1px 1px 1px;border-bottom: 1px solid #ccebeb;font-size:8px;width:99%;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Connection Error:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+                echo '<div class="alert-text" style="line-height:10px;text-shadow: #fff 1px 1px 1px;border-bottom: 1px solid #ccebeb;font-size:8px;width:99%;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_ECON .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
                 echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;">'. $database['dbERROR'] .'</div>';
 
                 echo '</div></div>';
                 echo '</div>';
                 echo '<br style="clear:both;" />';
-
             }
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' Character Set:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. @$instance['configDBTYPE'] .' '. _FPA_CHARS .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
             if ( @$database['dbCHARSET'] ) {
                 echo '<span class="normal">&nbsp;'. $database['dbCHARSET'] .'&nbsp;</span>';
 
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-
             }
 
         echo '</div></div>';
@@ -4229,14 +4259,13 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_DEF .' Character Set:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_DEF .' '. _FPA_CHARS .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
             if ( @$database['dbHOSTDEFCHSET'] ) {
                 echo '<span class="normal">&nbsp;'. $database['dbHOSTDEFCHSET'] .'&nbsp;</span>';
 
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-
             }
 
         echo '</div></div>';
@@ -4244,7 +4273,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Database Collation:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_DB .' '. _FPA_TCOL .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
 
             if ( @$database['dbCOLLATION'] ) {
                 echo '<div class="normal">&nbsp;'. $database['dbCOLLATION'] .'&nbsp;</div>';
@@ -4254,7 +4283,6 @@
 
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_NC .'&nbsp;</span>';
-
             }
 
         echo '</div></div>';
@@ -4262,14 +4290,13 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Database size:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">'. _FPA_DB .' '. _FPA_TSIZ .':<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
 
             if ( @$database['dbSIZE'] ) {
                 echo '<span class="normal">&nbsp;'. $database['dbSIZE'] .'&nbsp;</span>';
 
             } else {
                 echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-
             }
 
         echo '</div></div>';
@@ -4278,22 +4305,19 @@
         if ( @$instance['configDBCREDOK'] != _FPA_Y AND $instance['instanceFOUND'] == _FPA_Y ) {
         echo '<br /><br />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;"><span class="alert-text" style="font-size:8px;">Missing Credentials Detected:</span> ';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;"><span class="alert-text" style="font-size:8px;">'. _FPA_MISSINGCRED .':</span> ';
 
-            if ( @$instance['configDBTYPE'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Connection <b>Type</b> missing</span>'; }
-            if ( @$instance['configDBHOST'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;MySQL <b>Host</b> missing</span>'; }
-            if ( @$instance['configDBPREF'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Table <b>Prefix</b> missing</span>'; }
-            if ( @$instance['configDBUSER'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Database <b>Username</b> missing</span>'; }
-            if ( @$instance['configDBPASS'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;Database <b>Password</b> missing</span>'; }
+            if ( @$instance['configDBTYPE'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;<b>'. _FPA_CONT .'</b> '. _FPA_NF .'</span>'; }
+            if ( @$instance['configDBHOST'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;MySQL <b>'. _FPA_HNAME .'</b> '. _FPA_NF .'</span>'; }
+            if ( @$instance['configDBPREF'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;<b>'. _FPA_TBL .' Prefix</b> '. _FPA_NF .'</span>'; }
+            if ( @$instance['configDBUSER'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;'. _FPA_DB .' <b>'. _FPA_USER .'</b> '. _FPA_NF .'</span>'; }
+            if ( @$instance['configDBPASS'] == '' ) { echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">&nbsp;'. _FPA_DB .' <b>'. _FPA_PASS .'</b> '. _FPA_NF .'</span>'; }
 
             echo '</div></div>';
         }
 
 
         echo '</div>';
-
-//        echo '<br style="clear:both;" />';
-
         echo '</div></div>';
         // end content left block
 
@@ -4301,7 +4325,7 @@
         /** display the system information *************************************************/
         echo '<div class="half-section-information-right">'; // start right content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: Performance</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $database['ARRNAME'] .' :: '. _FPA_PERF .'</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
 
             // only do mode/permissions checks if an instance was found in the intial checks
@@ -4374,14 +4398,13 @@
 
 
                 echo '<div class="mini-content-box-small" style="">';
-                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Number of Tables:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+                echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;"># '. _FPA_OF .' '. _FPA_TBL .':<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
 
                     if ( $database['dbTABLECOUNT'] ) {
                         echo '<span class="normal">&nbsp;'. $database['dbTABLECOUNT'] .' tables&nbsp;</span>';
 
                     } else {
                         echo '<span class="warn-text">&nbsp;'. _FPA_U .'&nbsp;</span>';
-
                     }
 
                 echo '</div></div>';
@@ -4391,9 +4414,8 @@
             } else { // an instance wasn't found in the initial checks, so no folders to check
 
                 echo '<div class="row-content-container nothing-to-display" style="">';
-                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Unable to contact database<br />no '. $database['ARRNAME'] .' performance to display</div>';
+                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_NCON .'<br />'. _FPA_NO .' '. $database['ARRNAME'] .' '. _FPA_PERF .' '. _FPA_TESTP .'</div>';
                 echo '</div>';
-
             }
 
 
@@ -4483,9 +4505,8 @@
 
             } else { // an instance wasn't found in the initial checks, so no tables to check
                 echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Unable to contact database, no '. $tables['ARRNAME'] .' to display</div>';
+                echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_NCON .', '. _FPA_NO .' '. $tables['ARRNAME'] .' '. _FPA_TESTP .'</div>';
                 echo '</div>';
-
             }
 
 
@@ -4505,11 +4526,11 @@
         /** display the instance information *************************************************/
         echo '<div class="half-section-information-left">'; // start left content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $phpenv['ARRNAME'] .' :: Discovery</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $phpenv['ARRNAME'] .' :: '. _FPA_DISC .'</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">PHP Version:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">PHP '. _FPA_VER .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $phpenv['phpVERSION'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
@@ -4546,7 +4567,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">MySQLi Support:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">MySQLi '. _FPA_SUP .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $phpenv['phpSUPPORTSMYSQLI'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
@@ -4571,7 +4592,7 @@
         echo '<span class="normal">';
 
             if ( @$_POST['increasePOPS'] == 1 ) { // the user set the increasePOPS setting for memory or time out errors
-                echo '<i class="warn-text">(increased by user, was '. $fpa['ORIGphpMEMLIMIT'] .')</i>&nbsp;';
+                echo '<i class="warn-text">('. _FPA_UINC .' '. $fpa['ORIGphpMEMLIMIT'] .')</i>&nbsp;';
 
             }
 
@@ -4581,7 +4602,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Uploads Enabled:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Uploads '. _FPA_EN .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $phpenv['phpUPLOADS'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
@@ -4613,7 +4634,7 @@
         echo '<span class="normal">';
 
             if ( @$_POST['increasePOPS'] == 1 ) { // the user set the increasePOPS setting for memory or time out errors
-                echo '<i class="warn-text">(increased by user, was '. $fpa['ORIGphpMAXEXECTIME'] .')</i>&nbsp;';
+                echo '<i class="warn-text">('. _FPA_UINC .' '. $fpa['ORIGphpMAXEXECTIME'] .')</i>&nbsp;';
 
             }
 
@@ -4645,7 +4666,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Session Path Writable:<div style="float:right;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Session Path '. _FPA_WRITABLE .':<div style="float:right;">';
 
             if ( $phpenv['phpSESSIONPATHWRITABLE'] == _FPA_Y ) {
                 echo '<span class="ok" style="font-size:9px;font-weight:normal;text-transform:none;">'. $phpenv['phpSESSIONPATHWRITABLE'] .'&nbsp;</span>';
@@ -4669,14 +4690,13 @@
         echo '</div>';
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Last Known PHP Error:<div style="float:right;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_LAST .' '. _FPA_K .' PHP  '. _FPA_ERR .':<div style="float:right;">';
 
             if ( $phpenv['phpLASTERR'] ) {
                 echo '<div class="alert" style="margin:5px;font-weight:normal;font-size:9px;padding:2px;text-transform:none;word-wrap: break-word;width:325px;">'. $phpenv['phpLASTERR'] .'</div>';
 
             } else {
                 echo '<span class="ok" style="margin:5px;text-transform:none;font-weight:normal;font-size:9px;padding:2px;">None</span>';
-
             }
 
         echo '</div></div>';
@@ -4689,32 +4709,32 @@
         /** display the instance information *************************************************/
         echo '<div class="half-section-information-right">'; // start left content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $system['ARRNAME'] .' :: Discovery</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $system['ARRNAME'] .' :: '. _FPA_DISC .'</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">Platform:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px; width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-right:0px;padding-bottom:3px;text-transform:uppercase;">'. _FPA_PLATFORM .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-top-right-radius: 5px;-moz-border-top-right-radius: 5px;-webkit-border-top-right-radius: 5px;  border-top-left-radius: 5px;-moz-border-top-left-radius: 5px;-webkit-border-top-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-top: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $system['sysPLATOS'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Kernel Version:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Kernel '. _FPA_VER .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $system['sysPLATREL'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Technology:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_TEC .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $system['sysPLATTECH'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Host Name:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_HNAME .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysPLATNAME'] .'&nbsp;</span>';
@@ -4770,7 +4790,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server Name:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_SERV .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysSERVNAME'] .'&nbsp;</span>';
@@ -4785,7 +4805,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server IP:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_SERV .' IP:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
 
             if ( $showProtected == 1 ) {
                 echo '<span class="normal">'. $system['sysSERVIP'] .'&nbsp;</span>';
@@ -4800,28 +4820,28 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server Signature:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_SERV .' Signature:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $system['sysSERVSIG'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server Encoding:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom:1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_SERV .' Encoding:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;1px solid #ccebeb;">';
         echo '<span class="normal">'. $system['sysENCODING'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Executing User:<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Executing '. _FPA_USR .':<div style="line-height:11px;text-transform:none!important;float:right;font-size:9px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #ccebeb;">';
         echo '<span class="normal">'. $system['sysEXECUSER'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">Server User:<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;font-weight:bold;padding:1px;padding-right:0px;padding-top:0px;padding-bottom:3px;text-transform:uppercase;">'. _FPA_SERV .' '. _FPA_USR .':<div style="line-height:9px;text-transform:none!important;float:right;font-size:11px;font-weight:normal;width:60%;background-color:#fff;text-align:right;padding:1px;padding-top:0px;border-bottom-right-radius: 5px;-moz-border-bottom-right-radius: 5px;-webkit-border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;-moz-border-bottom-left-radius: 5px;-webkit-border-bottom-left-radius: 5px;border-right: 1px solid #42AEC2;border-left: 1px solid #42AEC2;border-bottom: 1px solid #42AEC2;">';
         echo '<span class="normal">'. $system['sysWEBOWNER'] .'&nbsp;</span>';
         echo '</div></div>';
         echo '</div>';
@@ -4829,7 +4849,7 @@
         echo "<br />";
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Doc Root:<div style="float:right;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_DROOT .':<div style="float:right;">';
 
 
             if ( $showProtected <= 2 ) {
@@ -4845,7 +4865,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server Temp:<div style="float:right;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_SERV .' Temp:<div style="float:right;">';
 
             if ( $showProtected <= 2 ) {
                 echo '<span class="normal" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysSYSTMPDIR'] .'&nbsp;</span>';
@@ -4860,7 +4880,7 @@
 
 
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Server Temp Writable:<div style="float:right;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_SERV .' Temp '. _FPA_WRITABLE .':<div style="float:right;">';
 
             if ( $system['sysTMPDIRWRITABLE'] == _FPA_Y ) {
                 echo '<span class="ok" style="font-size:9px;font-weight:normal;text-transform:none;">'. $system['sysTMPDIRWRITABLE'] .'&nbsp;</span>';
@@ -4870,7 +4890,6 @@
 
             } else {
                 echo '<span class="warn-text" style="font-size:9px;font-weight:normal;text-transform:none;">'. _FPA_U .'&nbsp;</span>';
-
             }
 
         echo '</div></div>';
@@ -4879,7 +4898,7 @@
 
         //echo '<br style="clear:both;" />';
         echo '<div class="mini-content-box-small" style="">';
-        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Switch User Configuration:<div style="float:right;">';
+        echo '<div style="line-height:10px;font-size:8px;color:#404040;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Switch '. _FPA_USR .' '. _FPA_CFG .':<div style="float:right;">';
         echo '<br style="clear:both;" />';
         echo '<div style="background-color: #fff;border:1px solid #42aec2;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;font-weight:normal;">suExec<br /><b>'. $phpenv['phpAPACHESUEXEC'] .'</b></div>';
         echo '<div style="background-color: #fff;border:1px solid #42aec2;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;text-align:center;margin:2px;width:78px;padding:1px;float:left;font-size:8px;font-weight:normal;">PHP suExec<br /><b>'. $phpenv['phpPHPSUEXEC'] .'</b></div>';
@@ -4923,7 +4942,7 @@
 <?php
         echo '<div class="section-information">'; // start right content block
 
-        echo '<div class="section-title" style="text-align:center;">'. $phpextensions['ARRNAME'] .' :: Discovery</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $phpextensions['ARRNAME'] .' :: '. _FPA_DISC .'</div>';
         echo '<div class="" style="width:99%;margin: 0px auto;clear:both;margin-bottom:10px;">';
 
             foreach ( $phpextensions as $key => $show ) {
@@ -4964,7 +4983,6 @@
                 // look for recommended extensions that aren't installed
                 if ( !in_array( $key, $phpreq ) ) {
                     unset ( $phpreq[$key] );
-
                 }
 
             } // end foreach
@@ -4973,7 +4991,7 @@
             if ( $phpreq ) {
                 echo '<br style="clear:both;" /><br />';
                 echo '<div class="mini-content-box-small" style="">';
-                echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing PHP Extensions:<br /><div style="float:left;text-transform:none;">';
+                echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_POTME .':<br /><div style="float:left;text-transform:none;">';
 
                 echo '<br style="clear:both;" />';
 
@@ -5059,7 +5077,7 @@
                 if ( $apachereq ) {
                     echo '<br style="clear:both;" /><br />';
                     echo '<div class="mini-content-box-small" style="">';
-                    echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">Potential Missing Apache Modules:<br /><div style="float:left;text-transform:none;">';
+                    echo '<div class="warn-text" style="line-height:10px;font-size:9px;text-shadow: #fff 1px 1px 1px;width:99%;border-bottom: 1px solid #ccebeb;font-weight:bold;padding:1px;padding-top:0px;padding-right:0px;padding-bottom:2px;text-transform:uppercase;">'. _FPA_POTMM .':<br /><div style="float:left;text-transform:none;">';
 
                     echo '<br style="clear:both;" />';
 
@@ -5208,7 +5226,7 @@
 
     } else { // an instance wasn't found in the initial checks, so no folders to check
         echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-        echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $modecheck['ARRNAME'] .' performed</div>';
+        echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_N .' '. $modecheck['ARRNAME'] .' '. _FPA_TESTP .'</div>';
         echo '</div>';
     }
 
@@ -5228,7 +5246,7 @@
     if ( $showElevated == '1' ) {
 
         echo '<div class="section-information">';
-        echo '<div class="section-title" style="text-align:center;">'. $elevated['ARRNAME'] .' (First 10)</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $elevated['ARRNAME'] .' ('. _FPA_FIRST .' 10)</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
 
@@ -5306,7 +5324,7 @@
 
         } else { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $elevated['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $elevated['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5336,15 +5354,15 @@
 
         echo '<div class="section-information">';
 
-        echo '<div class="section-title" style="text-align:center;">'. $component['ARRNAME'] .' :: Site</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $component['ARRNAME'] .' :: '. _FPA_SITE .'</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
-        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
-        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
-        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
-        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">'. _FPA_VER .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_TCRE .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_AUTH .'</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">'. _FPA_ADDR .'</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">'. _FPA_STATUS .'</div>';
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
@@ -5370,15 +5388,13 @@
                 } else {
                     echo '<div style="float:left;width:20%;color:#'. $typeColor .';"><span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
                 }
-//                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
 
                 echo '</div>';
             }
 
         } else {
-//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $component['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $component['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5388,15 +5404,15 @@
 
 
         echo '<br style="clear:both;" />';
-        echo '<div class="section-title" style="text-align:center;">'. $component['ARRNAME'] .' :: Admin</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $component['ARRNAME'] .' :: '. _FPA_ADMIN .'</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
-        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
-        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
-        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
-        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">'. _FPA_VER .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_CRE .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_AUTH .'</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">'. _FPA_ADDR .'</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">'. _FPA_STATUS .'</div>';
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
@@ -5405,7 +5421,7 @@
 
             foreach ( $component['ADMIN'] as $key => $show ) {
 
-                if ( $show['type'] != '3rd Party' ) {
+                if ( $show['type'] != _FPA_3PD ) {
                     $typeColor = '404040';
                 } else {
                     $typeColor = '000080';
@@ -5418,7 +5434,6 @@
                 } else {
                     echo '<div style="float:left;width:20%;color:#'. $typeColor .';"><span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
                 }
-//                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
 
                 echo '</div>';
             }
@@ -5427,7 +5442,7 @@
         } else {
 //        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $component['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $component['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5466,15 +5481,15 @@
 
         echo '<div class="section-information">';
 
-        echo '<div class="section-title" style="text-align:center;">'. $module['ARRNAME'] .' :: Site</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $module['ARRNAME'] .' :: '. _FPA_SITE .'</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
-        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
-        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
-        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
-        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">'. _FPA_VER .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_CRE .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_AUTH .'</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">'. _FPA_ADDR .'</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">'. _FPA_STATUS .'</div>';
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
@@ -5487,7 +5502,7 @@
 
             foreach ( $module['SITE'] as $key => $show ) {
 
-                if ( $show['type'] != '3rd Party' ) {
+                if ( $show['type'] != _FPA_3PD ) {
                     $typeColor = '404040';
                 } else {
                     $typeColor = '000080';
@@ -5500,15 +5515,13 @@
                 } else {
                     echo '<div style="float:left;width:20%;color:#'. $typeColor .';"><span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
                 }
-//                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
 
                 echo '</div>';
             }
 
         } else {
-//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $module['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $module['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5518,15 +5531,15 @@
 
 
         echo '<br style="clear:both;" />';
-        echo '<div class="section-title" style="text-align:center;">'. $module['ARRNAME'] .' :: Admin</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $module['ARRNAME'] .' :: '. _FPA_ADMIN .'</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
-        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
-        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
-        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
-        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">'. _FPA_VER .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_CRE .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_AUTH .'</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">'. _FPA_ADDR .'</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">'. _FPA_STATUS .'</div>';
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
@@ -5535,7 +5548,7 @@
 
             foreach ( $module['ADMIN'] as $key => $show ) {
 
-                if ( $show['type'] != '3rd Party' ) {
+                if ( $show['type'] != _FPA_3PD ) {
                     $typeColor = '404040';
                 } else {
                     $typeColor = '000080';
@@ -5548,15 +5561,13 @@
                 } else {
                     echo '<div style="float:left;width:20%;color:#'. $typeColor .';"><span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
                 }
-//                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
 
                 echo '</div>';
             }
 
         } else {
-//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $module['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $module['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5594,15 +5605,15 @@
 
         echo '<div class="section-information">';
 
-        echo '<div class="section-title" style="text-align:center;">'. $plugin['ARRNAME'] .' :: Site</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $plugin['ARRNAME'] .' :: '. _FPA_SITE .'</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
-        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
-        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
-        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
-        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">'. _FPA_VER .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_CRE .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_AUTH .'</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">'. _FPA_ADDR .'</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">'. _FPA_STATUS .'</div>';
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
@@ -5616,7 +5627,7 @@
 
             foreach ( $plugin['SITE'] as $key => $show ) {
 
-                if ( $show['type'] != '3rd Party' ) {
+                if ( $show['type'] != _FPA_3PD ) {
                     $typeColor = '404040';
                 } else {
                     $typeColor = '000080';
@@ -5629,15 +5640,13 @@
                 } else {
                     echo '<div style="float:left;width:20%;color:#'. $typeColor .';"><span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
                 }
-//                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
 
                 echo '</div>';
             }
 
         } else {
-//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $plugin['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $plugin['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5672,15 +5681,15 @@
 <?php
         echo '<div class="section-information">';
 
-        echo '<div class="section-title" style="text-align:center;">'. $template['ARRNAME'] .' :: Site</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $template['ARRNAME'] .' :: '. _FPA_SITE .'</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
-        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
-        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
-        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
-        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">'. _FPA_VER .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_CRE .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_AUTH .'</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">'. _FPA_ADDR .'</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">'. _FPA_STATUS .'</div>';
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
@@ -5693,7 +5702,7 @@
 
             foreach ( $template['SITE'] as $key => $show ) {
 
-                if ( $show['type'] != '3rd Party' ) {
+                if ( $show['type'] != _FPA_3PD ) {
                     $typeColor = '404040';
                 } else {
                     $typeColor = '000080';
@@ -5706,15 +5715,13 @@
                 } else {
                     echo '<div style="float:left;width:20%;color:#'. $typeColor .';"><span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
                 }
-//                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
 
                 echo '</div>';
             }
 
         } else {
-            //        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $template['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $template['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5724,15 +5731,15 @@
 
 
         echo '<br style="clear:both;" />';
-        echo '<div class="section-title" style="text-align:center;">'. $template['ARRNAME'] .' :: Admin</div>';
+        echo '<div class="section-title" style="text-align:center;">'. $template['ARRNAME'] .' :: '. _FPA_ADMIN .'</div>';
 
         echo '<div class="column-title-container" style="width:99%;margin: 0px auto;clear:both;display:block;">';
-        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">Name</div>';
-        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">Version</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Created</div>';
-        echo '<div class="column-title" style="width:14%;float:left;">Author</div>';
-        echo '<div class="column-title" style="width:19%;float:left;">Address</div>';
-        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">Status</div>';
+        echo '<div class="column-title" style="width:20%;float:left;text-align:left;">'. _FPA_TNAM .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;text-align:center;">'. _FPA_VER .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_CRE .'</div>';
+        echo '<div class="column-title" style="width:14%;float:left;">'. _FPA_AUTH .'</div>';
+        echo '<div class="column-title" style="width:19%;float:left;">'. _FPA_ADDR .'</div>';
+        echo '<div class="column-title" style="width:10%;float:right;text-align:center;">'. _FPA_ADDR .'</div>';
         echo '<div style="clear:both;"></div>';
         echo '</div>';
 
@@ -5741,7 +5748,7 @@
 
             foreach ( @$template['ADMIN'] as $key => $show ) {
 
-                if ( $show['type'] != '3rd Party' ) {
+                if ( $show['type'] != _FPA_3PD ) {
                     $typeColor = '404040';
                 } else {
                     $typeColor = '000080';
@@ -5754,15 +5761,13 @@
                 } else {
                     echo '<div style="float:left;width:20%;color:#'. $typeColor .';"><span class="protected">[&nbsp;--&nbsp;'. _FPA_HIDDEN .'&nbsp;--&nbsp;]</span></div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
                 }
-//                echo '<div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['name'] .'</div><div style="float:left;width:15%;text-align:center;color:#'. $typeColor .';">'. $show['version'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['creationDate'] .'</div><div style="float:left;width:15%;color:#'. $typeColor .';">'. $show['author'] .'</div><div style="float:left;width:20%;color:#'. $typeColor .';">'. $show['authorUrl'] .'</div><div style="float:right;width:10%;color:#'. $typeColor .';text-align:center;">'. $show['type'] .'</div><br />';
 
                 echo '</div>';
             }
 
-//        if ( $instance['instanceFOUND'] == _FPA_N ) { // an instance wasn't found in the initial checks, so no folders to check
         } else {
             echo '<div style="text-align:center;border-bottom:1px dotted #C0C0C0;width:99%;margin: 0px auto;padding-top:1px;padding-bottom:1px;clear:both;font-size: 11px;">';
-            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">Instance not found, no '. $template['ARRNAME'] .' checks performed</div>';
+            echo '<div class="warn" style=" margin-top:10px;margin-bottom:10px;">'. _FPA_INSTANCE .' '. _FPA_NF .', '. _FPA_NO .' '. $template['ARRNAME'] .' '. _FPA_TESTP .'</div>';
             echo '</div>';
         }
 
@@ -5824,7 +5829,7 @@
                     echo _PHP_VERLOW .', memory_get_peak_usage '. _FPA_DNE .'<br />';
                 }
 
-        echo '<p style="font-weight:bold;"><em>total runtime : '. mt_end() .' seconds</em></p>';
+        echo '<p style="font-weight:bold;"><em>total runtime : '. mt_end() .' '. _FPA_SECONDS .'</em></p>';
         echo '</div>';
         echo '</div>';
     }
@@ -5836,11 +5841,10 @@
 
 
         echo '<div class="snapshot-information" style="text-align:center;color:#4D8000!important;padding-top:10px;">';
-        echo '<span class="header-title">Legends and Settings</span>';
+        echo '<span class="header-title">'. _FPA_LEGEND .'</span>';
         echo '<div style="width:85%;margin:0 auto;margin-top:10px;">';
         // LEGENDS
         echo '<div class="half-section-container" style="clear:both;width:100%;">';
-//        echo '<div class="normal" style="width:30px;float:left;margin-right:10px;font-variant:small-caps;">'. _FPA_LEGEND .'</div>';
         echo '<div class="ok-hilite" style="text-align:center;width:21%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_GOOD .'</div>';
         echo '<div class="warn" style="text-align:center;width:21%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_WARNINGS .'</div>';
         echo '<div class="alert" style="text-align:center;width:21%;float:left;margin-left:10px;margin-right:10px;">'. _FPA_ALERTS .'</div>';
@@ -5852,35 +5856,35 @@
         // SELECTIONS
         echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Developer-Mode<br />';
             if ( defined ( '_FPA_DEV' ) ) {
-                echo '<div class="normal-note">Enabled</div>';
+                echo '<div class="normal-note">'. _FPA_EN .'</div>';
             } else {
-                echo '<div class="normal-note">Disabled (Default)</div>';
+                echo '<div class="normal-note">'. _FPA_DI .' (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Information Privacy<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">'. _FPA_INFOPRI .'<br />';
             if ( $showProtected == 1 ) {
-                echo '<div class="normal-note"><span class="ok">None</span></div>';
+                echo '<div class="normal-note"><span class="ok">'. _FPA_PRIVNON .'</span></div>';
             } elseif ( $showProtected == 2 ) {
-                echo '<div class="normal-note"><span class="warn-text">Partial</span> (Default)</div>';
+                echo '<div class="normal-note"><span class="warn-text">'. _FPA_PRIVPAR .'</span> (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             } elseif ( $showProtected >= 3 ) {
-                echo '<div class="normal-note"><span class="alert-text">Strict</span></div>';
+                echo '<div class="normal-note"><span class="alert-text">'. _FPA_PRIVSTR .'</span></div>';
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Elevated Permissions<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">'. _FPA_ELEVPERM_TITLE .'<br />';
             if ( $showElevated == 1 ) {
-                echo '<div class="normal-note">Show</div>';
+                echo '<div class="normal-note">'. _FPA_SHOW .'</div>';
             } else {
-                echo '<div class="normal-note">Hide (Default)</div>';
+                echo '<div class="normal-note">'. _FPA_HIDE .' (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">DataBase Tables<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">'. _FPA_DBTBL_TITLE .'<br />';
             if ( $showTables == '1' ) {
-                echo '<div class="normal-note">Show</div>';
+                echo '<div class="normal-note">'. _FPA_SHOW .'</div>';
             } else {
-                echo '<div class="normal-note">Hide (Default)</div>';
+                echo '<div class="normal-note">'. _FPA_HIDE .' (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             }
         echo '</div>';
 
@@ -5888,40 +5892,40 @@
 
         echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Diagnostic-Mode<br />';
             if ( defined ( '_FPA_DIAG' ) ) {
-                echo '<div class="normal-note">Enabled</div>';
+                echo '<div class="normal-note">'. _FPA_EN .'</div>';
             } else {
-                echo '<div class="normal-note">Disabled (Default)</div>';
+                echo '<div class="normal-note">'. _FPA_DI .' (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Components<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">'. _FPA_EXTCOM_TITLE .'<br />';
             if ( $showComponents == '1' ) {
-                echo '<div class="normal-note">Show</div>';
+                echo '<div class="normal-note">'. _FPA_SHOW .'</div>';
             } else {
-                echo '<div class="normal-note">Hide (Default)</div>';
+                echo '<div class="normal-note">'. _FPA_HIDE .' (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Modules<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">'. _FPA_EXTMOD_TITLE .'<br />';
             if ( $showModules == '1' ) {
-                echo '<div class="normal-note">Show</div>';
+                echo '<div class="normal-note">'. _FPA_SHOW .'</div>';
             } else {
-                echo '<div class="normal-note">Hide (Default)</div>';
+                echo '<div class="normal-note">'. _FPA_HIDE .' (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             }
         echo '</div>';
 
-        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">Plugins<br />';
+        echo '<div style="font-weight:bold;width:25%;float:left;text-align:center;">'. _FPA_EXTPLG_TITLE .'<br />';
             if ( $showPlugins == '1' ) {
-                echo '<div class="normal-note">Show</div>';
+                echo '<div class="normal-note">'. _FPA_SHOW .'</div>';
             } else {
-                echo '<div class="normal-note">Hide (Default)</div>';
+                echo '<div class="normal-note">'. _FPA_HIDE .' (<i style="color:#808080;">'. _FPA_DEF .'</i> )</div>';
             }
         echo '</div>';
 
         echo '</div>';
         echo '<div style="clear:both;"><br /></div>';
 
-        echo '<div style="text-align:right!important;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
+        echo '<div style="text-align:center!important;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
         echo '</div>';
 
 
