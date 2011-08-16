@@ -13,7 +13,7 @@
 
 
     /** SET THE FPA DEFAULTS *****************************************************************/
-    define ( '_FPA_BRA', TRUE );      // bug-report-mode, else it's the standard Forum Post Assistant
+    //define ( '_FPA_BRA', TRUE );      // bug-report-mode, else it's the standard Forum Post Assistant
     //define ( '_FPA_DEV', TRUE );      // developer-mode, displays raw array data
     //define ( '_FPA_DIAG', TRUE );     // diagnostic-mode, turns on PHP logging errors, display errors and logs error to a file.
 
@@ -31,8 +31,8 @@
     }
 
     define ( '_RES_VERSION', '1.2.0' );
-    define ( '_RES_RELEASE', 'Alpha' );         // can be Alpha, Beta, RC, Final
-    define ( '_RES_BRANCH', 'Development' );    // can be playGround (Alpha/Beta only), currentDevelopment (RC only), masterPublic (Final only)
+    define ( '_RES_RELEASE', 'Beta' );         // can be Alpha, Beta, RC, Final
+    define ( '_RES_BRANCH', 'playGround' );    // can be playGround (Alpha/Beta only), currentDevelopment (RC only), masterPublic (Final only)
     define ( '_RES_LANG', 'en-GB' );               // Country/Language Code
     // !TODO update this once the REPO is re-organised
     define ( '_RES_FPALINK', 'https://github.com/ForumPostAssistant/FPA/archives/masterPublic' ); // where to get the latest 'Final Releases'
