@@ -22,7 +22,7 @@ Installation:
 1. Download the desired archive 
 2. Uncompress the downloaded package file on your own computer (using WinZip or a native decompression tool).
 3. READ the included README file for any special Release notes.
-4. READ the included Documentation file (this file) for detailed usage instructions.
+4. READ the included Documentation file for detailed usage instructions.
 5. Upload the fpa-xx.php script (replace xx with the language version you downloaded) to your Joomla! Site Root "/" directory. This is the place you installed Joomla and may not be the main root for your server. See examples below.
 6. Run the script through your browser by entering: http://www.mysite.com/fpa-xx.php substitute your domain for www.mysite.com and substitute the language version you downloaded for the xx. See examples below.
 
