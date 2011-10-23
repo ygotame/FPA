@@ -1,0 +1,40 @@
+Yleistä tieto FPA skriptistä:
+
+Forum Post Assistant on suunniteltu auttamaan uusia foorumin käyttäjiä olennaisten järjestelmä-, instanssi-, php- ja ongelmanratkaisutietojen sisällyttämisessä foorumiviestiin esimuotoiltuina. Tämän pitäisi säästää muutamia tunteja viestinvaihtoa jossa pyydetään tietoja ja selitetään kuinka hyödyllinen tieto kootaan jotta muut foorumin käyttäjät voisivat auttaa ongelman ratkaisemisessa.
+Tämä tarkoittaa myös että johdonmukaiset tiedot kootaan ja esitetään joka tapauksessa mahdollistaen auttajien nopea keskittyminen olennaiseen tietoon.
+
+Tarkoitus on tehdä tiedon kerääminen ja sitä seuraava sisällyttäminen viestiin mahdollisimman helpoksi loppukäyttäjälle.  Kun yksinkertainen skripti suoritetaan selaimessa, se kerää tiedot automaattisesti ja antaa käyttäjälle mahdollisuuden jättää pois sivuston tunnistamisen mahdollistavia tietoja ennen niiden muotoilemista [BB] koodiksi joka voidaan kopioida ja liittää foorumiviestiin. 
+
+KÄYTTÖ OMALLA VASTUULLA Skriptin ja dokumentaation paikkansapitävyyttä tai täydellisyyttä ei taata eikä minkäänlaista vastuuta vahingoista ongelmista tai epävarmuudesta joka aiheutuu skriptin käyttämisestä oteta. 
+
+Yhteensopivuus:
+	PHP 4.1,vPHP4, 5, 6DEV		MySQL 3.2 - 5.5 		MySQLi versiosta 4.1 ( @ >=PHP 4.4.9)
+ 	
+Joomla! Versioiden tuki:
+	- v 1.0.x		- v 1.5.x		- v 1.6.x		- v 1.7.x
+	
+Kielituki:
+- englanti (USA/UK/AU)
+- Yhteisön käännöksiä voi olla saatavilla. Kun käännöksiä tulee saataville, jokainen kotoistettu versio julkaistaan omana “haaranaan” (esim. fr_FR, de_DE) ja on ladattavissa "Downloads" napista (.tar.gz tai .zip muodossa) kotoistetussa haarassa.  Kaikki tarvittavat tiedostot on lisätty lataussivulle.
+
+Tunnetut ongelmat:
+FPA ei tällä hetkellä ole yhteensopiva sellaisten Joomla-sivustojen kanssa, joilla configuration.php tiedosto on siirretty public_html-hakemiston ulkopuolelle.
+
+Asennus:
+1. Lataa haluamasi paketti
+2. Pura ladattu paketti omalle koneellesi (Winzipiä tai järjestelmän kotoperäistä tiedostopakettien purkuohjelmaa käyttäen)
+3. LUE mukana tuleva LUEMINUT tiedosto erityisten julkaisumuistioiden varalta.
+4. LUE mukana tuleva Dokumentaatio tiedosto yksityiskohtaisempia ohjeita saadaksesi.
+5. Siirrä fpa-xx.php skripti (korvaa xx lataamasi kieliversion kielikoodilla) Joomla sivustosi juurihakemistoon "/". Tämä on se sama hakemisto johon asensit Joomlan eikä se välttämättä ole palvelimesi juuri hakemisto. Katso esimerkkejä alla.
+6. Suorita skripti selaimessa antamalla sille osoitteeksi: http://www.sivustosi.fi/fpa-xx.php korvaten 'sivustosi.fi' omalla verkkotunnuksellasi ja xx lataamasi kieliversion kielikoodilla. Katso esimerkkejä alla.
+
+Esimerkkejä:
+Joomla on asennettu palvelimesi web-juurihakemistoon ja olet asentamassa englanninkielistä versiota FPA skriptistä: 
+Siirrä fpa-en.php tiedosto hakemistoon: [sivustosi.fi]/public_html/
+Suorittaaksesi skriptin anna selaimelle osoitteeksi:  http://www.[sivustosi.fi]/fpa-en.php 
+
+Joomla on asennettu alihakemistoon "cms" ja olet asentamassa englanninkielistä versiota FPA skriptistä:
+Siirrä fpa-en.php skripti hakemistoon:  [sivustosi.fi>]public_html/cms/ 
+Suorittaaksesi skriptin anna selaimelle osoitteeksi:  http://www.[sivustosi.fi]/cms/fpa-en.php
+
+
