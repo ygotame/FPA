@@ -37,4 +37,4 @@ Joomla on asennettu alihakemistoon "cms" ja olet asentamassa englanninkielistä 
 Siirrä fpa-en.php skripti hakemistoon:  [sivustosi.fi>]public_html/cms/ 
 Suorittaaksesi skriptin anna selaimelle osoitteeksi:  http://www.[sivustosi.fi]/cms/fpa-en.php
 
-
+Poista skripti sivustoosi tai muuten vaihtaa nimeä, kun käsikirjoitus on tuottanut sivuston tiedot ja viesti on valmis ja lähetetty foorumi. Tämä on niin ihmiset ulkopuolella eivät näe miten sivusto on rakennettu ja sitä voi käyttää mitään vikoja, jotka voivat olla läsnä.
