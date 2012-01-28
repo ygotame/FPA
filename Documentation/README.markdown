@@ -4,3 +4,5 @@ This is the W.I.P location for **_FPA Documentation (en_GB)_**. As this location
 
 **_USE AT YOUR OWN RISK_**
 Accuracy and completeness of this documentation is **_not_** assured and **_no responsibility_** will be accepted for any damage, issues or confusion caused by using versions contained within this branch. 
+
+Please remove the script from your website or otherwise change the name once the script has generated the Site Data and the message has been prepared and posted to the forum. This is so outsiders can't take a look at how your site is structured and possibly utilize any flaws that may be present.
