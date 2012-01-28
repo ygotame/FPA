@@ -1791,7 +1791,7 @@ showDev ( $snapshot );
                         ?>
 
                         <div style="color:#4D8000;">
-                        <span style="color:#4D8000;font-weight:bold;padding-right:20px;"><strong>Run-Time Options</strong></span>
+                        <span style="color:#4D8000;font-weight:bold;padding-right:20px;"><strong>Run-Time Options: <br></strong></span>
                             <input style="font-size:9px;" type="radio" name="postFormat" value="3" <?php echo $selectpostFormat_3; ?> /><span style="color:#<?php echo $selectColor_3; ?>;padding-right:15px;">Forum</span>
                                 <?php
                                     if ( defined( '_FPA_BRA' ) ) {
