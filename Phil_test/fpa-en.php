@@ -41,8 +41,10 @@
     define ( '_RES_BRANCH', 'playGround' );    // can be playGround (Alpha/Beta only), currentDevelopment (RC only), masterPublic (Final only)
     define ( '_RES_LANG', 'en-GB' );               // Country/Language Code
     // !TODO update this once the REPO is re-organised
-    define ( '_RES_FPALINK', 'https://github.com/ForumPostAssistant/FPA/archives/' ); // where to get the latest 'Final Releases'
-    define ( '_RES_FPALATEST', 'Get the latest release of the ' );
+    define ( '_RES_FPALINK', 'https://github.com/ForumPostAssistant/FPA/tarball/en-GB/' ); // where to get the latest 'Final Releases'
+    define ( '_RES_FPALATEST', 'Get the latest zip release of the ' );
+	define ( '_RES_FPALINK2', 'https://github.com/ForumPostAssistant/FPA/zipball/en-GB/' ); // where to get the latest 'Final Releases'
+    define ( '_RES_FPALATEST2', 'Get the latest tar.gz release of the ' );
 
 
 
@@ -279,9 +281,9 @@
 		$extra = 'index.php'; // add index (or other) page if desired	
 					
 	// try to make sure we have permission to delete
-	//	chmod("fpa-en.php", 0777);  // octal; correct value of mode
+		chmod("fpa-en.php", 0777);  // octal; correct value of mode
 	// Delete the file.
-	//	unlink('fpa-en.php');
+		unlink('fpa-en.php');
 						
 	/* Message and link to home page of site. */ 
 		
@@ -2254,7 +2256,14 @@
 
     /** SUPPORT SECTIONS *************************************************************/
 	/** added a 2.5 section - Phil 4-20-12 *******/
-    if ( @$instance['cmsRELEASE'] == '2.5' ) {
+	if ( @$instance['cmsRELEASE'] == '3.0' ) {
+        $fpa['supportENV']['minPHP']        = '5.3.1';
+        $fpa['supportENV']['minSQL']        = '5.0.8';
+        $fpa['supportENV']['maxPHP']        = '6.0.0';  // latest release?
+        $fpa['supportENV']['maxSQL']        = '5.5.0';  // latest release?
+        $fpa['supportENV']['badPHP'][0]     = _FPA_NA;
+        $fpa['supportENV']['badZND'][0]     = _FPA_NA;
+    } elseif ( @$instance['cmsRELEASE'] == '2.5' ) {
         $fpa['supportENV']['minPHP']        = '5.2.4';
         $fpa['supportENV']['minSQL']        = '5.0.4';
         $fpa['supportENV']['maxPHP']        = '6.0.0';  // latest release?
@@ -2569,8 +2578,9 @@
     //TEST
     echo '<div style="text-align:center;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .''. _RES_LANG .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
     echo '<div style="clear:both;"></div>';
+	echo "<p></p>";
+	echo '<div style="text-align:center!important;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK2 .''. _RES_LANG .'" target="_github">'. _RES_FPALATEST2 .' '. _RES .'</a></div>';
     echo '</div>';
-
     showDev ( $snapshot );
     ?>
 
@@ -6095,6 +6105,8 @@
         echo '<div style="clear:both;"><br /></div>';
 
         echo '<div style="text-align:center!important;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK .''. _RES_LANG .'" target="_github">'. _RES_FPALATEST .' '. _RES .'</a></div>';
+		echo "<p></p>";
+		echo '<div style="text-align:center!important;"><a style="color:#4D8000!important;" href="'. _RES_FPALINK2 .''. _RES_LANG .'" target="_github">'. _RES_FPALATEST2 .' '. _RES .'</a></div>';
         echo '</div>';
 		
 ?>
