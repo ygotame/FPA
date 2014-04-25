@@ -1,1 +1,1 @@
-This folders holds the language files
+This folder holds the language files
